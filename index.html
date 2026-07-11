@@ -12,7 +12,7 @@
 <body>
 
 <!-- ============ NAV ============ -->
-<header class="nav">
+<header class="nav" id="navbar">
   <div class="nav-inner">
     <a class="brand" href="#top">
       <span class="brand-dev">परख</span>
@@ -27,12 +27,35 @@
   <a href="#lookbook">Lookbook</a>
   <a href="#contact">Visit Us</a>
 
-  <a href="cart.html" id="cartLink" class="cart-link">
+  <div class="nav-icons">
 
-      🛒 Cart
-      <span id="cartCount">0</span>
+    <button class="icon-btn" id="searchBtn" title="Search">
 
-  </a>
+        🔍
+
+    </button>
+
+    <button class="icon-btn" id="wishlistBtn" title="Wishlist">
+
+        ❤
+
+    </button>
+
+    <button class="icon-btn" id="accountBtn" title="Account">
+
+        👤
+
+    </button>
+
+    <a href="cart.html" class="cart-icon" title="Shopping Cart">
+
+        🛒
+
+        <span id="cartCount">0</span>
+
+    </a>
+
+</div>
 
 </nav>
     <a class="nav-cta" href="#contact">
@@ -48,11 +71,21 @@
   <div class="container hero-inner">
     <div class="hero-copy">
       <span class="eyebrow">Sarees &amp; Suit Sets · Howrah</span>
-      <h1 class="hero-title">The eye that<br>knows fine cloth<br>is called <em>parakh</em>.</h1>
-      <p class="hero-desc">Two stores, one instinct for good fabric. Parakh Creation and Parakh Collection have spent years choosing sarees and suit sets by hand — piece by piece — for a neighbourhood that knows the difference.</p>
+      <h1 class="hero-title">
+
+Premium Ethnic Wear<br>
+
+for Every Celebration
+
+</h1>
+      <p class="hero-desc">
+
+Discover handpicked sarees, suit sets, lehengas, kurtis and festive wear from Parakh Creation & Collection. Every design is selected for elegance, comfort and timeless style.
+
+</p>
       <div class="hero-actions">
-        <a href="#collection" class="btn btn-primary">Browse the Collection</a>
-        <a href="#contact" class="btn btn-outline">Visit a Store</a>
+        <a href="#collection" class="btn btn-primary">Shop Collection</a>
+        <a href="#contact" class="btn btn-outline">New Arrivals</a>
       </div>
       <div class="hero-stats">
         <div><strong>2</strong><span>Store Locations</span></div>
@@ -62,15 +95,81 @@
     </div>
     <div class="hero-visual">
       <div class="hero-grid">
-        <div class="frame"><img src="assets/products/saree_03.jpg" alt="Saree from the Parakh collection" loading="eager"></div>
-        <div class="frame"><img src="assets/products/suit_02.jpg" alt="Suit set from the Parakh collection" loading="eager"></div>
-        <div class="frame"><img src="assets/products/saree_08.jpg" alt="Saree from the Parakh collection" loading="eager"></div>
+        <div class="frame">
+    <img src="assets/brand/hero1.jpeg" alt="Luxury Saree">
+</div>
+
+<div class="frame">
+    <img src="assets/brand/hero2.jpeg" alt="Suit Set">
+</div>
+
+<div class="frame">
+    <img src="assets/brand/hero3.jpeg" alt="Festive Wear">
+</div>
       </div>
       <div class="hero-badge"><span>Est. locally in</span>Howrah, West Bengal</div>
     </div>
   </div>
 </section>
+<section class="featured-collections">
 
+<div class="container">
+
+<div class="section-head reveal">
+
+<span class="eyebrow">
+Explore
+</span>
+
+<h2 class="section-title">
+Our Collections
+</h2>
+
+<p>
+Every collection at Parakh is carefully curated to bring together timeless craftsmanship, elegant fabrics and styles for every occasion.
+</p>
+
+</div>
+
+<div class="collection-cards">
+
+<a href="#collection" class="collection-card">
+
+<img src="assets/brand/hero1.jpeg" alt="Sarees">
+
+<div class="overlay">
+
+<h3>Sarees</h3>
+
+<p>Classic weaves for every celebration.</p>
+
+<span>Explore →</span>
+
+</div>
+
+</a>
+
+<a href="#collection" class="collection-card">
+
+<img src="assets/brand/hero2.jpeg" alt="Suit Sets">
+
+<div class="overlay">
+
+<h3>Suit Sets</h3>
+
+<p>Elegant everyday luxury.</p>
+
+<span>Explore →</span>
+
+</div>
+
+</a>
+
+</div>
+
+</div>
+
+</section>
 <div class="marquee-wrap">
   <div class="marquee" id="marquee"></div>
 </div>
@@ -231,5 +330,26 @@
 <script src="js/products.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script type="module" src="js/main.js"></script>
+<script>
+
+window.addEventListener("scroll",()=>{
+
+    const nav=document.getElementById("navbar");
+
+    if(window.scrollY>40){
+
+        nav.classList.add("scrolled");
+
+    }
+
+    else{
+
+        nav.classList.remove("scrolled");
+
+    }
+
+});
+
+</script>
 </body>
 </html>

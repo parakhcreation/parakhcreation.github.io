@@ -63,8 +63,13 @@ localStorage.setItem(
     window.scrollY
 );
 
-window.location.href =
-    `product.html?id=${card.dataset.id}`;
+window.open(
+
+    `product.html?id=${card.dataset.id}`,
+
+    "_blank"
+
+);
 
   });
 
