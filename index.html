@@ -35,11 +35,21 @@
 
     </button>
 
-    <button class="icon-btn" id="wishlistBtn" title="Wishlist">
+    <button class="icon-btn"
 
-        ❤
+        id="wishlistBtn"
 
-    </button>
+        onclick="location.href='wishlist.html'">
+
+    ❤
+
+    <span id="wishlistCount">
+
+        0
+
+    </span>
+
+</button>
 
     <button class="icon-btn" id="accountBtn" title="Account">
 
@@ -327,8 +337,13 @@ Every collection at Parakh is carefully curated to bring together timeless craft
 </div>
 
 <script type="module" src="js/firebase.js"></script>
+
 <script src="js/products.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+<script src="js/wishlistStore.js"></script>
+
 <script type="module" src="js/main.js"></script>
 <script>
 

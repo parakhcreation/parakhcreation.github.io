@@ -11,6 +11,7 @@ const fabric = document.getElementById("productFabric");
 const colour = document.getElementById("productColour");
 const availability = document.getElementById("productAvailability");
 const relatedGrid = document.getElementById("relatedProducts");
+const wishlistButton = document.getElementById("addToWishlist");
 
 async function loadProduct() {
 
@@ -45,6 +46,14 @@ async function loadProduct() {
         product.available === true
             ? "Available"
             : "Out of Stock";
+            
+    wishlistButton.textContent =
+
+    isWishlisted(product.id)
+
+    ? "❤ Remove from Wishlist"
+
+    : "♡ Add to Wishlist";
             
             const related = products
     .filter(p =>
@@ -122,6 +131,28 @@ document.getElementById("addToCart").onclick = () => {
 document.getElementById("viewCart").onclick = () => {
 
     window.location.href = "cart.html";
+
+};
+
+/* ============================
+   Wishlist
+============================ */
+
+wishlistButton.onclick = () => {
+
+    const id = new URLSearchParams(
+
+        window.location.search
+
+    ).get("id");
+
+    const added = toggleWishlist(id);
+
+    wishlistButton.textContent = added
+
+        ? "❤ Remove from Wishlist"
+
+        : "♡ Add to Wishlist";
 
 };
 
