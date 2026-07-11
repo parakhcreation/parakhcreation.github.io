@@ -74,17 +74,50 @@ document.getElementById("payNow").onclick = () => {
     const state = document.getElementById("state").value.trim();
     const pincode = document.getElementById("pincode").value.trim();
 
-    if (
-        !name ||
-        !phone ||
-        !address ||
-        !city ||
-        !state ||
-        !pincode
-    ) {
+    if (name === "") {
 
-        alert("Please fill all required fields.");
+        alert("Please enter your Full Name.");
+        document.getElementById("name").focus();
+        return;
 
+    }
+
+    if (!/^[0-9]{10}$/.test(phone)) {
+
+        alert("Please enter a valid 10-digit Mobile Number.");
+        document.getElementById("phone").focus();
+        return;
+
+    }
+
+    if (address === "") {
+
+        alert("Please enter your Delivery Address.");
+        document.getElementById("address").focus();
+        return;
+
+    }
+
+    if (city === "") {
+
+        alert("Please enter your City.");
+        document.getElementById("city").focus();
+        return;
+
+    }
+
+    if (state === "") {
+
+        alert("Please enter your State.");
+        document.getElementById("state").focus();
+        return;
+
+    }
+
+    if (!/^[0-9]{6}$/.test(pincode)) {
+
+        alert("Please enter a valid 6-digit Pincode.");
+        document.getElementById("pincode").focus();
         return;
 
     }
