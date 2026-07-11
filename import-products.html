@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Import Products</title>
+
+<link rel="stylesheet"
+href="css/admin.css">
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Import Products</h1>
+
+<p>Select your CSV file</p>
+
+<input
+type="file"
+id="csvFile"
+accept=".csv">
+
+<br><br>
+
+<button id="importBtn">
+
+Import Products
+
+</button>
+
+<p id="status"></p>
+
+</div>
+
+<script type="module"
+src="js/importProducts.js"></script>
+
+</body>
+
+</html>

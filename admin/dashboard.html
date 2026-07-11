@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Parakh Creation | Admin Dashboard</title>
+
+<link rel="stylesheet" href="../css/admin.css">
+
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- Sidebar -->
+
+    <aside class="sidebar">
+
+        <h2>Parakh Creation</h2>
+
+        <nav>
+
+            <a href="#" class="active">Dashboard</a>
+
+            <a href="#">Products</a>
+
+            <a href="#">Import CSV</a>
+
+            <a href="#">Export CSV</a>
+
+            <a href="#">Settings</a>
+
+            <a href="#" id="logoutBtn">Logout</a>
+
+        </nav>
+
+    </aside>
+
+
+
+    <!-- Main Content -->
+
+    <main class="main-content">
+
+        <header>
+
+            <h1>Dashboard</h1>
+
+            <p>Welcome, Admin</p>
+
+        </header>
+
+
+        <!-- Statistics -->
+
+        <section class="cards">
+
+            <div class="card">
+
+                <h3>Total Products</h3>
+
+                <h2 id="totalProducts">0</h2>
+
+            </div>
+
+            <div class="card">
+
+                <h3>Sarees</h3>
+
+                <h2 id="totalSarees">0</h2>
+
+            </div>
+
+            <div class="card">
+
+                <h3>Suit Sets</h3>
+
+                <h2 id="totalSuits">0</h2>
+
+            </div>
+
+        </section>
+
+
+        <!-- Quick Actions -->
+
+        <section class="actions">
+
+            <button id="addProduct">
+
+                + Add Product
+
+            </button>
+
+            <button id="importCSV">
+
+                Import CSV
+
+            </button>
+
+        </section>
+
+
+        <!-- Product Table -->
+
+        <section class="product-table">
+
+            <h2>Products</h2>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Name</th>
+
+                        <th>Category</th>
+
+                        <th>Price</th>
+
+                        <th>Status</th>
+
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="productsTable">
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+    </main>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script type="module" src="../js/dashboard.js"></script>
+
+</body>
+</html>

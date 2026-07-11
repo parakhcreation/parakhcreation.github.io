@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Add Product</title>
+
+<link rel="stylesheet"
+href="../css/admin.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Add Product</h1>
+
+<form id="productForm">
+
+<label>Product ID</label>
+<input id="id" required>
+
+<label>Name</label>
+<input id="name" required>
+
+<label>Category</label>
+
+<select id="category">
+
+<option value="saree">Saree</option>
+
+<option value="suit">Suit Set</option>
+
+</select>
+
+<label>Price</label>
+<input
+id="price"
+type="number">
+
+<label>Fabric</label>
+<input id="fabric">
+
+<label>Colour</label>
+<input id="colour">
+
+<label>Description</label>
+
+<textarea
+id="description"
+rows="5"></textarea>
+
+<label>Image Path</label>
+
+<input
+id="image">
+
+<label>
+
+<input
+type="checkbox"
+id="available"
+checked>
+
+Available
+
+</label>
+
+<label>
+
+<input
+type="checkbox"
+id="featured">
+
+Featured
+
+</label>
+
+<label>Display Order</label>
+
+<input
+type="number"
+id="displayOrder"
+value="1">
+
+<br><br>
+
+<button type="submit">
+
+Save Product
+
+</button>
+
+</form>
+
+<p id="status"></p>
+
+</div>
+
+<script type="module"
+src="../js/addProduct.js"></script>
+
+</body>
+
+</html>
