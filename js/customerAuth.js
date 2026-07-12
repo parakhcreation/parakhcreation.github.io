@@ -117,14 +117,12 @@ async function loginUser(e) {
     try {
 
         await signInWithEmailAndPassword(
+    auth,
+    email,
+    password
+);
 
-            auth,
-            email,
-            password
-
-        );
-
-        window.location.href = "account.html";
+window.location.href = "index.html";
 
     }
 
