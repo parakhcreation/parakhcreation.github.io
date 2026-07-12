@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parakh Admin Login</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+
+<body class="login-page">
+
+<div class="login-card">
+
+    <h2>Parakh Creation</h2>
+    <p class="text-muted">Admin Login</p>
+
+    <form id="loginForm">
+
+        <div class="mb-3">
+            <label>Email</label>
+            <input
+                type="email"
+                id="email"
+                class="form-control"
+                required>
+        </div>
+
+        <div class="mb-3">
+            <label>Password</label>
+            <input
+                type="password"
+                id="password"
+                class="form-control"
+                required>
+        </div>
+
+        <button
+            type="submit"
+            class="btn btn-dark w-100">
+
+            Login
+
+        </button>
+
+        <p
+            id="error"
+            class="text-danger mt-3"></p>
+
+    </form>
+
+</div>
+
+<script type="module" src="js/auth.js"></script>
+
+</body>
+</html>
