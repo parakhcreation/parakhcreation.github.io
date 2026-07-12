@@ -1,127 +1,176 @@
+import { Profile } from "./profileStore.js";
+
+import { Address } from "./addressStore.js";
+
+import { Cart } from "./cartStore.js";
+
 import { getProducts } from "./firebase.js";
 
-const orderItems = document.getElementById("orderItems");
-const checkoutTotal = document.getElementById("checkoutTotal");
+const addressContainer =
+    document.getElementById("addressContainer");
 
-async function loadCheckout() {
+const summaryProducts =
+    document.getElementById("summaryProducts");
 
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+const recipientName =
+    document.getElementById("recipientName");
 
-    const products = await getProducts();
+const recipientPhone =
+    document.getElementById("recipientPhone");
 
-    let total = 0;
+const subtotalElement =
+    document.getElementById("subtotal");
 
-    orderItems.innerHTML = "";
+const grandTotalElement =
+    document.getElementById("grandTotal");
 
-    if (cart.length === 0) {
+let selectedAddress = null;
 
-        orderItems.innerHTML = "<p>Your cart is empty.</p>";
+async function loadCheckout(){
 
-        checkoutTotal.textContent = "₹0";
+    const profile = await Profile.get();
 
-        document.getElementById("payNow").disabled = true;
+    recipientName.value =
+        `${profile.firstName} ${profile.lastName}`.trim();
 
-        return;
+    recipientPhone.value =
+        profile.phone || "";
 
-    }
+    const addresses =
+        await Address.getAll();
 
-    cart.forEach(item => {
+    addressContainer.innerHTML = "";
 
-        const product = products.find(p => p.id === item.id);
+    addresses.forEach(address=>{
 
-        if (!product) return;
+        const card =
+            document.createElement("div");
 
-        const subtotal = Number(product.price) * item.quantity;
+        card.className =
+            "addressCard";
 
-        total += subtotal;
+        if(address.isDefault){
 
-        orderItems.innerHTML += `
+            selectedAddress = address;
 
-        <div style="display:flex;justify-content:space-between;margin-bottom:12px;">
+            card.classList.add("selected");
 
-            <span>
+        }
 
-                ${product.name}
+        card.innerHTML=`
 
-                × ${item.quantity}
+        <div class="addressType">
 
-            </span>
+            ${address.type}
 
-            <strong>
+            ${address.isDefault
+                ? '<span class="defaultBadge">Default</span>'
+                : ''
+            }
 
-                ₹${subtotal}
+        </div>
 
-            </strong>
+        <div class="addressText">
+
+            ${address.addressLine1}<br>
+
+            ${address.addressLine2 || ""}<br>
+
+            ${address.landmark || ""}<br>
+
+            ${address.city},
+            ${address.state}
+
+            ${address.pincode}
 
         </div>
 
         `;
 
-    });
+        card.onclick=()=>{
 
-    checkoutTotal.textContent = "₹" + total;
+            document
+            .querySelectorAll(".addressCard")
+            .forEach(c=>c.classList.remove("selected"));
+
+            card.classList.add("selected");
+
+            selectedAddress=address;
+
+        };
+
+        addressContainer.appendChild(card);
+
+    });
+    
+    console.log("Profile =", Profile);
+console.log("Address =", Address);
+console.log("Cart =", Cart);
+
+const cartObject = await Cart.getAll();
+
+const products = await getProducts();
+
+summaryProducts.innerHTML = "";
+
+let subtotal = 0;
+
+Object.entries(cartObject).forEach(([id, quantity]) => {
+
+    const product =
+    products.find(p => p.id === id);
+
+    if (!product) return;
+
+    subtotal +=
+    Number(product.price) * quantity;
+
+    const div =
+        document.createElement("div");
+
+    div.className = "summaryItem";
+
+    div.innerHTML = `
+
+        <img
+            class="summaryImage"
+            src="${product.image}"
+        >
+
+        <div class="summaryInfo">
+
+            <div class="summaryName">
+
+                ${product.name}
+
+            </div>
+
+            <div class="summaryPrice">
+
+                Qty : ${quantity}
+
+            </div>
+
+            <div class="summaryPrice">
+
+                ₹${product.price}
+
+            </div>
+
+        </div>
+
+    `;
+
+    summaryProducts.appendChild(div);
+
+});
+
+subtotalElement.textContent =
+    `₹${subtotal}`;
+
+grandTotalElement.textContent =
+    `₹${subtotal}`;
 
 }
 
 loadCheckout();
-
-document.getElementById("payNow").onclick = () => {
-
-    const name = document.getElementById("name").value.trim();
-    const phone = document.getElementById("phone").value.trim();
-    const address = document.getElementById("address").value.trim();
-    const city = document.getElementById("city").value.trim();
-    const state = document.getElementById("state").value.trim();
-    const pincode = document.getElementById("pincode").value.trim();
-
-    if (name === "") {
-
-        alert("Please enter your Full Name.");
-        document.getElementById("name").focus();
-        return;
-
-    }
-
-    if (!/^[0-9]{10}$/.test(phone)) {
-
-        alert("Please enter a valid 10-digit Mobile Number.");
-        document.getElementById("phone").focus();
-        return;
-
-    }
-
-    if (address === "") {
-
-        alert("Please enter your Delivery Address.");
-        document.getElementById("address").focus();
-        return;
-
-    }
-
-    if (city === "") {
-
-        alert("Please enter your City.");
-        document.getElementById("city").focus();
-        return;
-
-    }
-
-    if (state === "") {
-
-        alert("Please enter your State.");
-        document.getElementById("state").focus();
-        return;
-
-    }
-
-    if (!/^[0-9]{6}$/.test(pincode)) {
-
-        alert("Please enter a valid 6-digit Pincode.");
-        document.getElementById("pincode").focus();
-        return;
-
-    }
-
-    alert("Customer details verified.\n\nNext step: Razorpay Payment");
-
-};

@@ -37,17 +37,73 @@ console.log("Total element:", totalProducts);
 
         const row = document.createElement("tr");
 
-        row.innerHTML = `
-            <td>${product.id}</td>
-            <td>${product.name}</td>
-            <td>${product.category}</td>
-            <td>₹${product.price}</td>
-            <td>${product.available ? "Available" : "Out of Stock"}</td>
-            <td>
-                <button>Edit</button>
-                <button>Delete</button>
-            </td>
-        `;
+       row.innerHTML = `
+
+<td>
+
+<img
+src="${product.image}"
+class="productThumb">
+
+</td>
+
+<td>${product.id}</td>
+
+<td>${product.name}</td>
+
+<td>${product.category}</td>
+
+<td>${product.fabric || "-"}</td>
+
+<td>${product.colour || "-"}</td>
+
+<td>₹${product.price}</td>
+
+<td>${product.stock ?? "-"}</td>
+
+<td>
+
+${product.available
+? '<span class="badge available">Available</span>'
+: '<span class="badge unavailable">Out of Stock</span>'}
+
+</td>
+
+<td>
+
+${product.featured
+? '<span class="badge featured">Yes</span>'
+: 'No'}
+
+</td>
+
+<td>
+
+${product.displayOrder ?? "-"}
+
+</td>
+
+<td>
+
+<button
+class="editBtn"
+data-id="${product.id}">
+
+Edit
+
+</button>
+
+<button
+class="deleteBtn"
+data-id="${product.id}">
+
+Delete
+
+</button>
+
+</td>
+
+`;
 
         productsTable.appendChild(row);
 

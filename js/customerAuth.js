@@ -30,7 +30,11 @@ async function signupUser(e) {
 
     e.preventDefault();
 
-    const name = document.getElementById("name").value.trim();
+    const firstName = document.getElementById("firstName").value.trim();
+
+const lastName = document.getElementById("lastName").value.trim();
+
+const name = `${firstName} ${lastName}`.trim();
 
     const email = document.getElementById("email").value.trim();
 
@@ -60,25 +64,47 @@ async function signupUser(e) {
 
         await setDoc(
 
-            doc(db, "users", cred.user.uid),
+    doc(db, "users", cred.user.uid),
 
-            {
+    {
 
-                uid: cred.user.uid,
+        uid: cred.user.uid,
 
-                name,
+        firstName,
 
-                email,
+        lastName,
 
-                phone,
+        name,
 
-                role: "customer",
+        email,
 
-                createdAt: serverTimestamp()
+        phone,
 
-            }
+        role: "customer",
 
-        );
+        wishlist: [],
+
+        cart: {},
+
+        profile: {
+
+            firstName,
+
+            lastName,
+
+            phone,
+
+            gender: "",
+
+            dob: ""
+
+        },
+
+        createdAt: serverTimestamp()
+
+    }
+
+);
 
         alert("Account created successfully.");
 

@@ -4,161 +4,319 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Checkout</title>
+<title>Checkout | Parakh</title>
 
-<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
 body{
 
-    margin:0;
     background:#f8f6f2;
-    font-family:Arial,Helvetica,sans-serif;
+    font-family:Manrope,sans-serif;
+    color:#222;
 
 }
 
 .container{
 
-    width:92%;
-    max-width:1400px;
-    margin:50px auto;
+    width:min(1400px,94%);
+    margin:auto;
+    padding:40px 0;
 
 }
 
-h1{
+.pageTitle{
 
-    margin-bottom:40px;
+    font-family:Marcellus,serif;
+    font-size:40px;
+    margin-bottom:35px;
 
 }
 
-.checkout-layout{
+.checkoutGrid{
 
     display:grid;
-
     grid-template-columns:2fr 1fr;
-
-    gap:40px;
+    gap:35px;
+    align-items:start;
 
 }
 
-.form-box{
+.card{
 
     background:white;
-
-    padding:35px;
-
-    border-radius:14px;
-
-    box-shadow:0 8px 20px rgba(0,0,0,.08);
+    border-radius:18px;
+    padding:28px;
+    box-shadow:0 10px 25px rgba(0,0,0,.06);
+    margin-bottom:25px;
 
 }
 
-.form-group{
+.cardTitle{
+
+    font-size:22px;
+    font-weight:700;
+    margin-bottom:22px;
+
+}
+
+.addressCard{
+
+    border:2px solid #e8e8e8;
+    border-radius:14px;
+    padding:18px;
+    margin-bottom:18px;
+    cursor:pointer;
+    transition:.25s;
+
+}
+
+.addressCard:hover{
+
+    border-color:#8c1d40;
+
+}
+
+.addressCard.selected{
+
+    border-color:#8c1d40;
+    background:#fff8fa;
+
+}
+
+.addressType{
+
+    font-weight:700;
+    margin-bottom:8px;
+
+}
+
+.defaultBadge{
+
+    display:inline-block;
+    background:#0d4b43;
+    color:white;
+    padding:4px 10px;
+    border-radius:20px;
+    font-size:12px;
+    margin-left:8px;
+
+}
+
+.addressText{
+
+    color:#555;
+    line-height:1.7;
+
+}
+
+.addAddress{
+
+    width:100%;
+    padding:15px;
+    border:2px dashed #bbb;
+    background:white;
+    border-radius:14px;
+    cursor:pointer;
+    font-size:16px;
+    transition:.25s;
+
+}
+
+.addAddress:hover{
+
+    border-color:#8c1d40;
+    color:#8c1d40;
+
+}
+
+.formRow{
+
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+
+}
+
+.formGroup{
 
     margin-bottom:20px;
 
 }
 
-label{
+.formGroup label{
 
     display:block;
-
     margin-bottom:8px;
-
-    font-weight:bold;
-
-}
-.required{
-
-    color:red;
-
-    font-weight:bold;
+    font-weight:600;
 
 }
 
-input,
-textarea{
+.formGroup input{
 
     width:100%;
-
-    padding:14px;
-
+    padding:15px;
     border:1px solid #ddd;
-
-    border-radius:8px;
-
-    font-size:16px;
-
-    box-sizing:border-box;
+    border-radius:10px;
+    font-size:15px;
 
 }
 
-textarea{
+.smallText{
 
-    resize:vertical;
+    color:#777;
+    margin-top:10px;
+    font-size:14px;
 
 }
 
-.summary{
+.paymentOption{
 
-    background:white;
-
-    padding:30px;
-
+    border:2px solid #e8e8e8;
+    padding:18px;
     border-radius:14px;
+    margin-bottom:15px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    cursor:pointer;
 
-    box-shadow:0 8px 20px rgba(0,0,0,.08);
+}
+
+.paymentOption:hover{
+
+    border-color:#8c1d40;
+
+}
+
+.paymentOption input{
+
+    transform:scale(1.2);
+
+}
+
+.summaryCard{
 
     position:sticky;
-
     top:30px;
-
-    height:fit-content;
-
-}
-
-.total-row{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    margin:15px 0;
+    background:white;
+    border-radius:18px;
+    padding:28px;
+    box-shadow:0 10px 25px rgba(0,0,0,.06);
 
 }
 
-#orderItems{
+.summaryTitle{
+
+    font-size:24px;
+    font-weight:700;
+    margin-bottom:25px;
+
+}
+
+.summaryProducts{
 
     margin-bottom:25px;
 
 }
 
-.checkoutBtn{
+.summaryItem{
 
-    width:100%;
-
-    padding:18px;
-
-    border:none;
-
-    background:#b11b47;
-
-    color:white;
-
-    font-size:18px;
-
-    border-radius:8px;
-
-    cursor:pointer;
+    display:flex;
+    gap:14px;
+    margin-bottom:18px;
 
 }
 
-@media(max-width:900px){
+.summaryImage{
 
-.checkout-layout{
+    width:75px;
+    height:95px;
+    object-fit:cover;
+    border-radius:10px;
+
+}
+
+.summaryInfo{
+
+    flex:1;
+
+}
+
+.summaryName{
+
+    font-weight:600;
+    margin-bottom:8px;
+
+}
+
+.summaryPrice{
+
+    color:#666;
+
+}
+
+.row{
+
+    display:flex;
+    justify-content:space-between;
+    margin:15px 0;
+
+}
+
+.grandTotal{
+
+    font-size:22px;
+    font-weight:700;
+
+}
+
+.placeOrder{
+
+    width:100%;
+    padding:18px;
+    border:none;
+    border-radius:12px;
+    background:#8c1d40;
+    color:white;
+    font-size:18px;
+    cursor:pointer;
+    margin-top:25px;
+
+}
+
+.placeOrder:hover{
+
+    background:#6f1633;
+
+}
+
+@media(max-width:950px){
+
+.checkoutGrid{
+
+grid-template-columns:1fr;
+
+}
+
+.summaryCard{
+
+position:static;
+
+}
+
+.formRow{
 
 grid-template-columns:1fr;
 
@@ -174,112 +332,247 @@ grid-template-columns:1fr;
 
 <div class="container">
 
-<h1>Checkout</h1>
+<h1 class="pageTitle">
 
-<div class="checkout-layout">
+Checkout
 
-<div class="form-box">
+</h1>
 
-<div class="form-group">
-<label>Full Name <span class="required">*</span></label>
-<input
-    id="name"
-    type="text"
-    required
-    placeholder="Enter your full name">
-</div>
+<div class="checkoutGrid">
 
-<div class="form-group">
-<label>Mobile Number <span class="required">*</span></label>
-<input
-    id="phone"
-    type="tel"
-    required
-    maxlength="10"
-    pattern="[0-9]{10}"
-    placeholder="10-digit mobile number">
-</div>
+<div>
 
-<div class="form-group">
-<label>Email (Optional)</label>
-<input id="email" type="email">
-</div>
+<!-- DELIVERY ADDRESS -->
 
-<div class="form-group">
-<label>Address <span class="required">*</span></label>
-<textarea
-    id="address"
-    rows="4"
-    required
-    placeholder="House No., Street, Area"></textarea>
-</div>
+<div class="card">
 
-<div class="form-group">
-<label>City <span class="required">*</span></label>
-<input
-    id="city"
-    type="text"
-    required
-    placeholder="Enter your city">
-</div>
+<div class="cardTitle">
 
-<div class="form-group">
-<label>State <span class="required">*</span></label>
-<input
-    id="state"
-    type="text"
-    required
-    placeholder="Enter your state">
-</div>
-
-<div class="form-group">
-<label>Pincode <span class="required">*</span></label>
-<input
-    id="pincode"
-    type="text"
-    required
-    maxlength="6"
-    pattern="[0-9]{6}"
-    placeholder="6-digit PIN code">
-</div>
+Delivery Address
 
 </div>
 
-<div class="summary">
+<div id="addressContainer">
 
-<h2>Order Summary</h2>
-
-<div id="orderItems"></div>
-
-<hr>
-
-<div class="total-row">
-
-<span>Total</span>
-
-<strong id="checkoutTotal">
-
-₹0
-
-</strong>
+<!-- Loaded from Firebase -->
 
 </div>
 
 <button
-class="checkoutBtn"
-id="payNow">
+class="addAddress"
+id="addNewAddress">
 
-Proceed to Payment
++ Add New Address
 
 </button>
 
 </div>
 
+<!-- RECIPIENT DETAILS -->
+
+<div class="card">
+
+<div class="cardTitle">
+
+Recipient Details
+
+</div>
+
+<div class="formRow">
+
+<div class="formGroup">
+
+<label>
+
+Recipient Name
+
+</label>
+
+<input
+id="recipientName"
+type="text">
+
+</div>
+
+<div class="formGroup">
+
+<label>
+
+Phone Number
+
+</label>
+
+<input
+id="recipientPhone"
+type="text">
+
+</div>
+
+</div>
+
+<div class="smallText">
+
+These details are used only for this order and will not update your account profile.
+
+</div>
+
+</div>
+
+<!-- PAYMENT -->
+
+<div class="card">
+
+<div class="cardTitle">
+
+Payment Method
+
+</div>
+
+<label class="paymentOption">
+
+<input
+type="radio"
+name="payment"
+value="COD"
+checked>
+
+<div>
+
+<strong>
+
+Cash on Delivery
+
+</strong>
+
+<br>
+
+Pay when your order arrives.
+
+</div>
+
+</label>
+
+<label class="paymentOption">
+
+<input
+type="radio"
+name="payment"
+value="Razorpay">
+
+<div>
+
+<strong>
+
+Razorpay
+
+</strong>
+
+<br>
+
+UPI, Cards, Net Banking & Wallets
+
+</div>
+
+</label>
+
+</div>
+
+</div>
+
+<!-- RIGHT SIDE STARTS -->
+
+<div class="summaryCard">
+
+    <div class="summaryTitle">
+
+        Order Summary
+
+    </div>
+
+    <div id="summaryProducts" class="summaryProducts">
+
+        <!-- Products loaded from checkout.js -->
+
+    </div>
+
+    <hr>
+
+    <div class="row">
+
+        <span>Subtotal</span>
+
+        <span id="subtotal">
+
+            ₹0
+
+        </span>
+
+    </div>
+
+    <div class="row">
+
+        <span>Shipping</span>
+
+        <span id="shipping">
+
+            FREE
+
+        </span>
+
+    </div>
+
+    <div class="row">
+
+        <span>Discount</span>
+
+        <span id="discount">
+
+            ₹0
+
+        </span>
+
+    </div>
+
+    <hr style="margin:20px 0;">
+
+    <div class="row grandTotal">
+
+        <span>
+
+            Grand Total
+
+        </span>
+
+        <span id="grandTotal">
+
+            ₹0
+
+        </span>
+
+    </div>
+
+    <button
+        class="placeOrder"
+        id="placeOrderBtn">
+
+        PLACE ORDER
+
+    </button>
+
+</div>
+
 </div>
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script type="module" src="js/profileStore.js"></script>
+
+<script type="module" src="js/addressStore.js"></script>
+
+<script type="module" src="js/cartStore.js"></script>
+
+<script type="module" src="js/orderStore.js"></script>
+
 <script type="module" src="js/checkout.js"></script>
 
 </body>

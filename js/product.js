@@ -1,8 +1,12 @@
 import { getProducts } from "./firebase.js";
 import { Wishlist } from "./wishlistStore.js";
+import { Cart } from "./cartStore.js";
+
 
 const params = new URLSearchParams(window.location.search);
 const productId = params.get("id");
+
+let currentProduct = null;
 
 const image = document.getElementById("productImage");
 const name = document.getElementById("productName");
@@ -18,39 +22,41 @@ async function loadProduct() {
 
     const products = await getProducts();
 
-    const product = products.find(
+    currentProduct = products.find(
     p => p.id && p.id.trim() === productId.trim()
-    );
-    console.log(product);
-    if (!product) {
+);
 
-        document.body.innerHTML = "<h1>Product not found.</h1>";
-        return;
+console.log(currentProduct);
 
-    }
+if (!currentProduct) {
 
-    image.src = product.image;
-    image.alt = product.name;
+    document.body.innerHTML = "<h1>Product not found.</h1>";
+    return;
 
-    name.textContent = product.name;
+}
 
-    price.textContent = "₹" + product.price;
+    image.src = currentProduct.image;
+    image.alt = currentProduct.name;
 
-    description.textContent = product.description;
+    name.textContent = currentProduct.name;
 
-    fabric.textContent = product.fabric;
+    price.textContent = "₹" + currentProduct.price;
 
-    colour.textContent = product.colour;
+    description.textContent = currentProduct.description;
+
+    fabric.textContent = currentProduct.fabric;
+
+    colour.textContent = currentProduct.colour;
 
     availability.textContent =
-        product.available === "TRUE" ||
-        product.available === true
+        currentProduct.available === "TRUE" ||
+        currentProduct.available === true
             ? "Available"
             : "Out of Stock";
             
     wishlistButton.textContent =
 
-    await Wishlist.has(product.id)
+    await Wishlist.has(currentProduct.id)
 
     ? "❤ Remove from Wishlist"
 
@@ -58,7 +64,7 @@ async function loadProduct() {
     
     wishlistButton.onclick = async () => {
 
-    const added = await Wishlist.toggle(product.id);
+    const added = await Wishlist.toggle(currentProduct.id);
 
     wishlistButton.textContent = added
         ? "❤ Remove from Wishlist"
@@ -68,8 +74,8 @@ async function loadProduct() {
             
             const related = products
     .filter(p =>
-        p.category === product.category &&
-        p.id !== product.id
+        p.category === currentProduct.category &&
+        p.id !== currentProduct.id
     )
     .slice(0,4);
 
@@ -99,37 +105,9 @@ related.forEach(item => {
 
 loadProduct();
 
-document.getElementById("addToCart").onclick = () => {
+document.getElementById("addToCart").onclick = async () => {
 
-    const id = new URLSearchParams(window.location.search).get("id");
-
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-    const existing = cart.find(item => item.id === id);
-
-    if (existing) {
-
-        existing.quantity++;
-
-    } else {
-
-        cart.push({
-
-            id: id,
-
-            quantity: 1
-
-        });
-
-    }
-
-    localStorage.setItem(
-
-        "cart",
-
-        JSON.stringify(cart)
-
-    );
+    await Cart.add(currentProduct.id);
 
     document.getElementById("drawerProductName").textContent =
         document.getElementById("productName").textContent;

@@ -51,27 +51,20 @@ console.log("✅ Firebase Connected Successfully!");
 
 async function getProducts() {
 
-    const SHEET_URL =
-    "https://docs.google.com/spreadsheets/d/e/2PACX-1vSoOi31SJkVFXK7OCiqavDorxm9lw_iK4WeY1PLviq5sM5yt61P9kHWjxIqLgtc66jgQP3O1FQ2Mfqf/pub?output=csv";
+    const snapshot = await getDocs(collection(db, "products"));
 
-    const response = await fetch(SHEET_URL);
+    const products = [];
 
-    const csv = await response.text();
+    snapshot.forEach((docSnap) => {
 
-    const results = Papa.parse(csv, {
-
-        header: true,
-
-        skipEmptyLines: true
+        products.push({
+            id: docSnap.id,
+            ...docSnap.data()
+        });
 
     });
 
-   const products = results.data.filter(product =>
-    product.id &&
-    product.id.trim() !== ""
-);
-
-return products;
+    return products;
 
 }
 

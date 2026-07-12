@@ -1,11 +1,17 @@
 import { getProducts } from "./firebase.js";
+import { Cart } from "./cartStore.js";
 
 const cartItems = document.getElementById("cartItems");
 const cartTotal = document.getElementById("cartTotal");
 
 async function loadCart() {
 
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const cartObject = await Cart.getAll();
+
+const cart = Object.entries(cartObject).map(([id, quantity]) => ({
+    id,
+    quantity
+}));
 
     const products = await getProducts();
     console.log("Cart:", cart);
@@ -26,10 +32,12 @@ console.log("Products:", products);
     }
 
     cart.forEach(item => {
-
-        const product = products.find(
-    p => p.id === item.id
+console.log("Cart item:", item);
+       const product = products.find(
+    p => p.id && p.id.trim() === item.id.trim()
 );
+
+console.log("Matched product:", product);
 
         if (!product) return;
 
@@ -106,64 +114,49 @@ if(finalTotal){
 
 }
 
-    document.querySelectorAll(".removeBtn").forEach(btn=>{
+    document.querySelectorAll(".removeBtn").forEach(btn => {
 
-        btn.onclick=()=>{
+    btn.onclick = async () => {
 
-            const newCart = cart.filter(item => item.id !== btn.dataset.id);
+        await Cart.remove(btn.dataset.id);
 
-            localStorage.setItem(
-                "cart",
-                JSON.stringify(newCart)
-            );
-
-            loadCart();
-
-        };
-
-    });
-    
-    document.querySelectorAll(".plus").forEach(button=>{
-
-    button.onclick=()=>{
-
-        const id=button.dataset.id;
-
-        let cart=JSON.parse(localStorage.getItem("cart"))||[];
-
-        const item=cart.find(i=>i.id===id);
-
-        item.quantity++;
-
-        localStorage.setItem("cart",JSON.stringify(cart));
-
-        location.reload();
+        loadCart();
 
     };
 
 });
+    
+    document.querySelectorAll(".plus").forEach(button=>{
 
-document.querySelectorAll(".minus").forEach(button=>{
+   button.onclick = async () => {
 
-    button.onclick=()=>{
+    await Cart.add(button.dataset.id);
 
-        const id=button.dataset.id;
+    loadCart();
 
-        let cart=JSON.parse(localStorage.getItem("cart"))||[];
+};
 
-        const item=cart.find(i=>i.id===id);
+});
 
-        item.quantity--;
+document.querySelectorAll(".minus").forEach(button => {
 
-        if(item.quantity<=0){
+    button.onclick = async () => {
 
-            cart=cart.filter(i=>i.id!==id);
+        const cartObject = await Cart.getAll();
 
-        }
+        const qty = cartObject[button.dataset.id];
 
-        localStorage.setItem("cart",JSON.stringify(cart));
+        if (qty > 1) {
 
-        location.reload();
+    await Cart.update(button.dataset.id, qty - 1);
+
+} else {
+
+    await Cart.remove(button.dataset.id);
+
+}
+
+loadCart();
 
     };
 
