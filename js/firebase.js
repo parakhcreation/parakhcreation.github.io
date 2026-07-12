@@ -18,7 +18,15 @@ import {
 
     doc,
 
-    setDoc
+    setDoc,
+
+    getDoc,
+
+    updateDoc,
+
+    arrayUnion,
+
+    arrayRemove
 
 }
 

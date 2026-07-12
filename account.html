@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>My Account | Parakh</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+
+background:#F8F0E2;
+
+font-family:Inter,sans-serif;
+
+}
+
+.card{
+
+background:white;
+
+max-width:500px;
+
+margin:80px auto;
+
+padding:50px;
+
+border-radius:18px;
+
+box-shadow:0 12px 40px rgba(0,0,0,.08);
+
+}
+
+h1{
+
+font-family:"Cormorant Garamond",serif;
+
+font-size:44px;
+
+margin-bottom:30px;
+
+color:#063C3D;
+
+}
+
+.label{
+
+font-size:13px;
+
+color:#777;
+
+margin-top:18px;
+
+}
+
+.value{
+
+font-size:18px;
+
+margin-top:4px;
+
+font-weight:500;
+
+}
+
+button{
+
+margin-top:35px;
+
+width:100%;
+
+padding:14px;
+
+background:#7A1436;
+
+color:white;
+
+border:none;
+
+border-radius:10px;
+
+cursor:pointer;
+
+font-size:15px;
+
+}
+
+button:hover{
+
+background:#5f0f2b;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<h1>My Account</h1>
+
+<div class="label">Name</div>
+
+<div class="value" id="accountName">Loading...</div>
+
+<div class="label">Email</div>
+
+<div class="value" id="accountEmail">Loading...</div>
+
+<button id="logoutBtn">
+
+Logout
+
+</button>
+
+</div>
+
+<script type="module" src="js/customerAuth.js"></script>
+
+</body>
+
+</html>

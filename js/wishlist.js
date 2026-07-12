@@ -1,12 +1,22 @@
-import { getProducts } from "./firebase.js";
+import { getProducts, auth } from "./firebase.js";
+import { Wishlist } from "./wishlistStore.js";
 
 const grid = document.getElementById("wishlistGrid");
 
 async function loadWishlist() {
 
-    const wishlistIds = getWishlist();
+    
+
+console.log("Current user:", auth.currentUser);
+
+const user = auth.currentUser;
+console.log("UID:", user?.uid);
+    const wishlistIds = await Wishlist.getAll();
+    console.log("Wishlist IDs:", wishlistIds);
 
     const products = await getProducts();
+    
+    console.log("Products:", products);
 
     const wishlistProducts = products.filter(
 
@@ -82,9 +92,9 @@ async function loadWishlist() {
 
 }
 
-window.removeItem = function(id){
+window.removeItem = async function(id){
 
-    removeFromWishlist(id);
+    await Wishlist.remove(id);
 
     loadWishlist();
 

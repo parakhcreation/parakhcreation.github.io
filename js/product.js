@@ -1,4 +1,5 @@
 import { getProducts } from "./firebase.js";
+import { Wishlist } from "./wishlistStore.js";
 
 const params = new URLSearchParams(window.location.search);
 const productId = params.get("id");
@@ -49,11 +50,21 @@ async function loadProduct() {
             
     wishlistButton.textContent =
 
-    isWishlisted(product.id)
+    await Wishlist.has(product.id)
 
     ? "❤ Remove from Wishlist"
 
     : "♡ Add to Wishlist";
+    
+    wishlistButton.onclick = async () => {
+
+    const added = await Wishlist.toggle(product.id);
+
+    wishlistButton.textContent = added
+        ? "❤ Remove from Wishlist"
+        : "♡ Add to Wishlist";
+
+};
             
             const related = products
     .filter(p =>
@@ -134,25 +145,4 @@ document.getElementById("viewCart").onclick = () => {
 
 };
 
-/* ============================
-   Wishlist
-============================ */
-
-wishlistButton.onclick = () => {
-
-    const id = new URLSearchParams(
-
-        window.location.search
-
-    ).get("id");
-
-    const added = toggleWishlist(id);
-
-    wishlistButton.textContent = added
-
-        ? "❤ Remove from Wishlist"
-
-        : "♡ Add to Wishlist";
-
-};
 
