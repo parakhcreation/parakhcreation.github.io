@@ -35,7 +35,7 @@ function render() {
     <article class="card" data-id="${p.id}">
       <div class="card-media">
         <span class="card-tag">${p.category === "saree" ? "Saree" : "Suit Set"}</span>
-        <img src="${p.image}" alt="${p.name}" loading="lazy">
+        <img src="${p.thumbnail}" alt="${p.name}" loading="lazy">
         <div class="card-quick">Tap for details &amp; enquiry</div>
       </div>
       <div class="card-body">
@@ -104,7 +104,7 @@ const modalCall = document.getElementById("modalCall");
 function openModal(id) {
   const p = PRODUCTS.find((x) => x.id === id);
   if (!p) return;
-  modalImg.src = p.image;
+  modalImg.src = p.thumbnail;
   modalImg.alt = p.name;
   modalCat.textContent = p.category === "saree" ? "Saree" : "Suit Set";
   modalName.textContent = p.name;

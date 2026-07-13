@@ -191,6 +191,41 @@ class="form-select">
 
 <div class="col-md-6 mb-3">
 
+    <label>Main Product Image</label>
+
+    <input
+        type="file"
+        id="productImage"
+        class="form-control"
+        accept="image/*">
+        
+        <img
+    id="imagePreview"
+    src=""
+    class="img-fluid rounded border mt-3 d-none"
+    style="
+        max-height:250px;
+        max-width:100%;
+        object-fit:contain;
+    ">
+
+<div class="mt-2">
+
+    <button
+        type="button"
+        id="removeImageBtn"
+        class="btn btn-outline-danger btn-sm d-none">
+
+        Remove Image
+
+    </button>
+
+</div>
+
+</div>
+
+<div class="col-md-6 mb-3">
+
 <label>Fabric</label>
 
 <input
@@ -240,6 +275,8 @@ class="form-control">
 <input
 id="collection"
 class="form-control">
+
+
 
 </div>
 

@@ -32,6 +32,10 @@ import {
 
 from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
+import {
+    getStorage
+} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-storage.js";
+
 const firebaseConfig = {
     apiKey: "AIzaSyA8kJk3IlZvtbgdGSXjEUeQyvctYDtZpRA",
     authDomain: "parakh-creation-website.firebaseapp.com",
@@ -45,6 +49,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
+const storage = getStorage(app);
 const auth = getAuth(app);
 
 console.log("✅ Firebase Connected Successfully!");
@@ -71,5 +76,6 @@ async function getProducts() {
 export {
     db,
     auth,
+    storage,
     getProducts
 };

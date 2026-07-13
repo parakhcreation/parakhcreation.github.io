@@ -35,7 +35,10 @@ if (!currentProduct) {
 
 }
 
-    image.src = currentProduct.image;
+    image.src =
+    currentProduct.thumbnail ||
+    currentProduct.image ||
+    "";
     image.alt = currentProduct.name;
 
     name.textContent = currentProduct.name;
@@ -89,7 +92,7 @@ related.forEach(item => {
          onclick="window.location='product.html?id=${item.id}'"
          style="cursor:pointer">
 
-        <img src="${item.image}">
+        <img src="${item.thumbnail || item.image || ""}">
 
         <h3>${item.name}</h3>
 
