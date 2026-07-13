@@ -73,7 +73,7 @@ if (loginForm) {
 
             }
 
-            window.location.href = "index.html";
+            window.location.href = "dashboard.html";
 
         }
 
@@ -84,6 +84,62 @@ if (loginForm) {
             error.textContent = err.message;
 
         }
+
+    });
+
+}
+
+export async function requireAdmin() {
+
+    return new Promise((resolve) => {
+
+        onAuthStateChanged(auth, async (user) => {
+
+            if (!user) {
+
+                window.location.href = "login.html";
+                return;
+
+            }
+
+            const snap = await getDoc(
+                doc(db, "users", user.uid)
+            );
+
+            if (!snap.exists()) {
+
+                await signOut(auth);
+
+                window.location.href = "login.html";
+
+                return;
+
+            }
+
+            const data = snap.data();
+
+            const allowedRoles = [
+                "super-admin",
+                "admin",
+                "staff"
+            ];
+
+            if (
+                !data.active ||
+                !allowedRoles.includes(data.role)
+            ) {
+
+                await signOut(auth);
+
+                window.location.href = "login.html";
+
+                return;
+
+            }
+
+            resolve(data);
+
+        });
 
     });
 

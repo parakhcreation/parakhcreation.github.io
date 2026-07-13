@@ -48,7 +48,10 @@ console.log("UID:", user?.uid);
 
             <div class="card-media">
 
-                <img src="${product.image}"
+                <img
+    src="${product.thumbnail}"
+    alt="${product.name}"
+    onerror="this.src='https://placehold.co/300x400?text=No+Image'">
 
                      alt="${product.name}">
 

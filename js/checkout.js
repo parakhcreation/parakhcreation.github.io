@@ -134,7 +134,7 @@ Object.entries(cartObject).forEach(([id, quantity]) => {
 
         <img
             class="summaryImage"
-            src="${product.image}"
+            src="${product.thumbnail}"
         >
 
         <div class="summaryInfo">

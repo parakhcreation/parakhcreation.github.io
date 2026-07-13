@@ -1,5 +1,6 @@
 import { getNextProductId } from "./productService.js";
 import { getCategories } from "./categoryService.js";
+import { requireAdmin } from "./auth.js";
 import {
     db,
     storage
@@ -22,6 +23,7 @@ import {
     deleteObject
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-storage.js";
 
+await requireAdmin();
 let editingProductId = null;
 const tbody = document.getElementById("productsTable");
 

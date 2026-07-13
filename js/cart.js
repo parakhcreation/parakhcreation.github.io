@@ -47,7 +47,10 @@ console.log("Matched product:", product);
 
         <div class="cart-item">
 
-            <img src="${product.image}">
+            <img
+    src="${product.thumbnail}"
+    alt="${product.name}"
+    onerror="this.src='https://placehold.co/300x400?text=No+Image'">
 
             <div class="cart-details">
 
