@@ -197,6 +197,22 @@ export const Cart = {
 
 },
 
+async clear() {
+
+    const userRef = await getUserDoc();
+
+    if (!userRef) return;
+
+    await updateDoc(userRef, {
+
+        cart: {}
+
+    });
+
+    updateCartBadge(0);
+
+},
+
 };
 
 (async()=>{

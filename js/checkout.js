@@ -6,6 +6,12 @@ import { Cart } from "./cartStore.js";
 
 import { getProducts } from "./firebase.js";
 
+import { placeOrder } from "./orderStore.js";
+
+console.log("Checkout loaded");
+console.log(placeOrder);
+
+
 const addressContainer =
     document.getElementById("addressContainer");
 
@@ -174,3 +180,161 @@ grandTotalElement.textContent =
 }
 
 loadCheckout();
+
+const placeOrderBtn = document.getElementById("placeOrderBtn");
+
+placeOrderBtn.addEventListener("click", async () => {
+
+    if (!selectedAddress) {
+        alert("Please select a delivery address.");
+        return;
+    }
+
+    const paymentMethod = document.querySelector(
+        'input[name="payment"]:checked'
+    ).value;
+
+    console.log(paymentMethod);     
+    
+
+    try {
+
+        placeOrderBtn.disabled = true;
+        placeOrderBtn.textContent = "Processing...";
+
+        if (paymentMethod === "COD") {
+
+    const order = await placeOrder("COD");
+
+    await Cart.clear();
+
+   window.location.href =
+`order-success.html?id=${order.id}`;
+
+}
+else {
+
+    const response = await fetch(
+    "https://asia-south1-parakh-creation-website.cloudfunctions.net/createRazorpayOrder",
+    {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            amount: Number(
+                grandTotalElement.textContent.replace("₹", "")
+            ),
+        }),
+    }
+);
+
+const data = await response.json();
+
+if (!data.success) {
+
+    throw new Error("Unable to create Razorpay order.");
+
+}
+const options = {
+
+    key: "rzp_test_TD2D4ekj67FYeZ",
+
+    amount: data.order.amount,
+
+    currency: data.order.currency,
+
+    name: "Parakh Creation",
+
+    description: "Order Payment",
+
+    order_id: data.order.id,
+
+    prefill: {
+
+        name: recipientName.value,
+
+        contact: recipientPhone.value,
+
+    },
+
+    theme: {
+
+        color: "#111827",
+
+    },
+
+    handler: async function (response) {
+
+    const verifyResponse = await fetch(
+        "https://asia-south1-parakh-creation-website.cloudfunctions.net/verifyRazorpayPayment",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+
+                orderId: response.razorpay_order_id,
+
+                paymentId: response.razorpay_payment_id,
+
+                signature: response.razorpay_signature,
+
+            }),
+        }
+    );
+
+    const verifyData = await verifyResponse.json();
+
+    if (!verifyData.success) {
+
+        alert("Payment verification failed.");
+
+        return;
+
+    }
+
+    const order = await placeOrder(
+    "razorpay",
+    {
+        paymentId:
+            response.razorpay_payment_id,
+
+        orderId:
+            response.razorpay_order_id,
+
+        signature:
+            response.razorpay_signature,
+    }
+);
+
+    await Cart.clear();
+
+    window.location.href =
+`order-success.html?id=${order.id}`;
+
+},
+
+};
+
+const rzp = new Razorpay(options);
+
+    rzp.open();
+
+}
+
+    } catch (err) {
+
+        console.error(err);
+
+        alert("Unable to place your order.");
+
+    } finally {
+
+        placeOrderBtn.disabled = false;
+        placeOrderBtn.textContent = "PLACE ORDER";
+
+    }
+
+});

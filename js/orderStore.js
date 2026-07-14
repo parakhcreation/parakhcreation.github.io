@@ -1,3 +1,5 @@
+
+console.log("ORDER STORE LOADED");
 import { auth, db } from "./firebase.js";
 
 import { Checkout } from "./checkoutStore.js";
@@ -8,12 +10,14 @@ import {
     setDoc,
     updateDoc,
     collection,
+    addDoc,
     runTransaction,
     serverTimestamp,
     query,
     where,
     getDocs
-} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+}
+from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
 async function generateOrderNumber() {
 
@@ -49,5 +53,124 @@ async function generateOrderNumber() {
         return `PAR-${dateString}-${String(last).padStart(6, "0")}`;
 
     });
+
+}
+
+export async function placeOrder(
+    paymentMethod = "COD",
+    paymentData = {}
+) {
+
+    const checkout = await Checkout.prepare();
+
+    const orderNumber = await generateOrderNumber();
+
+    console.log("paymentData =", paymentData);
+    console.log("paymentMethod =", paymentMethod);
+
+    const order = {
+
+        orderNumber,
+
+        userId: auth.currentUser.uid,
+
+        items: checkout.items,
+
+        address: checkout.address,
+
+        profile: checkout.profile,
+
+        subtotal: checkout.subtotal,
+
+        shipping: checkout.shipping,
+
+        discount: checkout.discount,
+
+        grandTotal: checkout.grandTotal,
+
+        paymentMethod,
+
+        paymentStatus:
+            paymentMethod === "COD"
+                ? "Pending"
+                : "Paid",
+
+            razorpayPaymentId:
+    paymentData.paymentId || null,
+
+razorpayOrderId:
+    paymentData.orderId || null,
+
+razorpaySignature:
+    paymentData.signature || null,
+
+paymentTime:
+    paymentMethod === "razorpay"
+        ? serverTimestamp()
+        : null,
+
+        orderStatus: "Pending",
+
+        createdAt: serverTimestamp()
+
+    };
+
+    const orderRef = doc(collection(db, "orders"));
+
+await runTransaction(db, async (transaction) => {
+
+    for (const item of checkout.items) {
+
+        const productRef = doc(
+            db,
+            "products",
+            item.id
+        );
+
+        const productSnap =
+            await transaction.get(productRef);
+
+        if (!productSnap.exists()) {
+
+            throw new Error(
+                `${item.name} not found.`
+            );
+
+        }
+
+        const product =
+            productSnap.data();
+
+        if (product.stock < item.quantity) {
+
+            throw new Error(
+                `Only ${product.stock} ${item.name} left in stock.`
+            );
+
+        }
+
+        transaction.update(productRef, {
+
+            stock:
+                product.stock - item.quantity,
+
+        });
+
+    }
+
+    transaction.set(
+        orderRef,
+        order
+    );
+
+});
+
+return {
+
+    id: orderRef.id,
+
+    ...order,
+
+};
 
 }
