@@ -6,6 +6,48 @@ import {
     updateDoc,
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
+
+function orderBadge(status) {
+
+    const map = {
+
+        "Pending": "warning",
+
+        "Confirmed": "info",
+
+        "Packed": "primary",
+
+        "Shipped": "secondary",
+
+        "Out for Delivery": "dark",
+
+        "Delivered": "success",
+
+        "Cancelled": "danger",
+
+        "Returned": "danger",
+
+    };
+
+    return `<span class="badge bg-${map[status] || "secondary"}">${status}</span>`;
+}
+
+function paymentBadge(status) {
+
+    const map = {
+
+        "Pending": "warning",
+
+        "Paid": "success",
+
+        "Failed": "danger",
+
+        "Refunded": "info",
+
+    };
+
+    return `<span class="badge bg-${map[status] || "secondary"}">${status}</span>`;
+}
 const params =
     new URLSearchParams(window.location.search);
 
@@ -38,90 +80,26 @@ const order =
     orderSnap.data();
     
     
-document.getElementById("orderInfo").innerHTML = `
+document.getElementById("pageTitle").textContent =
+    order.orderNumber;
 
-<div class="row mb-2">
+document.getElementById("summaryTotal").textContent =
+    `₹${order.grandTotal}`;
 
-<div class="col-md-4">
+document.getElementById("paymentBadge").innerHTML =
+    paymentBadge(order.paymentStatus);
 
-<strong>Order Number</strong>
+document.getElementById("orderBadge").innerHTML =
+    orderBadge(order.orderStatus);
 
-</div>
+document.getElementById("orderDate").textContent =
 
-<div class="col-md-8">
-
-${order.orderNumber}
-
-</div>
-
-</div>
-
-<div class="row mb-2">
-
-<div class="col-md-4">
-
-<strong>Payment Method</strong>
-
-</div>
-
-<div class="col-md-8">
-
-${order.paymentMethod}
-
-</div>
-
-</div>
-
-<div class="row mb-2">
-
-<div class="col-md-4">
-
-<strong>Payment Status</strong>
-
-</div>
-
-<div class="col-md-8">
-
-${order.paymentStatus}
-
-</div>
-
-</div>
-
-<div class="row mb-2">
-
-<div class="col-md-4">
-
-<strong>Order Status</strong>
-
-</div>
-
-<div class="col-md-8">
-
-${order.orderStatus}
-
-</div>
-
-</div>
-
-<div class="row">
-
-<div class="col-md-4">
-
-<strong>Total</strong>
-
-</div>
-
-<div class="col-md-8">
-
-₹${order.grandTotal}
-
-</div>
-
-</div>
-
-`;
+    order.createdAt
+        ? order.createdAt.toDate().toLocaleString()
+        : "-";
 document.getElementById("customerInfo").innerHTML = `
+
+<div class="mb-2">
 
 <strong>
 
@@ -131,67 +109,270 @@ ${order.profile?.lastName || ""}
 
 </strong>
 
-<br>
+</div>
 
-${order.profile?.phone || "-"}
+<div>
 
-<br>
+📞 ${order.profile?.phone || "-"}
+
+</div>
+
+<div class="text-muted small mt-2">
 
 ${order.userId}
+
+</div>
 
 `;
 
 document.getElementById("addressInfo").innerHTML = `
 
-${order.address.addressLine1}<br>
+<div>
 
-${order.address.addressLine2 || ""}<br>
+${order.address.addressLine1}
+
+</div>
+
+<div>
+
+${order.address.addressLine2 || ""}
+
+</div>
+
+<div>
 
 ${order.address.city},
 
 ${order.address.state}
 
+</div>
+
+<div>
+
 ${order.address.pincode}
 
-`;
+</div>
 
+`;
+const paymentInfo =
+    document.getElementById("paymentInfo");
+
+paymentInfo.innerHTML = `
+
+<div class="row mb-3">
+
+    <div class="col-5 text-muted">
+
+        Payment Method
+
+    </div>
+
+    <div class="col-7">
+
+        ${order.paymentMethod.toUpperCase()}
+
+    </div>
+
+</div>
+
+<div class="row mb-3">
+
+    <div class="col-5 text-muted">
+
+        Payment Status
+
+    </div>
+
+    <div class="col-7">
+
+        ${
+            order.paymentStatus === "Paid"
+
+            ? '<span class="badge bg-success">Paid</span>'
+
+            : '<span class="badge bg-warning text-dark">'
+                + order.paymentStatus +
+              '</span>'
+        }
+
+    </div>
+
+</div>
+
+<div class="row mb-3">
+
+    <div class="col-5 text-muted">
+
+        Razorpay Payment ID
+
+    </div>
+
+    <div class="col-7 small">
+
+        ${order.razorpayPaymentId || "-"}
+
+    </div>
+
+</div>
+
+<div class="row mb-3">
+
+    <div class="col-5 text-muted">
+
+        Razorpay Order ID
+
+    </div>
+
+    <div class="col-7 small">
+
+        ${order.razorpayOrderId || "-"}
+
+    </div>
+
+</div>
+
+<div class="row">
+
+    <div class="col-5 text-muted">
+
+        Payment Time
+
+    </div>
+
+    <div class="col-7">
+
+        ${
+            order.paymentTime
+            ? order.paymentTime.toDate().toLocaleString()
+            : "-"
+        }
+
+    </div>
+
+</div>
+
+`;
 const table =
     document.getElementById("productsTable");
 
+const productsTable =
+    document.getElementById("productsTable");
+
+productsTable.innerHTML = "";
+
 order.items.forEach(item => {
 
-    const tr =
-        document.createElement("tr");
+    productsTable.innerHTML += `
 
-    tr.innerHTML = `
+<div class="card border-0 shadow-sm mb-3">
 
-        <td>
+    <div class="card-body">
 
-            ${item.name}
+        <div class="row align-items-center">
 
-        </td>
+            <div class="col-md-2 text-center">
 
-        <td>
+                <img
 
-            ${item.quantity}
+                    src="${item.thumbnail}"
 
-        </td>
+                    style="width:100px;
+                           height:100px;
+                           object-fit:cover;
+                           border-radius:10px;">
 
-        <td>
+            </div>
 
-            ₹${item.price}
+            <div class="col-md-4">
 
-        </td>
+                <h5 class="mb-2">
 
-        <td>
+                    ${item.name}
 
-            ₹${item.total}
+                </h5>
 
-        </td>
+                <div class="text-muted">
 
-    `;
+                    SKU :
+                    ${item.id}
 
-    table.appendChild(tr);
+                </div>
+
+                <div class="text-muted">
+
+                    ${item.collection}
+
+                    •
+
+                    ${item.fabric}
+
+                </div>
+
+                <div class="text-muted">
+
+                    Colour :
+
+                    ${item.colour}
+
+                </div>
+
+            </div>
+
+            <div class="col-md-2 text-center">
+
+                <small class="text-muted">
+
+                    Quantity
+
+                </small>
+
+                <h5>
+
+                    ${item.quantity}
+
+                </h5>
+
+            </div>
+
+            <div class="col-md-2 text-center">
+
+                <small class="text-muted">
+
+                    Price
+
+                </small>
+
+                <h5>
+
+                    ₹${item.price}
+
+                </h5>
+
+            </div>
+
+            <div class="col-md-2 text-center">
+
+                <small class="text-muted">
+
+                    Total
+
+                </small>
+
+                <h5 class="text-success">
+
+                    ₹${item.total}
+
+                </h5>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+`;
 
 });
 
@@ -215,7 +396,30 @@ statusSelect.value =
     alert(
         "Order updated successfully."
     );
-
+    location.reload();
 });
 
+const paymentStatusSelect =
+    document.getElementById("paymentStatusSelect");
 
+paymentStatusSelect.value =
+    order.paymentStatus;
+
+document
+    .getElementById("updatePaymentBtn")
+    .addEventListener("click", async () => {
+
+        await updateDoc(orderRef, {
+
+            paymentStatus:
+                paymentStatusSelect.value,
+
+        });
+
+        alert(
+            "Payment status updated successfully."
+        );
+
+        location.reload();
+
+    });
