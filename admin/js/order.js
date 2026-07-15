@@ -4,6 +4,7 @@ import {
     doc,
     getDoc,
     updateDoc,
+    serverTimestamp
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
 
@@ -382,21 +383,44 @@ const statusSelect =
 statusSelect.value =
     order.orderStatus;
     
-    document
+  document
 .getElementById("updateBtn")
 .addEventListener("click", async () => {
 
+    const newStatus = statusSelect.value;
+
+    const history = [...(order.statusHistory || [])];
+
+   const lastStatus =
+    history.length > 0
+        ? history[history.length - 1].status
+        : null;
+
+if (lastStatus !== newStatus) {
+
+    history.push({
+
+    status: newStatus,
+
+    time: new Date()
+
+});
+
+}
     await updateDoc(orderRef, {
 
-        orderStatus:
-            statusSelect.value,
+        orderStatus: newStatus,
+
+        statusHistory: history
 
     });
 
     alert(
         "Order updated successfully."
     );
+
     location.reload();
+
 });
 
 const paymentStatusSelect =

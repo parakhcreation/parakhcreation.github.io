@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Order Details | Parakh</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    background:#f8f6f2;
+    font-family:Manrope,sans-serif;
+    color:#222;
+
+}
+
+.container{
+
+    width:min(1200px,94%);
+    margin:auto;
+    padding:40px 0 80px;
+
+}
+
+.backLink{
+
+    display:inline-block;
+    margin-bottom:25px;
+    text-decoration:none;
+    color:#8c1d40;
+    font-weight:600;
+
+}
+
+.pageTitle{
+
+    font-family:Marcellus,serif;
+    font-size:42px;
+    margin-bottom:35px;
+
+}
+
+.card{
+
+    background:white;
+    border-radius:18px;
+    padding:28px;
+    margin-bottom:28px;
+    box-shadow:0 10px 25px rgba(0,0,0,.06);
+
+}
+
+.cardTitle{
+
+    font-size:24px;
+    font-weight:700;
+    margin-bottom:25px;
+
+}
+
+<style>
+
+.product{
+
+    display:flex;
+    gap:25px;
+    margin-bottom:25px;
+
+}
+
+.product img{
+
+    width:140px;
+    height:180px;
+    object-fit:cover;
+    border-radius:12px;
+
+}
+
+.productInfo{
+
+    flex:1;
+
+}
+
+.productInfo h3{
+
+    margin-bottom:12px;
+
+}
+
+.infoGrid{
+
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+
+}
+
+.infoItem{
+
+    margin-bottom:18px;
+
+}
+
+.label{
+
+    color:#777;
+    font-size:14px;
+
+}
+
+.value{
+
+    font-size:17px;
+    font-weight:600;
+    margin-top:6px;
+
+}
+
+.priceRow{
+
+    display:flex;
+    justify-content:space-between;
+    margin:16px 0;
+
+}
+
+.grandTotal{
+
+    font-size:22px;
+    font-weight:700;
+    color:#8c1d40;
+
+}
+
+.trackBtn{
+
+    width:100%;
+    margin-top:30px;
+    padding:18px;
+    border:none;
+    border-radius:12px;
+    background:#8c1d40;
+    color:white;
+    font-size:17px;
+    cursor:pointer;
+
+}
+
+.trackBtn:hover{
+
+    background:#6f1633;
+
+}
+
+.loading{
+
+    text-align:center;
+    font-size:18px;
+    padding:80px 0;
+
+}
+
+@media(max-width:850px){
+
+.product{
+
+    flex-direction:column;
+
+}
+
+.infoGrid{
+
+    grid-template-columns:1fr;
+
+}
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+<a
+href="my-orders.html"
+class="backLink">
+
+← Back to My Orders
+
+</a>
+
+<h1 class="pageTitle">
+
+Order Details
+
+</h1>
+
+<div
+id="loadingState"
+class="loading">
+
+Loading order...
+
+</div>
+
+<div
+id="orderContent"
+style="display:none;">
+
+<!-- PRODUCTS -->
+
+<div class="card">
+
+<div class="cardTitle">
+
+Products
+
+</div>
+
+<div id="productsContainer">
+
+<!-- Loaded from JS -->
+
+</div>
+
+</div>
+
+<!-- ORDER SUMMARY -->
+
+<div class="card">
+
+<div class="cardTitle">
+
+Order Summary
+
+</div>
+
+<div class="infoGrid">
+
+<div class="infoItem">
+
+<div class="label">
+
+Order Number
+
+</div>
+
+<div
+class="value"
+id="orderNumber">
+
+-
+
+</div>
+
+</div>
+
+<div class="infoItem">
+
+<div class="label">
+
+Order Date
+
+</div>
+
+<div
+class="value"
+id="orderDate">
+
+-
+
+</div>
+
+</div>
+
+<div class="infoItem">
+
+<div class="label">
+
+Payment Method
+
+</div>
+
+<div
+class="value"
+id="paymentMethod">
+
+-
+
+</div>
+
+</div>
+
+<div class="infoItem">
+
+<div class="label">
+
+Payment Status
+
+</div>
+
+<div
+class="value"
+id="paymentStatus">
+
+-
+
+</div>
+
+</div>
+
+<div class="infoItem">
+
+<div class="label">
+
+Order Status
+
+</div>
+
+<div
+class="value"
+id="orderStatus">
+
+-
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- DELIVERY ADDRESS -->
+
+<div class="card">
+
+<div class="cardTitle">
+
+Delivery Address
+
+</div>
+
+<div id="deliveryAddress">
+
+</div>
+
+</div>
+
+<!-- PRICE DETAILS -->
+
+<div class="card">
+
+<div class="cardTitle">
+
+Price Details
+
+</div>
+
+<div class="priceRow">
+
+<span>
+
+Subtotal
+
+</span>
+
+<span id="subtotal">
+
+₹0
+
+</span>
+
+</div>
+
+<div class="priceRow">
+
+<span>
+
+Shipping
+
+</span>
+
+<span id="shipping">
+
+FREE
+
+</span>
+
+</div>
+
+<div class="priceRow">
+
+<span>
+
+Discount
+
+</span>
+
+<span id="discount">
+
+₹0
+
+</span>
+
+</div>
+
+<hr style="margin:20px 0;">
+
+<div
+class="priceRow grandTotal">
+
+<span>
+
+Grand Total
+
+</span>
+
+<span id="grandTotal">
+
+₹0
+
+</span>
+
+</div>
+
+<button
+class="trackBtn"
+id="trackOrderBtn">
+
+Track Order
+
+</button>
+
+</div>
+
+</div>
+
+<script
+type="module"
+src="js/order-details.js">
+
+</script>
+
+</body>
+
+</html>

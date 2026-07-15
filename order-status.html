@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Track Order | Parakh</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    background:#f8f6f2;
+    font-family:Manrope,sans-serif;
+
+}
+
+.container{
+
+    width:min(900px,92%);
+    margin:auto;
+    padding:40px 0 80px;
+
+}
+
+.backLink{
+
+    display:inline-block;
+    margin-bottom:20px;
+    text-decoration:none;
+    color:#8c1d40;
+    font-weight:600;
+
+}
+
+.pageTitle{
+
+    font-family:Marcellus,serif;
+    font-size:42px;
+    margin-bottom:35px;
+
+}
+
+.card{
+
+    background:white;
+    border-radius:18px;
+    padding:30px;
+    box-shadow:0 10px 25px rgba(0,0,0,.06);
+
+}
+
+.loading{
+
+    text-align:center;
+    padding:70px;
+    font-size:18px;
+
+}
+
+.timeline{
+
+    margin-top:30px;
+
+}
+
+.timeline-item{
+
+    display:flex;
+    gap:20px;
+    position:relative;
+    padding-bottom:35px;
+
+}
+
+.timeline-item:last-child{
+
+    padding-bottom:0;
+
+}
+
+.circle{
+
+    width:26px;
+    height:26px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:14px;
+    flex-shrink:0;
+
+}
+
+.completed{
+
+    background:#198754;
+    color:white;
+
+}
+
+.current{
+
+    background:#0d6efd;
+    color:white;
+
+}
+
+.upcoming{
+
+    border:2px solid #ccc;
+    background:white;
+
+}
+
+.line{
+
+    position:absolute;
+    left:12px;
+    top:28px;
+    width:2px;
+    height:40px;
+    background:#ddd;
+
+}
+
+.timeline-item:last-child .line{
+
+    display:none;
+
+}
+
+.step-title{
+
+    font-weight:700;
+    margin-bottom:6px;
+
+}
+
+.step-date{
+
+    color:#777;
+    font-size:14px;
+
+}
+
+.address{
+
+    margin-top:40px;
+
+    padding-top:30px;
+
+    border-top:1px solid #eee;
+
+}
+
+.trackStatus{
+
+    margin-bottom:25px;
+
+    font-size:18px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<a
+href="javascript:history.back()"
+class="backLink">
+
+← Back
+
+</a>
+
+<h1 class="pageTitle">
+
+Track Order
+
+</h1>
+
+<div
+id="loadingState"
+class="loading">
+
+Loading...
+
+</div>
+
+<div
+id="content"
+style="display:none;">
+
+<div class="card">
+
+<div
+class="trackStatus"
+id="currentStatus">
+
+</div>
+
+<div
+class="timeline"
+id="timeline">
+
+</div>
+
+<div
+class="address"
+id="deliveryAddress">
+
+</div>
+
+</div>
+
+</div>
+
+<script
+type="module"
+src="js/order-status.js">
+
+</script>
+
+</body>
+
+</html>

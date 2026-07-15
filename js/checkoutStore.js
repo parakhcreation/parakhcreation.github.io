@@ -7,7 +7,27 @@ export const Checkout = {
 
     async prepare() {
 
-        const cart = await Cart.getAll();
+        let cart;
+
+const buyNow = sessionStorage.getItem("buyNowItem");
+
+if (buyNow) {
+
+    const item = JSON.parse(buyNow);
+
+    cart = {
+
+        [item.id]: item.quantity
+
+    };
+
+}
+
+else {
+
+    cart = await Cart.getAll();
+
+}
 
         const profile = await Profile.get();
 
@@ -26,6 +46,10 @@ export const Checkout = {
                 p => p.id === id
 
             );
+            
+            console.log("Looking for:", id);
+console.log("Found product:", product);
+console.log("Products:", products);
 
             if (!product) continue;
 

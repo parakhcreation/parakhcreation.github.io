@@ -1,3 +1,5 @@
+
+
 import { Profile } from "./profileStore.js";
 
 import { Address } from "./addressStore.js";
@@ -31,6 +33,7 @@ const grandTotalElement =
     document.getElementById("grandTotal");
 
 let selectedAddress = null;
+let selectedAddressId = null;
 
 async function loadCheckout(){
 
@@ -55,13 +58,16 @@ async function loadCheckout(){
         card.className =
             "addressCard";
 
-        if(address.isDefault){
+        if (
+    address.id === selectedAddressId ||
+    (!selectedAddressId && address.isDefault)
+) {
 
-            selectedAddress = address;
+    selectedAddress = address;
 
-            card.classList.add("selected");
+    card.classList.add("selected");
 
-        }
+}
 
         card.innerHTML=`
 
@@ -95,15 +101,17 @@ async function loadCheckout(){
 
         card.onclick=()=>{
 
-            document
-            .querySelectorAll(".addressCard")
-            .forEach(c=>c.classList.remove("selected"));
+    document
+    .querySelectorAll(".addressCard")
+    .forEach(c=>c.classList.remove("selected"));
 
-            card.classList.add("selected");
+    card.classList.add("selected");
 
-            selectedAddress=address;
+    selectedAddress = address;
 
-        };
+    selectedAddressId = address.id;
+
+};
 
         addressContainer.appendChild(card);
 
@@ -113,7 +121,25 @@ async function loadCheckout(){
 console.log("Address =", Address);
 console.log("Cart =", Cart);
 
-const cartObject = await Cart.getAll();
+const buyNowItem = sessionStorage.getItem("buyNowItem");
+
+let cartObject;
+
+if (buyNowItem) {
+
+    const item = JSON.parse(buyNowItem);
+
+    cartObject = {
+
+        [item.id]: item.quantity
+
+    };
+
+} else {
+
+    cartObject = await Cart.getAll();
+
+}
 
 const products = await getProducts();
 
@@ -204,9 +230,21 @@ placeOrderBtn.addEventListener("click", async () => {
 
         if (paymentMethod === "COD") {
 
-    const order = await placeOrder("COD");
+    const order = await placeOrder(
+    "COD",
+    null,
+    selectedAddress
+);
+
+    if (sessionStorage.getItem("buyNowItem")) {
+
+    sessionStorage.removeItem("buyNowItem");
+
+} else {
 
     await Cart.clear();
+
+}
 
    window.location.href =
 `order-success.html?id=${order.id}`;
@@ -298,15 +336,11 @@ const options = {
     const order = await placeOrder(
     "razorpay",
     {
-        paymentId:
-            response.razorpay_payment_id,
-
-        orderId:
-            response.razorpay_order_id,
-
-        signature:
-            response.razorpay_signature,
-    }
+        paymentId: response.razorpay_payment_id,
+        orderId: response.razorpay_order_id,
+        signature: response.razorpay_signature,
+    },
+    selectedAddress
 );
 
     await Cart.clear();
@@ -338,3 +372,109 @@ const rzp = new Razorpay(options);
     }
 
 });
+
+const addBtn =
+document.getElementById("addNewAddress");
+
+const form =
+document.getElementById("newAddressForm");
+
+const cancelBtn =
+document.getElementById("cancelCheckoutAddress");
+
+addBtn.onclick = () => {
+
+    form.style.display = "block";
+
+};
+
+cancelBtn.onclick = () => {
+
+    form.style.display = "none";
+
+};
+
+document.getElementById("saveCheckoutAddress").onclick = async () => {
+
+const saveBtn =
+document.getElementById("saveCheckoutAddress");
+
+saveBtn.disabled = true;
+
+    const address = {
+
+        type: document.getElementById("newAddressType").value,
+
+        addressLine1: document.getElementById("newAddressLine1").value.trim(),
+
+        addressLine2: document.getElementById("newAddressLine2").value.trim(),
+
+        landmark: document.getElementById("newLandmark").value.trim(),
+
+        city: document.getElementById("newCity").value.trim(),
+
+        state: document.getElementById("newState").value.trim(),
+
+        pincode: document.getElementById("newPincode").value.trim(),
+
+        isDefault: document.getElementById("newDefault").checked,
+
+        createdAt: new Date()
+
+    };
+
+    if (
+
+        !address.addressLine1 ||
+
+        !address.city ||
+
+        !address.state ||
+
+        !address.pincode
+
+    ) {
+
+        alert("Please fill all required fields.");
+
+        return;
+
+    }
+
+    try {
+
+    await Address.add(address);
+    
+    const addresses = await Address.getAll();
+
+selectedAddressId = addresses[addresses.length - 1].id;
+
+    await loadCheckout();
+
+    form.style.display = "none";
+    addressContainer.scrollIntoView({
+
+    behavior: "smooth",
+
+    block: "start"
+
+});
+
+    document.getElementById("newAddressType").value = "Home";
+    document.getElementById("newAddressLine1").value = "";
+    document.getElementById("newAddressLine2").value = "";
+    document.getElementById("newLandmark").value = "";
+    document.getElementById("newCity").value = "";
+    document.getElementById("newState").value = "";
+    document.getElementById("newPincode").value = "";
+    document.getElementById("newDefault").checked = false;
+
+    alert("Address saved successfully.");
+
+} finally {
+
+    saveBtn.disabled = false;
+
+}
+
+};

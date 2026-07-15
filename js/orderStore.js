@@ -58,7 +58,8 @@ async function generateOrderNumber() {
 
 export async function placeOrder(
     paymentMethod = "COD",
-    paymentData = {}
+    paymentData = {},
+    selectedAddress = {}
 ) {
 
     const checkout = await Checkout.prepare();
@@ -76,7 +77,7 @@ export async function placeOrder(
 
         items: checkout.items,
 
-        address: checkout.address,
+        address: selectedAddress ?? checkout.address,
 
         profile: checkout.profile,
 
@@ -95,23 +96,30 @@ export async function placeOrder(
                 ? "Pending"
                 : "Paid",
 
-            razorpayPaymentId:
-    paymentData.paymentId || null,
-
-razorpayOrderId:
-    paymentData.orderId || null,
-
-razorpaySignature:
-    paymentData.signature || null,
+            razorpayPaymentId: paymentData?.paymentId || null,
+razorpayOrderId: paymentData?.orderId || null,
+razorpaySignature: paymentData?.signature || null,
 
 paymentTime:
     paymentMethod === "razorpay"
         ? serverTimestamp()
         : null,
 
-        orderStatus: "Pending",
+orderStatus: "Pending",
 
-        createdAt: serverTimestamp()
+statusHistory: [
+
+    {
+
+        status: "Pending",
+
+        time: new Date()
+
+    }
+
+],
+
+createdAt: serverTimestamp()
 
     };
 

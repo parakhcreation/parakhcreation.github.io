@@ -127,3 +127,26 @@ document.getElementById("viewCart").onclick = () => {
 };
 
 
+document.getElementById("buyNow").onclick = () => {
+
+    if (!currentProduct) return;
+
+    sessionStorage.setItem(
+
+        "buyNowItem",
+
+        JSON.stringify({
+
+            id: currentProduct.id,
+
+            quantity: 1
+
+        })
+
+    );
+
+    window.location.href = "checkout.html";
+
+};
+
+

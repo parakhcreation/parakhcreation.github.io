@@ -73,7 +73,11 @@ alert("Profile updated successfully.");
 window.location.href = "index.html";
 
 };
+document.getElementById("myOrdersBtn").onclick = () => {
 
+    window.location.href = "my-orders.html";
+
+};
 document.getElementById("logoutBtn").onclick = async () => {
 
     await signOut(auth);

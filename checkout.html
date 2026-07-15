@@ -366,6 +366,127 @@ id="addNewAddress">
 
 </button>
 
+<div
+id="newAddressForm"
+style="display:none;margin-top:25px;">
+
+    <div class="formGroup">
+
+        <label>Address Type</label>
+
+        <select id="newAddressType">
+
+            <option>Home</option>
+
+            <option>Work</option>
+
+            <option>Other</option>
+
+        </select>
+
+    </div>
+
+    <div class="formGroup">
+
+        <label>Address Line 1</label>
+
+        <input
+        id="newAddressLine1"
+        type="text">
+
+    </div>
+
+    <div class="formGroup">
+
+        <label>Address Line 2</label>
+
+        <input
+        id="newAddressLine2"
+        type="text">
+
+    </div>
+
+    <div class="formGroup">
+
+        <label>Landmark</label>
+
+        <input
+        id="newLandmark"
+        type="text">
+
+    </div>
+
+    <div class="formRow">
+
+        <div class="formGroup">
+
+            <label>City</label>
+
+            <input
+            id="newCity"
+            type="text">
+
+        </div>
+
+        <div class="formGroup">
+
+            <label>State</label>
+
+            <input
+            id="newState"
+            type="text">
+
+        </div>
+
+    </div>
+
+    <div class="formGroup">
+
+        <label>PIN Code</label>
+
+        <input
+        id="newPincode"
+        type="text">
+
+    </div>
+
+    <label
+    style="display:flex;gap:10px;align-items:center;margin-bottom:20px;">
+
+        <input
+        id="newDefault"
+        type="checkbox"
+        style="width:auto;">
+
+        Set as Default
+
+    </label>
+
+    <div
+    style="display:flex;gap:15px;">
+
+        <button
+        id="saveCheckoutAddress"
+        type="button"
+        style="flex:1;">
+
+            Save Address
+
+        </button>
+
+        <button
+        id="cancelCheckoutAddress"
+        type="button"
+        style="flex:1;background:#ddd;color:#222;">
+
+            Cancel
+
+        </button>
+
+    </div>
+
+</div>
+
 </div>
 
 <!-- RECIPIENT DETAILS -->
