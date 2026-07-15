@@ -84,6 +84,22 @@ function createOrderCard(order) {
     const card = document.createElement("div");
 
     card.className = "order-card";
+    
+    const returnStatus =
+
+order.returnRequest?.status || null;
+
+const canReturn =
+
+order.orderStatus === "Delivered" &&
+
+order.returnWindowEnds &&
+
+new Date() <= order.returnWindowEnds.toDate() &&
+
+!returnStatus;
+
+    
 
     card.innerHTML = `
 
@@ -138,19 +154,97 @@ function createOrderCard(order) {
 
     </h2>
 
-    <div class="button-row">
+   <div class="button-row">
 
-        <button
-    class="detailsBtn"
-    data-id="${order.id}">
+    <button
+        class="detailsBtn"
+        data-id="${order.id}">
+        View Details
+    </button>
 
-    View Details
+    ${
+    ["Pending","Confirmed"].includes(order.orderStatus)
+
+    ? `
+
+    <button
+        class="cancelBtn"
+        data-id="${order.id}">
+        Cancel Order
+    </button>
+
+    `
+
+    : order.orderStatus === "Delivered"
+
+?
+
+returnStatus
+
+?
+
+`
+
+<button
+class="trackReturnBtn"
+data-id="${order.id}">
+
+Track Return
 
 </button>
 
-      
+`
 
-    </div>
+:
+
+canReturn
+
+?
+
+`
+
+<button
+class="returnBtn">
+
+Return Product
+
+</button>
+
+`
+
+:
+
+`
+
+<span class="closedText">
+
+Return Window Closed
+
+</span>
+
+`
+
+
+    : order.orderStatus === "Cancelled"
+
+    ? `
+
+    <span class="cancelledText">
+        Order Cancelled
+    </span>
+
+    `
+
+    : `
+
+    <span class="closedText">
+        Cancellation Window Closed
+    </span>
+
+    `
+}
+
+</div>
 
 </div>
 
@@ -162,6 +256,45 @@ card.querySelector(".detailsBtn").addEventListener("click", () => {
         `order-details.html?id=${order.id}`;
 
 });
+
+const cancelBtn = card.querySelector(".cancelBtn");
+
+if (cancelBtn) {
+
+    cancelBtn.addEventListener("click", () => {
+
+        window.location.href =
+            `cancel-order.html?id=${order.id}`;
+
+    });
+
+}
+
+const returnBtn = card.querySelector(".returnBtn");
+
+if (returnBtn) {
+
+    returnBtn.addEventListener("click", () => {
+
+        window.location.href =
+`return-order.html?id=${order.id}`;
+
+    });
+
+}
+
+const trackReturnBtn = card.querySelector(".trackReturnBtn");
+
+if (trackReturnBtn) {
+
+    trackReturnBtn.addEventListener("click", () => {
+
+        window.location.href =
+            `track-return.html?id=${order.id}`;
+
+    });
+
+}
 
     return card;
 

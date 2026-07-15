@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Return Product | Parakh Creation</title>
+
+<link rel="stylesheet"
+href="css/style.css">
+
+</head>
+
+<body>
+
+<div class="cancelContainer">
+
+    <h1>Return Product</h1>
+
+    <!-- Product -->
+    <div id="returnSummary"></div>
+
+    <!-- Reason -->
+
+    <div class="cancelCard">
+
+        <h2>Why are you returning this product?</h2>
+
+        <p class="cancelSubtitle">
+
+            Please choose the reason that best describes your issue.
+
+        </p>
+
+        <div class="reasonList">
+
+            <label>
+
+                <input
+                type="radio"
+                name="returnReason"
+                value="Wrong Size">
+
+                Wrong Size
+
+            </label>
+
+            <label>
+
+                <input
+                type="radio"
+                name="returnReason"
+                value="Wrong Colour">
+
+                Wrong Colour
+
+            </label>
+
+            <label>
+
+                <input
+                type="radio"
+                name="returnReason"
+                value="Wrong Product Received">
+
+                Wrong Product Received
+
+            </label>
+
+            <label>
+
+                <input
+                type="radio"
+                name="returnReason"
+                value="Damaged Product">
+
+                Damaged Product
+
+            </label>
+
+            <label>
+
+                <input
+                type="radio"
+                name="returnReason"
+                value="Defective Product">
+
+                Defective Product
+
+            </label>
+
+            <label>
+
+                <input
+                type="radio"
+                name="returnReason"
+                value="Quality not as expected">
+
+                Quality not as expected
+
+            </label>
+
+            <label>
+
+                <input
+                type="radio"
+                name="returnReason"
+                value="Received late">
+
+                Received late
+
+            </label>
+
+            <label>
+
+                <input
+                type="radio"
+                id="otherReason"
+                name="returnReason"
+                value="Other">
+
+                Other
+
+            </label>
+
+        </div>
+
+        <textarea
+
+            id="remarks"
+
+            placeholder="Please describe your reason..."
+
+        ></textarea>
+
+    </div>
+
+    <!-- Photos -->
+
+    <div class="cancelCard">
+
+        <h2>Upload Photos (Optional)</h2>
+
+        <p class="cancelSubtitle">
+
+            Photos help us process damaged or defective product requests faster.
+
+        </p>
+
+        <input
+
+            type="file"
+
+            id="returnImages"
+
+            multiple
+
+            accept="image/*"
+
+        >
+
+    </div>
+
+    <!-- Refund -->
+
+    <div
+
+        id="refundSection"
+
+        class="cancelCard"
+
+    >
+
+    </div>
+
+    <!-- Submit -->
+
+    <div class="cancelCard">
+
+        <button
+
+            id="submitReturnBtn"
+
+            class="primaryBtn"
+
+        >
+
+            Submit Return Request
+
+        </button>
+
+    </div>
+
+</div>
+
+<script
+type="module"
+src="js/return-order.js">
+
+</script>
+
+</body>
+
+</html>

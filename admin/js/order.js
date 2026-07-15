@@ -383,6 +383,101 @@ const statusSelect =
 statusSelect.value =
     order.orderStatus;
     
+    
+    /* ============================
+   RETURN DETAILS
+============================ */
+
+if (order.returnRequest) {
+
+    document.getElementById("returnCard").style.display = "block";
+
+    document.getElementById("viewReturnBtn").style.display = "inline-block";
+
+    document.getElementById("returnInfo").innerHTML = `
+
+        <div class="row mb-3">
+
+            <div class="col-md-4 fw-semibold">
+
+                Return Status
+
+            </div>
+
+            <div class="col-md-8">
+
+                ${order.returnRequest.status}
+
+            </div>
+
+        </div>
+
+        <div class="row mb-3">
+
+            <div class="col-md-4 fw-semibold">
+
+                Reason
+
+            </div>
+
+            <div class="col-md-8">
+
+                ${order.returnRequest.reason}
+
+            </div>
+
+        </div>
+
+        <div class="row mb-3">
+
+            <div class="col-md-4 fw-semibold">
+
+                Requested On
+
+            </div>
+
+            <div class="col-md-8">
+
+                ${
+                    order.returnRequest.requestedAt
+                        ? order.returnRequest.requestedAt
+                            .toDate()
+                            .toLocaleString("en-IN")
+                        : "-"
+                }
+
+            </div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-md-4 fw-semibold">
+
+                Refund Status
+
+            </div>
+
+            <div class="col-md-8">
+
+                ${order.returnRequest.refundStatus}
+
+            </div>
+
+        </div>
+
+    `;
+
+    document
+        .getElementById("viewReturnBtn")
+        .addEventListener("click", () => {
+
+            window.location.href =
+                `return.html?id=${orderId}`;
+
+        });
+
+}
   document
 .getElementById("updateBtn")
 .addEventListener("click", async () => {
@@ -407,13 +502,38 @@ if (lastStatus !== newStatus) {
 });
 
 }
-    await updateDoc(orderRef, {
+    const updateData = {
 
-        orderStatus: newStatus,
+    orderStatus: newStatus,
 
-        statusHistory: history
+    statusHistory: history
 
-    });
+};
+
+// First time an order becomes Delivered
+if (
+
+    newStatus === "Delivered" &&
+
+    !order.deliveredAt
+
+) {
+
+    const deliveredAt = new Date();
+
+    const returnWindowEnds = new Date(deliveredAt);
+
+    returnWindowEnds.setDate(
+        returnWindowEnds.getDate() + 7
+    );
+
+    updateData.deliveredAt = deliveredAt;
+
+    updateData.returnWindowEnds = returnWindowEnds;
+
+}
+
+await updateDoc(orderRef, updateData);
 
     alert(
         "Order updated successfully."
@@ -422,7 +542,108 @@ if (lastStatus !== newStatus) {
     location.reload();
 
 });
+if (
 
+    order.orderStatus === "Cancelled" &&
+
+    order.cancellation
+
+) {
+
+    document
+        .getElementById("cancellationCard")
+        .style.display = "block";
+
+    document
+        .getElementById("cancellationInfo")
+        .innerHTML = `
+
+<div class="row mb-3">
+
+    <div class="col-4 text-muted">
+
+        Reason
+
+    </div>
+
+    <div class="col-8">
+
+        ${order.cancellation.reason}
+
+    </div>
+
+</div>
+
+${
+order.cancellation.remarks
+
+?
+
+`
+
+<div class="row mb-3">
+
+    <div class="col-4 text-muted">
+
+        Remarks
+
+    </div>
+
+    <div class="col-8">
+
+        ${order.cancellation.remarks}
+
+    </div>
+
+</div>
+
+`
+
+: ""
+
+}
+
+<div class="row mb-3">
+
+    <div class="col-4 text-muted">
+
+        Cancelled By
+
+    </div>
+
+    <div class="col-8">
+
+        ${order.cancellation.cancelledBy}
+
+    </div>
+
+</div>
+
+<div class="row">
+
+    <div class="col-4 text-muted">
+
+        Cancelled On
+
+    </div>
+
+    <div class="col-8">
+
+        ${
+            order.cancellation.cancelledAt
+            ? order.cancellation.cancelledAt
+                .toDate()
+                .toLocaleString()
+            : "-"
+        }
+
+    </div>
+
+</div>
+
+`;
+
+}
 const paymentStatusSelect =
     document.getElementById("paymentStatusSelect");
 

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Cancel Order | Parakh Creation</title>
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<div class="cancelContainer">
+
+    <h1>Cancel Order</h1>
+
+    <!-- Product Information -->
+    <div id="orderSummary"></div>
+
+    <!-- Cancellation -->
+    <div class="cancelCard">
+
+        <h2>Why are you cancelling?</h2>
+
+        <p class="cancelSubtitle">
+            Your feedback helps us improve our products and services.
+        </p>
+
+        <div class="reasonList">
+
+            <label>
+                <input type="radio" name="reason" value="Ordered by mistake">
+                Ordered by mistake
+            </label>
+
+            <label>
+                <input type="radio" name="reason" value="Want a different product">
+                Want a different product
+            </label>
+
+            <label>
+                <input type="radio" name="reason" value="Want a different colour">
+                Want a different colour
+            </label>
+
+            <label>
+                <input type="radio" name="reason" value="Want a different fabric">
+                Want a different fabric
+            </label>
+
+            <label>
+                <input type="radio" name="reason" value="Found a better price elsewhere">
+                Found a better price elsewhere
+            </label>
+
+            <label>
+                <input type="radio" name="reason" value="Delivery is taking too long">
+                Delivery is taking too long
+            </label>
+
+            <label>
+                <input type="radio" name="reason" value="Shipping address needs to change">
+                Shipping address needs to change
+            </label>
+
+            <label>
+                <input type="radio" name="reason" value="No longer required">
+                No longer required
+            </label>
+
+            <label>
+                <input type="radio" id="otherReason" name="reason" value="Other">
+                Other
+            </label>
+
+        </div>
+
+        <textarea
+            id="remarks"
+            placeholder="Please tell us your reason..."
+        ></textarea>
+
+    </div>
+
+    <div class="cancelCard">
+
+        <h3>Cancellation Policy</h3>
+
+        <p>
+            Cancellation is available only before your order has been packed.
+            Once packed, cancellation is no longer available.
+        </p>
+
+        <button id="cancelOrderBtn" class="primaryBtn">
+            Cancel Order
+        </button>
+
+    </div>
+
+</div>
+
+<script type="module" src="js/cancel-order.js"></script>
+
+</body>
+</html>

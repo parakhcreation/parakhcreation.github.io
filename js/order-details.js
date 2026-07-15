@@ -106,6 +106,8 @@ function populateOrder(order){
 
     document.getElementById("orderStatus").textContent =
         order.orderStatus;
+        
+  
 
     // ==========================
     // Price Details

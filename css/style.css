@@ -1047,4 +1047,327 @@ transition:.3s;
 
 }
 
+/*=================================================
+CANCEL ORDER PAGE
+=================================================*/
 
+.cancelContainer{
+
+    max-width:950px;
+
+    margin:50px auto;
+
+    padding:0 20px;
+
+}
+
+.cancelContainer h1{
+
+    font-family:var(--font-display);
+
+    color:var(--teal);
+
+    font-size:42px;
+
+    margin-bottom:30px;
+
+}
+
+.cancelCard{
+
+    background:#fff;
+
+    border-radius:18px;
+
+    padding:28px;
+
+    margin-bottom:24px;
+
+    box-shadow:0 12px 30px rgba(0,0,0,.08);
+
+}
+
+.cancelProduct{
+
+    display:flex;
+
+    align-items:flex-start;
+
+    gap:24px;
+
+}
+
+.cancelProduct img{
+
+    width:130px;
+
+    height:170px;
+
+    object-fit:cover;
+
+    border-radius:12px;
+
+    border:1px solid #ddd;
+
+    flex-shrink:0;
+
+}
+
+.cancelInfo{
+
+    flex:1;
+
+}
+
+.cancelInfo h2{
+
+    font-family:var(--font-display);
+
+    color:var(--teal);
+
+    font-size:30px;
+
+    margin-bottom:12px;
+
+}
+
+.cancelInfo p{
+
+    margin:8px 0;
+
+    color:#666;
+
+    font-size:16px;
+
+}
+
+.cancelInfo p:first-of-type{
+
+    color:var(--rani);
+
+    font-size:26px;
+
+    font-weight:700;
+
+}
+
+.reasonList{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:14px;
+
+    margin-top:20px;
+
+}
+
+.reasonList label{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    padding:16px 18px;
+
+    border:1px solid #ddd;
+
+    border-radius:12px;
+
+    background:#fff;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.reasonList label:hover{
+
+    border-color:var(--rani);
+
+    background:#fff8fb;
+
+}
+
+.reasonList input{
+
+    transform:scale(1.2);
+
+}
+
+#remarks{
+
+    display:none;
+
+    width:100%;
+
+    margin-top:20px;
+
+    min-height:120px;
+
+    border:1px solid #ddd;
+
+    border-radius:12px;
+
+    padding:16px;
+
+    resize:vertical;
+
+    font-size:15px;
+
+}
+
+#cancelOrderBtn{
+
+    width:100%;
+
+    margin-top:30px;
+
+    background:var(--rani);
+
+    color:#fff;
+
+    border:none;
+
+    border-radius:12px;
+
+    padding:18px;
+
+    font-size:18px;
+
+    font-weight:600;
+
+    transition:.25s;
+
+}
+
+#cancelOrderBtn:hover{
+
+    background:var(--rani-2);
+
+}
+
+@media(max-width:700px){
+
+.cancelProduct{
+
+    flex-direction:column;
+
+}
+
+.cancelProduct img{
+
+    width:170px;
+
+    height:auto;
+
+}
+
+.cancelContainer h1{
+
+    font-size:34px;
+
+}
+
+}
+
+
+/* ==============================
+   RETURN TRACKING TIMELINE
+============================== */
+
+.returnTimeline{
+
+    margin-top:25px;
+
+}
+
+.timelineRow{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
+    padding:14px 0;
+
+    position:relative;
+
+}
+
+.timelineRow:not(:last-child)::after{
+
+    content:"";
+
+    position:absolute;
+
+    left:11px;
+
+    top:34px;
+
+    width:2px;
+
+    height:30px;
+
+    background:#ddd;
+
+}
+
+.timelineIcon{
+
+    width:24px;
+
+    text-align:center;
+
+    font-size:18px;
+
+    font-weight:bold;
+
+}
+
+.timelineText{
+
+    font-size:16px;
+
+    font-weight:500;
+
+}
+
+.completed .timelineIcon{
+
+    color:#2e7d32;
+
+}
+
+.completed .timelineText{
+
+    color:#2e7d32;
+
+}
+
+.current .timelineIcon{
+
+    color:#1976d2;
+
+    font-size:22px;
+
+}
+
+.current .timelineText{
+
+    color:#1976d2;
+
+    font-weight:700;
+
+}
+
+.pending{
+
+    color:#999;
+
+}
