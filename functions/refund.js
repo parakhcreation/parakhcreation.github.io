@@ -12,6 +12,7 @@ const db = admin.firestore();
 
 const razorpayKeyId = defineSecret("RAZORPAY_KEY_ID");
 const razorpayKeySecret = defineSecret("RAZORPAY_KEY_SECRET");
+const {restoreInventory} = require("./inventory");
 
 exports.createRazorpayRefund = onRequest(
     {
@@ -45,7 +46,13 @@ exports.createRazorpayRefund = onRequest(
           });
         }
 
-        const order = snap.data();
+        const order = {
+
+          id: snap.id,
+
+          ...snap.data(),
+
+        };
 
         if (!order.razorpayPaymentId) {
           return res.status(400).json({
@@ -95,6 +102,8 @@ exports.createRazorpayRefund = onRequest(
           },
 
         });
+
+        await restoreInventory(order);
 
         return res.json({
 

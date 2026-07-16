@@ -1,6 +1,7 @@
 const {createRazorpayOrder} = require("./razorpay");
 const {verifyRazorpayPayment} = require("./verifyPayment");
 
+
 exports.createRazorpayOrder = createRazorpayOrder;
 exports.verifyRazorpayPayment = verifyRazorpayPayment;
 
@@ -10,3 +11,10 @@ require("./refund");
 
 exports.createRazorpayRefund =
 createRazorpayRefund;
+
+
+const {restoreInventoryOnly} =
+require("./restoreInventoryOnly");
+
+exports.restoreInventoryOnly =
+restoreInventoryOnly;

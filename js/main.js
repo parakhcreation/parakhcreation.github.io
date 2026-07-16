@@ -6,7 +6,7 @@ const STORE_PHONES = {
   creation: "919331028448",
   collection: "919883351584",
 };
-let PRODUCTS = [];
+export let PRODUCTS = [];
 
 let currentFilter = "all";
 let visibleCount = 12;
@@ -16,37 +16,64 @@ const grid = document.getElementById("productGrid");
 const filterCount = document.getElementById("filterCount");
 const loadMoreBtn = document.getElementById("loadMoreBtn");
 
-function formatPrice(p) {
+export function formatPrice(p) {
   if (p === null || p === undefined) return "Price on request";
   return "₹" + p.toLocaleString("en-IN");
 }
 
-function getFiltered() {
+export function getFiltered() {
   if (currentFilter === "all") return PRODUCTS;
   return PRODUCTS.filter((p) => p.category === currentFilter);
 }
 
-function render() {
+
+export function createProductCard(p) {
+
+    return `
+    <article class="card" data-id="${p.id}">
+      <div class="card-media">
+        <span class="card-tag">
+            ${p.category === "saree" ? "Saree" : "Suit Set"}
+        </span>
+
+        <img
+            src="${p.thumbnail}"
+            alt="${p.name}"
+            loading="lazy">
+
+        <div class="card-quick">
+            Tap for details &amp; enquiry
+        </div>
+      </div>
+
+      <div class="card-body">
+
+        <div class="cname">
+            ${p.name}
+        </div>
+
+        <div class="cmeta">
+
+          <span class="cprice">
+            ${formatPrice(p.price)}
+          </span>
+
+          <span class="ccode">
+            ${p.id}
+          </span>
+
+        </div>
+
+      </div>
+
+    </article>
+    `;
+}
+export function render() {
   const filtered = getFiltered();
   const slice = filtered.slice(0, visibleCount);
   grid.innerHTML = slice
-    .map(
-      (p) => `
-    <article class="card" data-id="${p.id}">
-      <div class="card-media">
-        <span class="card-tag">${p.category === "saree" ? "Saree" : "Suit Set"}</span>
-        <img src="${p.thumbnail}" alt="${p.name}" loading="lazy">
-        <div class="card-quick">Tap for details &amp; enquiry</div>
-      </div>
-      <div class="card-body">
-        <div class="cname">${p.name}</div>
-        <div class="cmeta">
-          <span class="cprice">${formatPrice(p.price)}</span>
-          <span class="ccode">${p.id}</span>
-        </div>
-      </div>
-    </article>`
-    )
+    .map(createProductCard)
     .join("");
 
   filterCount.textContent = `Showing ${slice.length} of ${filtered.length} pieces`;
@@ -221,6 +248,41 @@ if (savedScroll !== null) {
         });
 
         sessionStorage.removeItem("restoreScroll");
+
+    });
+
+}
+
+// ================= SEARCH =================
+
+const searchInput = document.getElementById("searchInput");
+const searchBtn = document.getElementById("searchBtn");
+
+function performSearch() {
+
+    const query = searchInput.value.trim();
+
+    if (!query) return;
+
+    window.location.href =
+        `search.html?q=${encodeURIComponent(query)}`;
+}
+
+if (searchBtn) {
+
+    searchBtn.addEventListener("click", performSearch);
+
+}
+
+if (searchInput) {
+
+    searchInput.addEventListener("keydown", (e) => {
+
+        if (e.key === "Enter") {
+
+            performSearch();
+
+        }
 
     });
 

@@ -233,6 +233,40 @@ showConfirmModal({
 
             );
 
+            const response = await fetch(
+
+    "https://us-central1-parakh-creation-website.cloudfunctions.net/restoreInventoryOnly",
+
+    {
+
+        method: "POST",
+
+        headers: {
+
+            "Content-Type": "application/json",
+
+        },
+
+        body: JSON.stringify({
+
+            orderId,
+
+        }),
+
+    },
+
+);
+
+if (!response.ok) {
+
+    const error = await response.json();
+
+    throw new Error(
+        error.error || "Failed to restore inventory."
+    );
+
+}
+
             window.location.href =
                 `cancel-success.html?id=${orderId}`;
 

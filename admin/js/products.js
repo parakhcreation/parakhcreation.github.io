@@ -220,6 +220,11 @@ document.getElementById("price").value = product.price;
 document.getElementById("stock").value = product.stock;
 document.getElementById("collection").value =
     product.collection || "";
+document.getElementById("occasion").value =
+    (product.occasion || []).join(", ");
+
+document.getElementById("keywords").value =
+    (product.keywords || []).join(", ");
 document.getElementById("description").value =
     product.description || "";
 
@@ -299,6 +304,12 @@ const saveBtn = document.getElementById("saveProductBtn");
 
 saveBtn.addEventListener("click", async () => {
 
+    console.log(
+    "BEFORE PRODUCT OBJECT",
+    document.getElementById("occasion").value,
+    document.getElementById("keywords").value
+);
+
     const product = {
     id: document.getElementById("id").value.trim(),
     name: document.getElementById("name").value.trim(),
@@ -308,10 +319,29 @@ saveBtn.addEventListener("click", async () => {
     price: Number(document.getElementById("price").value),
     stock: Number(document.getElementById("stock").value),
     collection: document.getElementById("collection").value.trim(),
+    occasion:
+    document.getElementById("occasion")
+        .value
+        .split(",")
+        .map(v => v.trim())
+        .filter(Boolean),
+
+keywords:
+    document.getElementById("keywords")
+        .value
+        .split(",")
+        .map(v => v.trim().toLowerCase())
+        .filter(Boolean),
     description: document.getElementById("description").value.trim(),
     available: document.getElementById("available").checked,
     featured: document.getElementById("featured").checked
 };
+
+console.log(
+    "AFTER PRODUCT OBJECT",
+    product.occasion,
+    product.keywords
+);
 
 const imageFile = document.getElementById("productImage").files[0];
 
@@ -349,6 +379,10 @@ if (editingProductId) {
 
 product.updatedAt = serverTimestamp();
 product.displayOrder = 1;
+
+console.log("Occasion:", product.occasion);
+
+console.log("Keywords:", product.keywords);
 
 console.log(product);
 

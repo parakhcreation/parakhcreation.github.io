@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@7.1.0"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Parakh — Creation &amp; Collection | Ethnic Wear, Howrah</title>
+<title>
+Search Results | Parakh Creation
+</title>
 <meta name="description" content="Parakh Creation &amp; Parakh Collection — sarees and suit sets, from two stores in Howrah. Browse the collection and enquire directly on WhatsApp or call.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&family=Noto+Serif+Devanagari:wght@500;600&display=swap" rel="stylesheet">
@@ -90,50 +93,70 @@
   </div>
 </header>
 
-<!-- ============ HERO ============ -->
-<section class="hero" id="top">
-  <div class="container hero-inner">
-    <div class="hero-copy">
-      <span class="eyebrow">Sarees &amp; Suit Sets · Howrah</span>
-      <h1 class="hero-title">
+<section class="search-page">
 
-Premium Ethnic Wear<br>
+    <div class="search-header">
 
-for Every Celebration
+        <div>
 
-</h1>
-      <p class="hero-desc">
+            <h2 id="searchHeading">
+                Search Results
+            </h2>
 
-Discover handpicked sarees, suit sets, lehengas, kurtis and festive wear from Parakh Creation & Collection. Every design is selected for elegance, comfort and timeless style.
+            <p id="searchCount"></p>
 
-</p>
-      <div class="hero-actions">
-        <a href="#collection" class="btn btn-primary">Shop Collection</a>
-        <a href="#contact" class="btn btn-outline">New Arrivals</a>
-      </div>
-      <div class="hero-stats">
-        <div><strong>2</strong><span>Store Locations</span></div>
-        <div><strong>20+</strong><span>Pieces on Display</span></div>
-        <div><strong>Saree · Suit</strong><span>Two Collections</span></div>
-      </div>
+        </div>
+
+        <div>
+
+            <select id="sortSelect">
+
+                <option value="relevance">
+                    Relevance
+                </option>
+
+                <option value="priceLow">
+                    Price: Low to High
+                </option>
+
+                <option value="priceHigh">
+                    Price: High to Low
+                </option>
+
+                <option value="name">
+                    Name (A–Z)
+                </option>
+
+            </select>
+
+        </div>
+
     </div>
-    <div class="hero-visual">
-      <div class="hero-grid">
-        <div class="frame">
-    <img src="assets/brand/hero1.jpeg" alt="Luxury Saree">
-</div>
 
-<div class="frame">
-    <img src="assets/brand/hero2.jpeg" alt="Suit Set">
-</div>
+    <div class="search-layout">
 
-<div class="frame">
-    <img src="assets/brand/hero3.jpeg" alt="Festive Wear">
-</div>
-      </div>
-      <div class="hero-badge"><span>Est. locally in</span>Howrah, West Bengal</div>
+        <aside class="filters">
+
+            <h3>Filters</h3>
+
+            <div id="filterContainer">
+
+            </div>
+
+        </aside>
+
+        <main>
+
+            <div
+                id="searchResults"
+                class="search-grid">
+
+            </div>
+
+        </main>
+
     </div>
-  </div>
+
 </section>
 <section class="featured-collections">
 
@@ -360,6 +383,11 @@ Every collection at Parakh is carefully curated to bring together timeless craft
 <script type="module" src="js/cartStore.js"></script>
 <script type="module" src="js/profileStore.js"></script>
 <script type="module" src="js/main.js"></script>
+
+<script
+type="module"
+src="js/search.js">
+</script>
 <script type="module" src="js/customerAuth.js"></script>
 <script>
 
