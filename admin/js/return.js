@@ -839,25 +839,57 @@ async function updateReturnStatus(order) {
 
 async function initiateRefund(order) {
 
-    await updateDoc(
+    const button = document.getElementById("initiateRefundBtn");
 
-        doc(db, "orders", order.id),
+    button.disabled = true;
+    button.textContent = "Processing Refund...";
 
-        {
+    try {
 
-              "refund.status": "Initiated",
+        const response = await fetch(
 
-    "refund.initiatedAt": new Date(),
+            "https://us-central1-parakh-creation-website.cloudfunctions.net/createRazorpayRefund",
 
-    "returnRequest.status": "Refund Initiated"
+            {
+
+                method: "POST",
+
+                headers: {
+
+                    "Content-Type": "application/json"
+
+                },
+
+                body: JSON.stringify({
+
+                    orderId: order.id
+
+                })
+
+            }
+
+        );
+
+        const result = await response.json();
+
+        if (!response.ok) {
+
+            throw new Error(result.error || "Refund failed.");
 
         }
 
-    );
+        location.reload();
 
-    alert("Refund Initiated.");
+    }
 
-    location.reload();
+    catch (err) {
+
+        alert(err.message);
+
+        button.disabled = false;
+        button.textContent = "Initiate Refund";
+
+    }
 
 }
 
