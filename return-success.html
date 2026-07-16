@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Return Request Submitted | Parakh Creation</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+
+font-family:Manrope,sans-serif;
+background:#f8f6f2;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+
+}
+
+.card{
+
+width:min(650px,92%);
+background:white;
+padding:50px;
+border-radius:20px;
+box-shadow:0 10px 30px rgba(0,0,0,.08);
+text-align:center;
+
+}
+
+.tick{
+
+font-size:72px;
+margin-bottom:20px;
+
+}
+
+h1{
+
+font-family:Marcellus,serif;
+font-size:40px;
+margin-bottom:12px;
+
+}
+
+.subtitle{
+
+color:#666;
+margin-bottom:40px;
+
+}
+
+.info{
+
+text-align:left;
+margin:35px 0;
+
+}
+
+.row{
+
+display:flex;
+justify-content:space-between;
+padding:14px 0;
+border-bottom:1px solid #eee;
+
+}
+
+.label{
+
+font-weight:600;
+
+}
+
+.value{
+
+font-weight:700;
+
+}
+
+.buttons{
+
+display:flex;
+gap:18px;
+margin-top:40px;
+
+}
+
+.buttons a{
+
+flex:1;
+padding:16px;
+border-radius:12px;
+text-decoration:none;
+text-align:center;
+font-weight:700;
+
+}
+
+.primary{
+
+background:#8c1d40;
+color:white;
+
+}
+
+.secondary{
+
+border:2px solid #8c1d40;
+color:#8c1d40;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<div class="tick">
+
+📦
+
+</div>
+
+<h1>
+
+Return Request Submitted
+
+</h1>
+
+<p class="subtitle">
+
+Your return request has been submitted successfully.
+
+Our team will review your request shortly.
+
+</p>
+
+<div class="info">
+
+<div class="row">
+
+<span class="label">
+
+Order Number
+
+</span>
+
+<span
+class="value"
+id="orderNumber">
+
+-
+
+</span>
+
+</div>
+
+<div class="row">
+
+<span class="label">
+
+Current Status
+
+</span>
+
+<span
+class="value"
+id="paymentStatus">
+
+-
+
+</span>
+
+</div>
+
+<div class="row">
+
+<span class="label">
+
+Refund Method
+
+</span>
+
+<span
+class="value"
+id="grandTotal">
+
+-
+
+</span>
+
+</div>
+
+<div class="row">
+
+<span class="label">
+
+Expected Review
+
+</span>
+
+<span class="value">
+
+Within 24 Hours
+
+</span>
+
+</div>
+
+</div>
+
+<div class="buttons">
+
+<a
+id="trackReturnBtn"
+class="primary">
+
+Track Return
+
+</a>
+
+<a
+href="my-orders.html"
+class="secondary">
+
+My Orders
+
+</a>
+
+</div>
+
+</div>
+
+<script type="module" src="js/return-success.js"></script>
+
+</body>
+
+</html>

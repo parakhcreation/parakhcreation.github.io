@@ -302,38 +302,126 @@ ${order.returnRequest.remarks}
 
 `;
 
-if (
 
-order.paymentMethod==="COD"
+const returnStatus = order.returnRequest?.status;
 
-){
+const canRefund =
 
-document.getElementById("refundCard").innerHTML=`
+    returnStatus === "Quality Inspection" ||
+    returnStatus === "Refund Initiated" ||
+    returnStatus === "Refund Completed";
+const refund = order.refund || {};
+
+const refundStatus = refund.status || "Pending";
+
+const refundAmount = refund.amount || order.grandTotal;
+
+const refundMethod =
+    refund.method || "Original Payment Method";
+
+const refundButton =
+
+refundStatus === "Pending"
+
+?
+
+`
+
+<button
+id="initiateRefundBtn"
+class="btn btn-primary mt-3">
+
+Initiate Refund
+
+</button>
+
+`
+
+:
+
+refundStatus === "Initiated"
+
+?
+
+`
+
+<button
+id="completeRefundBtn"
+class="btn btn-success mt-3">
+
+Mark Refund Completed
+
+</button>
+
+`
+
+:
+
+"";
+
+if (canRefund) {
+
+document.getElementById("refundCard").innerHTML = `
 
 <div class="card shadow-sm border-0">
 
 <div class="card-body">
 
-<h4>
+<h4 class="mb-4">
 
-Refund Details
+Refund Information
 
 </h4>
 
-<p>
+<div class="row mb-2">
 
-Refund Method :
-COD
+<div class="col-md-3 fw-semibold">
 
-</p>
+Status
 
-<p>
+</div>
 
-Status :
+<div class="col-md-9">
 
-${order.returnRequest.refundStatus}
+${refundStatus}
 
-</p>
+</div>
+
+</div>
+
+<div class="row mb-2">
+
+<div class="col-md-3 fw-semibold">
+
+Amount
+
+</div>
+
+<div class="col-md-9">
+
+₹${refundAmount}
+
+</div>
+
+</div>
+
+<div class="row mb-2">
+
+<div class="col-md-3 fw-semibold">
+
+Method
+
+</div>
+
+<div class="col-md-9">
+
+${refundMethod}
+
+</div>
+
+</div>
+
+${refundButton}
 
 </div>
 
@@ -341,45 +429,36 @@ ${order.returnRequest.refundStatus}
 
 `;
 
-}else{
 
-document.getElementById("refundCard").innerHTML=`
+}
+else{
 
-<div class="card shadow-sm border-0">
+document.getElementById("refundCard").innerHTML = "";
 
-<div class="card-body">
+}
+const initiateBtn =
+document.getElementById("initiateRefundBtn");
 
-<h4>
+if (initiateBtn) {
 
-Refund
+    initiateBtn.addEventListener("click", () => {
 
-</h4>
+        initiateRefund(order);
 
-<p>
+    });
 
-Original Payment Method
+}
 
-</p>
+const completeBtn =
+document.getElementById("completeRefundBtn");
 
-<p>
+if (completeBtn) {
 
-${order.paymentMethod}
+    completeBtn.addEventListener("click", () => {
 
-</p>
+        completeRefund(order);
 
-<p>
-
-Status :
-
-${order.returnRequest.refundStatus}
-
-</p>
-
-</div>
-
-</div>
-
-`;
+    });
 
 }
 
@@ -755,5 +834,57 @@ async function updateReturnStatus(order) {
         alert("Unable to update return status.");
 
     }
+
+}
+
+async function initiateRefund(order) {
+
+    await updateDoc(
+
+        doc(db, "orders", order.id),
+
+        {
+
+              "refund.status": "Initiated",
+
+    "refund.initiatedAt": new Date(),
+
+    "returnRequest.status": "Refund Initiated"
+
+        }
+
+    );
+
+    alert("Refund Initiated.");
+
+    location.reload();
+
+}
+
+async function completeRefund(order) {
+
+    await updateDoc(
+
+        doc(db, "orders", order.id),
+
+        
+
+            {
+    "refund.status": "Completed",
+
+    "refund.completedAt": new Date(),
+
+    "returnRequest.status": "Refund Completed",
+
+    paymentStatus: "Refunded"
+}
+
+        
+
+    );
+
+    alert("Refund Completed.");
+
+    location.reload();
 
 }

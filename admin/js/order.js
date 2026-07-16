@@ -79,6 +79,8 @@ if (!orderSnap.exists()) {
 
 const order =
     orderSnap.data();
+
+    
     
     
 document.getElementById("pageTitle").textContent =
@@ -644,6 +646,133 @@ order.cancellation.remarks
 `;
 
 }
+
+if (order.refund) {
+
+    document
+        .getElementById("refundCard")
+        .style.display = "block";
+
+    const refund = order.refund;
+
+    let actionButton = "";
+
+    if (refund.status === "Pending") {
+
+        actionButton = `
+
+<button
+id="initiateRefundBtn"
+class="btn btn-primary mt-3">
+
+Initiate Refund
+
+</button>
+
+`;
+
+    }
+
+    else if (refund.status === "Initiated") {
+
+        actionButton = `
+
+<button
+id="completeRefundBtn"
+class="btn btn-success mt-3">
+
+Mark Refund Completed
+
+</button>
+
+`;
+
+    }
+
+    document
+        .getElementById("refundInfo")
+        .innerHTML = `
+
+<div class="row mb-3">
+
+<div class="col-4 text-muted">
+
+Status
+
+</div>
+
+<div class="col-8">
+
+${refund.status}
+
+</div>
+
+</div>
+
+<div class="row mb-3">
+
+<div class="col-4 text-muted">
+
+Amount
+
+</div>
+
+<div class="col-8">
+
+₹${refund.amount}
+
+</div>
+
+</div>
+
+<div class="row mb-3">
+
+<div class="col-4 text-muted">
+
+Method
+
+</div>
+
+<div class="col-8">
+
+${refund.method}
+
+</div>
+
+</div>
+
+${actionButton}
+
+`;
+
+
+const initiateBtn =
+document.getElementById("initiateRefundBtn");
+
+if (initiateBtn) {
+
+    initiateBtn.addEventListener("click", () => {
+
+        initiateRefund(order);
+
+    });
+
+}
+
+const completeBtn =
+document.getElementById("completeRefundBtn");
+
+if (completeBtn) {
+
+    completeBtn.addEventListener("click", () => {
+
+        completeRefund(order);
+
+    });
+
+}
+
+}
 const paymentStatusSelect =
     document.getElementById("paymentStatusSelect");
 
@@ -668,3 +797,46 @@ document
         location.reload();
 
     });
+
+
+    async function initiateRefund(order) {
+
+    await updateDoc(
+
+    orderRef,
+
+    {
+
+            "refund.status": "Initiated",
+
+            "refund.initiatedAt": serverTimestamp()
+
+        }
+
+    );
+
+    location.reload();
+
+}
+
+async function completeRefund(order) {
+
+    await updateDoc(
+
+    orderRef,
+
+    {
+
+            "refund.status": "Completed",
+
+            "refund.completedAt": serverTimestamp(),
+
+            paymentStatus: "Refunded"
+
+        }
+
+    );
+
+    location.reload();
+
+}

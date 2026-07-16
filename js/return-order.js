@@ -1,4 +1,5 @@
 import { db } from "./firebase.js";
+import { showConfirmModal } from "./modal.js";
 
 import {
     doc,
@@ -312,15 +313,30 @@ async function submitReturn() {
 
     }
     
+        showConfirmModal({
+
+    title: "Submit Return Request",
+
+    message: "Are you sure you want to submit this return request?",
+
+    confirmText: "Submit Request",
+
+    cancelText: "Keep Product",
+
+    onConfirm: async () => {
+
         await updateDoc(orderRef, {
 
-        returnRequest: returnData
+            returnRequest: returnData
 
-    });
+        });
 
-    alert("Return request submitted successfully.");
+        window.location.href =
+            `return-success.html?id=${orderId}`;
 
-    window.location.href =
-        "my-orders.html";
+    }
+
+});
+return;
 
 }

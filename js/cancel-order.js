@@ -1,5 +1,5 @@
 import { db } from "./firebase.js";
-
+import { showConfirmModal } from "./modal.js";
 import {
 
     doc,
@@ -47,6 +47,8 @@ async function loadOrder(){
     }
 
     const order=snap.data();
+
+    const paymentMethod = order.paymentMethod || "COD";
 
     const item=order.items[0];
 
@@ -146,66 +148,111 @@ if (
     return;
 
 }
+showConfirmModal({
 
-    const confirmCancel = confirm(
+    title: "Cancel Order",
 
-        "Are you sure you want to cancel this order?\n\nThis action cannot be undone."
+    message: "Are you sure you want to cancel this order?\n\nThis action cannot be undone.",
 
-    );
+    confirmText: "Cancel Order",
 
-    if (!confirmCancel) return;
+    cancelText: "Keep Order",
 
-    try {
+    onConfirm: async () => {
 
-        await updateDoc(
+        try {
 
-            doc(db, "orders", orderId),
+            await updateDoc(
 
-            {
+                doc(db, "orders", orderId),
 
-                orderStatus: "Cancelled",
+                {
 
-                cancellation: {
+                    orderStatus: "Cancelled",
 
-                    reason: selectedReason.value === "Other"
-    ? remarks
-    : selectedReason.value,
+                    cancellation: {
 
-                    remarks: selectedReason.value === "Other"
-    ? remarks
-    : "",
+                        reason: selectedReason.value === "Other"
+                            ? remarks
+                            : selectedReason.value,
 
-                    cancelledBy: "Customer",
+                        remarks: selectedReason.value === "Other"
+                            ? remarks
+                            : "",
 
-                    cancelledAt: serverTimestamp()
+                        cancelledBy: "Customer",
 
-                },
+                        cancelledAt: serverTimestamp()
 
-                statusHistory: arrayUnion({
+                    },
 
-                    status: "Cancelled",
+                    refund: paymentMethod === "COD"
 
-                    time: new Date()
+? {
 
-                })
+    status: "Not Applicable",
 
-            }
+    amount: 0,
 
-        );
+    method: "COD",
 
-        alert("Order cancelled successfully.");
+    initiatedAt: null,
 
-        window.location.href = "my-orders.html";
+    completedAt: null,
+
+    refundId: ""
+
+}
+
+:{
+
+    status: "Pending",
+
+    amount: order.grandTotal,
+
+    method: "Original Payment Method",
+
+    initiatedAt: null,
+
+    completedAt: null,
+
+    refundId: ""
+
+},
+                    
+
+                    statusHistory: arrayUnion({
+
+                        status: "Cancelled",
+
+                        time: new Date()
+
+                    })
+
+                }
+
+            );
+
+            window.location.href =
+                `cancel-success.html?id=${orderId}`;
+
+        }
+
+        catch (err) {
+
+            console.error(err);
+
+            alert("Unable to cancel order.");
+
+        }
 
     }
 
-    catch (err) {
+});
 
-        console.error(err);
+return;
 
-        alert("Unable to cancel order.");
-
-    }
+   
 
 });
 

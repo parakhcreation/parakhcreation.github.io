@@ -227,13 +227,47 @@ Return Window Closed
 
     : order.orderStatus === "Cancelled"
 
-    ? `
+? `
 
-    <span class="cancelledText">
-        Order Cancelled
-    </span>
+<span class="cancelledText">
+    Order Cancelled
+</span>
 
-    `
+${
+order.paymentMethod !== "COD" &&
+order.refund
+
+?
+
+`
+
+<div class="refundBadge refund-${order.refund.status.toLowerCase().replace(/\s+/g,"-")}">
+
+${
+
+order.refund.status === "Pending"
+
+? "🟡 Refund Pending"
+
+: order.refund.status === "Initiated"
+
+? "🟠 Refund Initiated"
+
+: "🟢 Refund Completed"
+
+}
+
+</div>
+
+`
+
+:
+
+""
+
+}
+
+`
 
     : `
 
