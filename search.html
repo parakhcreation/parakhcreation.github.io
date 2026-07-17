@@ -32,49 +32,39 @@ Search Results | Parakh Creation
   
 
 
-  <div class="nav-icons">
+ <div class="nav-icons">
 
-    <input
-        type="text"
-        id="searchInput"
-        placeholder="Search sarees, suits, fabric..."
-    >
+    <div class="search-box">
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search sarees, suits, fabrics, colours...">
+
+    </div>
 
     <button
         class="icon-btn"
-        id="searchBtn"
-        title="Search">
+        id="wishlistBtn"
+        onclick="location.href='wishlist.html'">
 
-        🔍
+        ❤
+
+        <span id="wishlistCount">0</span>
 
     </button>
 
-    <button class="icon-btn"
+    <button
+        class="icon-btn"
+        id="accountBtn">
 
-        id="wishlistBtn"
+        👤
 
-        onclick="location.href='wishlist.html'">
+    </button>
 
-    ❤
-
-    <span id="wishlistCount">
-
-        0
-
-    </span>
-
-</button>
-
-   <button
-    class="icon-btn"
-    id="accountBtn"
-    title="Account">
-
-    👤
-
-</button>
-
-    <a href="cart.html" class="cart-icon" title="Shopping Cart">
+    <a
+        href="cart.html"
+        class="cart-icon">
 
         🛒
 
@@ -85,13 +75,11 @@ Search Results | Parakh Creation
 </div>
 
 </nav>
-    <a class="nav-cta" href="#contact">
-      <span class="long">Find Our Stores</span>
-      <span class="short">Visit</span>
-    </a>
+    
     <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">&#9776;</button>
   </div>
 </header>
+
 
 <section class="search-page">
 
