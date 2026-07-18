@@ -12,8 +12,10 @@ let currentFilter = "all";
 let visibleCount = 12;
 const PAGE_SIZE = 12;
 
-const grid = document.getElementById("productGrid");
-const filterCount = document.getElementById("filterCount");
+const grid = document.querySelector(".product-grid");
+
+const filterCount = document.querySelector(".filter-count");
+
 const loadMoreBtn = document.getElementById("loadMoreBtn");
 
 export function formatPrice(p) {
@@ -76,8 +78,21 @@ export function render() {
     .map(createProductCard)
     .join("");
 
-  filterCount.textContent = `Showing ${slice.length} of ${filtered.length} pieces`;
-  loadMoreBtn.style.display = visibleCount >= filtered.length ? "none" : "inline-flex";
+  if (filterCount) {
+
+    filterCount.textContent =
+        `Showing ${slice.length} of ${filtered.length} pieces`;
+
+}
+
+if (loadMoreBtn) {
+
+    loadMoreBtn.style.display =
+        visibleCount >= filtered.length
+            ? "none"
+            : "inline-flex";
+
+}
 
   grid.querySelectorAll(".card").forEach((card) => {
 
@@ -113,10 +128,17 @@ document.querySelectorAll(".filter-btn").forEach((btn) => {
   });
 });
 
-loadMoreBtn.addEventListener("click", () => {
-  visibleCount += PAGE_SIZE;
-  render();
-});
+if (loadMoreBtn) {
+
+    loadMoreBtn.addEventListener("click", () => {
+
+        visibleCount += 8;
+
+        render();
+
+    });
+
+}
 
 // ---------------- Modal ----------------
 const backdrop = document.getElementById("modalBackdrop");
@@ -153,13 +175,25 @@ function closeModal() {
   document.body.style.overflow = "";
 }
 
-document.getElementById("modalClose").addEventListener("click", closeModal);
-backdrop.addEventListener("click", (e) => {
-  if (e.target === backdrop) closeModal();
-});
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") closeModal();
-});
+const modalCloseBtn = document.getElementById("modalClose");
+
+if (modalCloseBtn && backdrop) {
+
+  modalCloseBtn.addEventListener("click", closeModal);
+
+  backdrop.addEventListener("click", (e) => {
+    if (e.target === backdrop) {
+      closeModal();
+    }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      closeModal();
+    }
+  });
+
+}
 
 // ---------------- Marquee ----------------
 const marqueeItems = [
@@ -169,7 +203,9 @@ const marqueeItems = [
 const marqueeEl = document.getElementById("marquee");
 const marqueeHTML =
   `<span>${marqueeItems.map((m) => `${m} <span class="dot">✦</span>`).join(" ")}</span>`.repeat(2);
-marqueeEl.innerHTML = marqueeHTML;
+if (marqueeEl) {
+  marqueeEl.innerHTML = marqueeHTML;
+}
 
 // ---------------- Scroll reveal ----------------
 const revealEls = document.querySelectorAll(".reveal");

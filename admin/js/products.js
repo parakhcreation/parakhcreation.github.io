@@ -1,4 +1,5 @@
 import { getNextProductId } from "./productService.js";
+import { COLOURS } from "./productLists.js";
 import { getCategories } from "./categoryService.js";
 import { requireAdmin } from "./auth.js";
 import {
@@ -215,7 +216,17 @@ document.getElementById("id").value = product.id;
 document.getElementById("name").value = product.name;
 document.getElementById("category").value = product.category;
 document.getElementById("fabric").value = product.fabric || "";
-document.getElementById("colour").value = product.colour || "";
+const colourSelect = document.getElementById("colour");
+
+if (colourSelect.tomselect) {
+
+    colourSelect.tomselect.setValue(product.colour || "");
+
+} else {
+
+    colourSelect.value = product.colour || "";
+
+}
 document.getElementById("price").value = product.price;
 document.getElementById("stock").value = product.stock;
 document.getElementById("collection").value =
@@ -454,3 +465,160 @@ removeImageBtn.addEventListener("click", () => {
     removeImageBtn.classList.add("d-none");
 
 });
+
+
+function initialiseColourDropdown() {
+
+    const select = document.getElementById("colour");
+
+    if (!select) return;
+
+    // Clear existing options
+    select.innerHTML = "";
+
+    // Empty option
+    select.add(new Option("", ""));
+
+    // Populate colours
+    COLOURS.forEach(colour => {
+
+    select.add(
+
+        new Option(
+
+            colour.name,
+
+            colour.name
+
+        )
+
+    );
+
+});
+
+    // Initialise Tom Select
+   new TomSelect("#colour", {
+
+    create: function(input) {
+
+        input = input.trim();
+
+        if (!input) return false;
+
+        input = input
+            .toLowerCase()
+            .replace(/\b\w/g, c => c.toUpperCase());
+
+        return {
+
+            value: input,
+
+            text: input
+
+        };
+
+    },
+
+    createOnBlur: true,
+
+    persist: false,
+
+    maxOptions: 500,
+
+    placeholder: "Search or type a colour...",
+
+    sortField: {
+
+        field: "text",
+
+        direction: "asc"
+
+    },
+
+    render: {
+
+        option: function(data, escape) {
+
+            const colour = COLOURS.find(c => c.name === data.text);
+
+            let swatch = "";
+
+            if (colour) {
+
+                if (colour.hex === "rainbow") {
+
+                    swatch = `
+                        <span class="colour-dot rainbow-dot"></span>
+                    `;
+
+                } else if (
+                    colour.hex !== "pattern" &&
+                    colour.hex !== "gradient"
+                ) {
+
+                    swatch = `
+                        <span
+                            class="colour-dot"
+                            style="background:${colour.hex};">
+                        </span>
+                    `;
+
+                }
+
+            }
+
+            return `
+                <div class="colour-option">
+                    ${swatch}
+                    ${escape(data.text)}
+                </div>
+            `;
+
+        },
+
+        item: function(data, escape) {
+
+            const colour = COLOURS.find(c => c.name === data.text);
+
+            let swatch = "";
+
+            if (colour) {
+
+                if (colour.hex === "rainbow") {
+
+                    swatch = `
+                        <span class="colour-dot rainbow-dot"></span>
+                    `;
+
+                } else if (
+                    colour.hex !== "pattern" &&
+                    colour.hex !== "gradient"
+                ) {
+
+                    swatch = `
+                        <span
+                            class="colour-dot"
+                            style="background:${colour.hex};">
+                        </span>
+                    `;
+
+                }
+
+            }
+
+            return `
+                <div class="colour-option">
+                    ${swatch}
+                    ${escape(data.text)}
+                </div>
+            `;
+
+        }
+
+    }
+
+});
+
+}
+
+initialiseColourDropdown();
