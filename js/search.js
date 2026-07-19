@@ -326,7 +326,7 @@ function sortProducts(products) {
     );
 
     break;
-    
+            
 
         case "name":
 

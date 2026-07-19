@@ -6,6 +6,100 @@ const STORE_PHONES = {
   creation: "919331028448",
   collection: "919883351584",
 };
+
+import {
+    collection,
+    getDocs
+} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+import { db } from "./firebase.js";
+
+let categoryMap = {};
+
+async function loadCategories(){
+
+    const snapshot = await getDocs(
+        collection(db,"categories")
+    );
+
+    snapshot.forEach(doc=>{
+
+        categoryMap[doc.id] = doc.data();
+
+    });
+
+
+
+    // ---------- Update homepage heading ----------
+
+const title = document.getElementById("collectionTitle");
+
+if (title) {
+
+    const names = Object.values(categoryMap)
+        .filter(c => c.active)
+        .sort((a, b) => a.displayOrder - b.displayOrder)
+        .map(c => c.pluralName);
+
+    title.textContent = "Our Collection";
+
+}
+
+// ----------------------------
+// Build collection filter buttons
+// ----------------------------
+
+const filters = document.getElementById("filters");
+
+if (filters) {
+
+    filters.innerHTML = "";
+
+    // All Pieces button
+    filters.innerHTML += `
+        <button
+            class="filter-btn active"
+            data-filter="all">
+            All Pieces
+        </button>
+    `;
+
+    Object.entries(categoryMap)
+
+        .sort(
+            (a, b) =>
+                a[1].displayOrder -
+                b[1].displayOrder
+        )
+
+        .forEach(([id, category]) => {
+
+            if (!category.active) return;
+
+            filters.innerHTML += `
+                <button
+                    class="filter-btn"
+                    data-filter="${id}">
+                    ${category.pluralName}
+                </button>
+            `;
+
+        });
+
+}
+
+const categoryCount =
+    document.getElementById("categoryCount");
+
+if (categoryCount) {
+
+    categoryCount.textContent = Object.values(categoryMap)
+        .filter(c => c.active)
+        .length;
+
+}
+
+}
 export let PRODUCTS = [];
 
 let currentFilter = "all";
@@ -35,7 +129,7 @@ export function createProductCard(p) {
     <article class="card" data-id="${p.id}">
       <div class="card-media">
         <span class="card-tag">
-            ${p.category === "saree" ? "Saree" : "Suit Set"}
+            ${categoryMap[p.category]?.name || p.category}
         </span>
 
         <img
@@ -118,14 +212,28 @@ window.open(
 });
 }
 
-document.querySelectorAll(".filter-btn").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll(".filter-btn").forEach((b) => b.classList.remove("active"));
-    btn.classList.add("active");
-    currentFilter = btn.dataset.filter;
-    visibleCount = PAGE_SIZE;
+document
+.getElementById("filters")
+.addEventListener("click", e => {
+
+    const button = e.target.closest(".filter-btn");
+
+    if (!button) return;
+
+    document
+        .querySelectorAll(".filter-btn")
+        .forEach(btn =>
+            btn.classList.remove("active")
+        );
+
+    button.classList.add("active");
+
+    currentFilter = button.dataset.filter;
+
+    visibleCount = 6;
+
     render();
-  });
+
 });
 
 if (loadMoreBtn) {
@@ -155,7 +263,7 @@ function openModal(id) {
   if (!p) return;
   modalImg.src = p.thumbnail;
   modalImg.alt = p.name;
-  modalCat.textContent = p.category === "saree" ? "Saree" : "Suit Set";
+  modalCat.textContent = categoryMap[p.category]?.name || p.category
   modalName.textContent = p.name;
   modalPrice.textContent = formatPrice(p.price);
   modalSpecs.textContent = p.description;
@@ -249,8 +357,9 @@ async function init() {
   }
 }
 
-init();
+await loadCategories();
 
+init();
 function updateCartCount() {
 
     const cart =

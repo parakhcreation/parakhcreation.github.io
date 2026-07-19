@@ -120,3 +120,98 @@ violet
 );
 
 }
+
+
+.admin-layout{
+
+    display:flex;
+
+    min-height:100vh;
+
+}
+
+.master-sidebar{
+
+    width:240px;
+
+    background:#fff;
+
+    border-right:1px solid #ddd;
+
+    padding:20px;
+
+}
+
+.master-sidebar h2{
+
+    margin-bottom:20px;
+
+}
+
+.master-tab{
+
+    width:100%;
+
+    padding:12px;
+
+    margin-bottom:10px;
+
+    border:1px solid #ddd;
+
+    background:white;
+
+    cursor:pointer;
+
+    border-radius:8px;
+
+    text-align:left;
+
+}
+
+.master-tab.active{
+
+    background:#212529;
+
+    color:white;
+
+}
+
+.master-content{
+
+    flex:1;
+
+    padding:30px;
+
+}
+
+.master-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:25px;
+
+}
+
+.master-table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+.master-table th,
+
+.master-table td{
+
+    padding:14px;
+
+    border-bottom:1px solid #eee;
+
+    text-align:left;
+
+}

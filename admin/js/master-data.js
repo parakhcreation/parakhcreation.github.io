@@ -1,98 +1,255 @@
-
+import { db } from "../../js/firebase.js";
 
 import {
+    collection,
+    getDocs,
+    query,
+    orderBy,
+    addDoc,
     doc,
-    getDoc,
     setDoc
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
+let editingId = null;
+let editingMode = false;
 
-import { auth, db } from "./firebase.js";
+let currentType = "categories";
 
-import { requireAdmin } from "./auth.js";
+const tabs = document.querySelectorAll(".master-tab");
+const title = document.getElementById("pageTitle");
+const tableHead = document.getElementById("tableHead");
+const tableBody = document.getElementById("tableBody");
 
-await requireAdmin();
-const seedBtn =
-document.getElementById("seedMasterData");
+const addBtn = document.getElementById("addItemBtn");
 
-const status =
-document.getElementById("status");
+addBtn.addEventListener("click", () => {
 
-seedBtn.addEventListener("click", seedMasterData);
+    if(currentType !== "categories") return;
+
+    editingMode = false;
+    editingId = null;
+
+    document.getElementById("categoryModalTitle").textContent =
+        "Add Category";
+
+    document.getElementById("catName").value = "";
+    document.getElementById("catPlural").value = "";
+    document.getElementById("catPrefix").value = "";
+    document.getElementById("catOrder").value = "";
+    document.getElementById("catActive").checked = true;
+
+    new bootstrap.Modal(
+        document.getElementById("categoryModal")
+    ).show();
+
+});
 
 
-const MASTER_DATA = {
 
-    colours: [
-        "Black","Charcoal","Graphite","Grey","Slate Grey","Ash Grey","Silver",
-        "White","Off White","Ivory","Cream","Pearl White",
-        "Red","Crimson","Maroon","Wine","Burgundy","Cherry","Brick Red","Rust",
-        "Pink","Baby Pink","Blush Pink","Rose Pink","Hot Pink","Fuchsia","Magenta","Peach","Coral",
-        "Purple","Lavender","Lilac","Violet","Plum","Mauve","Amethyst",
-        "Blue","Sky Blue","Powder Blue","Baby Blue","Royal Blue","Navy Blue","Midnight Blue","Cobalt Blue","Indigo","Turquoise","Teal","Aqua",
-        "Green","Olive","Bottle Green","Emerald","Sea Green","Sage","Mint","Lime","Forest Green",
-        "Yellow","Mustard","Golden Yellow","Lemon Yellow","Amber",
-        "Orange","Burnt Orange","Tangerine",
-        "Brown","Coffee Brown","Chocolate Brown","Camel Brown","Tan","Mocha","Beige","Khaki",
-        "Gold","Rose Gold","Bronze","Copper",
-        "Multi"
-    ],
+tabs.forEach(tab => {
 
-    fabrics: [
-        "Cotton","Silk","Linen","Chiffon","Georgette","Crepe","Organza",
-        "Net","Velvet","Rayon","Viscose","Satin","Banarasi Silk",
-        "Tussar Silk","Kanjivaram Silk","Pashmina","Wool","Khadi"
-    ],
+    tab.addEventListener("click", () => {
 
-    collections: [
-        "Wedding","Bridal","Festive","Party Wear","Casual",
-        "Office Wear","Daily Wear","Designer","Premium",
-        "Traditional","Handloom","Exclusive"
-    ],
+        tabs.forEach(t => t.classList.remove("active"));
 
-    categories: [
-        "Saree","Suit","Lehenga","Kurti",
-        "Dress Material","Dupatta","Blouse","Gown"
-    ]
+        tab.classList.add("active");
 
-};
+        currentType = tab.dataset.type;
 
-async function seedMasterData() {
+        title.textContent =
+            currentType.charAt(0).toUpperCase() +
+            currentType.slice(1);
 
-    status.innerHTML = "Seeding Master Data...";
+        loadTable();
 
-    try {
+    });
 
-        for (const [docName, values] of Object.entries(MASTER_DATA)) {
+});
 
-            await setDoc(
+async function loadTable() {
 
-                doc(db, "masterData", docName),
+    tableHead.innerHTML = "";
+    tableBody.innerHTML = "";
 
-                {
-                    values: values
-                },
-
-                {
-                    merge: true
-                }
-
-            );
-
-        }
-
-        status.innerHTML =
-            "✅ Master Data Seeded Successfully!";
-
+    if(currentType !== "categories"){
+        tableBody.innerHTML =
+        `<tr>
+            <td colspan="6">
+                Coming Soon...
+            </td>
+        </tr>`;
+        return;
     }
 
-    catch (error) {
+    tableHead.innerHTML = `
+        <tr>
+            <th>Name</th>
+            <th>Prefix</th>
+            <th>Plural Name</th>
+            <th>Display Order</th>
+            <th>Active</th>
+            <th>Actions</th>
+        </tr>
+    `;
 
-        console.error(error);
+    const q = query(
+        collection(db,"categories"),
+        orderBy("displayOrder")
+    );
 
-        status.innerHTML =
-            "❌ " + error.message;
+    const snapshot = await getDocs(q);
 
-    }
+    snapshot.forEach(doc=>{
+
+        const data = doc.data();
+
+        tableBody.innerHTML += `
+            <tr>
+
+                <td>${data.name}</td>
+
+                <td>${data.prefix}</td>
+
+                <td>${data.pluralName}</td>
+
+                <td>${data.displayOrder}</td>
+
+                <td>
+
+                    ${
+                        data.active
+                        ? "✅"
+                        : "❌"
+                    }
+
+                </td>
+
+                <td>
+
+                    <button
+class="btn btn-warning btn-sm edit-category"
+data-id="${doc.id}">
+
+Edit
+
+</button>
+
+                </td>
+
+            </tr>
+        `;
+
+    });
+
+    
+    document
+.querySelectorAll(".edit-category")
+.forEach(button=>{
+
+    button.onclick = async ()=>{
+
+        editingMode = true;
+
+        editingId = button.dataset.id;
+
+        const data =
+            snapshot.docs.find(
+                d=>d.id===editingId
+            ).data();
+
+        document.getElementById("categoryModalTitle")
+            .textContent = "Edit Category";
+
+        document.getElementById("catName").value =
+            data.name;
+
+        document.getElementById("catPlural").value =
+            data.pluralName;
+
+        document.getElementById("catPrefix").value =
+            data.prefix;
+
+        document.getElementById("catOrder").value =
+            data.displayOrder;
+
+        document.getElementById("catActive").checked =
+            data.active;
+
+        new bootstrap.Modal(
+            document.getElementById("categoryModal")
+        ).show();
+
+    };
+
+});
 
 }
+
+loadTable();        
+
+
+document
+.getElementById("saveCategoryBtn")
+.addEventListener("click", async () => {
+
+    const name =
+        document.getElementById("catName").value.trim();
+
+    const pluralName =
+        document.getElementById("catPlural").value.trim();
+
+    const prefix =
+        document.getElementById("catPrefix")
+        .value
+        .trim()
+        .toUpperCase();
+
+    const displayOrder =
+        Number(
+            document.getElementById("catOrder").value
+        );
+
+    const active =
+        document.getElementById("catActive").checked;
+
+    if (!name) {
+        alert("Please enter a category name.");
+        return;
+    }
+
+    if (!prefix) {
+        alert("Please enter a category prefix.");
+        return;
+    }
+
+    const id = name
+        .toLowerCase()
+        .replace(/\s+/g, "-");
+
+    await setDoc(
+        doc(db, "categories", id),
+        {
+            name,
+            pluralName,
+            prefix,
+            displayOrder,
+            active
+        }
+    );
+
+    document.getElementById("catName").value = "";
+    document.getElementById("catPlural").value = "";
+    document.getElementById("catPrefix").value = "";
+    document.getElementById("catOrder").value = "";
+    document.getElementById("catActive").checked = true;
+
+    bootstrap.Modal
+        .getInstance(
+            document.getElementById("categoryModal")
+        )
+        .hide();
+
+    await loadTable();
+
+});
+
