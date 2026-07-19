@@ -99,6 +99,80 @@ if (categoryCount) {
 
 }
 
+
+// ----------------------------
+// Build Featured Collection Cards
+// ----------------------------
+
+const collectionCards =
+    document.getElementById("collectionCards");
+
+if (collectionCards) {
+
+    collectionCards.innerHTML = "";
+
+    Object.entries(categoryMap)
+        .sort((a, b) => a[1].displayOrder - b[1].displayOrder)
+        .forEach(([id, category]) => {
+
+            if (!category.active) return;
+
+            collectionCards.innerHTML += `
+                <a
+    href="#collection"
+    class="collection-card"
+    data-category="${id}">
+
+                    <img
+                        src="${category.image}"
+                        alt="${category.pluralName}">
+
+                    <div class="overlay">
+
+                        <h3>${category.pluralName}</h3>
+
+                        <p>Explore →</p>
+
+                    </div>
+
+                </a>
+            `;
+
+        });
+
+    collectionCards
+        .querySelectorAll(".collection-card")
+        .forEach(card => {
+
+            card.addEventListener("click", () => {
+
+                currentFilter = card.dataset.category;
+
+                document
+                    .querySelector("#collection")
+                    .scrollIntoView({
+                        behavior: "smooth"
+                    });
+
+                document
+                    .querySelectorAll(".filter-btn")
+                    .forEach(btn => {
+
+                        btn.classList.toggle(
+                            "active",
+                            btn.dataset.filter === currentFilter
+                        );
+
+                    });
+
+                render();
+
+            });
+
+        });
+
+}
+
 }
 export let PRODUCTS = [];
 
@@ -430,5 +504,30 @@ if (searchInput) {
         }
 
     });
+
+}
+
+const prev =
+    document.getElementById("collectionPrev");
+
+const next =
+    document.getElementById("collectionNext");
+
+const track =
+    document.getElementById("collectionCards");
+
+if (prev && next && track) {
+
+    prev.onclick = () =>
+        track.scrollBy({
+            left: -420,
+            behavior: "smooth"
+        });
+
+    next.onclick = () =>
+        track.scrollBy({
+            left: 420,
+            behavior: "smooth"
+        });
 
 }

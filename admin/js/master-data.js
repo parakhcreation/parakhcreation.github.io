@@ -1,4 +1,13 @@
-import { db } from "../../js/firebase.js";
+import {
+    db,
+    storage
+} from "../../js/firebase.js";
+
+import {
+    ref,
+    uploadBytes,
+    getDownloadURL
+} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-storage.js";
 
 import {
     collection,
@@ -21,6 +30,30 @@ const tableHead = document.getElementById("tableHead");
 const tableBody = document.getElementById("tableBody");
 
 const addBtn = document.getElementById("addItemBtn");
+
+const imageInput =
+    document.getElementById("catImage");
+
+const preview =
+    document.getElementById("catPreview");
+
+imageInput.addEventListener("change", () => {
+
+    const file = imageInput.files[0];
+
+    if (!file) {
+
+        preview.style.display = "none";
+        return;
+
+    }
+
+    preview.src =
+        URL.createObjectURL(file);
+
+    preview.style.display = "block";
+
+});
 
 addBtn.addEventListener("click", () => {
 
@@ -172,6 +205,14 @@ Edit
         document.getElementById("catOrder").value =
             data.displayOrder;
 
+        document.getElementById("catImage").value =
+    data.image || "";
+
+    const image =
+    document.getElementById("catImage")
+        .value
+        .trim();
+
         document.getElementById("catActive").checked =
             data.active;
 
@@ -226,21 +267,52 @@ document
         .toLowerCase()
         .replace(/\s+/g, "-");
 
-    await setDoc(
-        doc(db, "categories", id),
-        {
-            name,
-            pluralName,
-            prefix,
-            displayOrder,
-            active
-        }
+        let imageUrl = "";
+
+const file =
+    imageInput.files[0];
+
+if (file) {
+
+    const extension =
+        file.name.split(".").pop();
+
+    const storageRef =
+        ref(
+            storage,
+            `category-images/${prefix}.${extension}`
+        );
+
+    await uploadBytes(
+        storageRef,
+        file
     );
+
+    imageUrl =
+        await getDownloadURL(storageRef);
+
+}
+   await setDoc(
+    doc(db, "categories", id),
+    {
+
+        name,
+        pluralName,
+        prefix,
+        displayOrder,
+
+        image: imageUrl,
+
+        active
+
+    }
+);
 
     document.getElementById("catName").value = "";
     document.getElementById("catPlural").value = "";
     document.getElementById("catPrefix").value = "";
     document.getElementById("catOrder").value = "";
+    document.getElementById("catImage").value = "";
     document.getElementById("catActive").checked = true;
 
     bootstrap.Modal
