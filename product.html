@@ -10,6 +10,8 @@
 
 <link rel="stylesheet" href="style.css">
 
+
+
 <style>
 
 body{
@@ -150,7 +152,7 @@ body{
 
 }
 
-button{
+.buttons button{
 
     flex:1;
 
@@ -259,6 +261,46 @@ grid-template-columns:repeat(2,1fr);
 
 }
 
+
+.size-buttons{
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+    align-items:center;
+}
+
+.size-circle{
+    width:52px;
+    height:52px;
+    min-width:52px;
+    min-height:52px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    border-radius:50%;
+    border:1.5px solid #d4d5d9;
+
+    background:#fff;
+    color:#282c3f;
+
+    font-size:15px;
+    font-weight:600;
+
+    cursor:pointer;
+
+    padding:0;
+}
+
+.size-circle:hover{
+    border-color:#282c3f;
+}
+
+.size-circle.selected{
+    border:2px solid #ff3f6c;
+    color:#ff3f6c;
+}
 </style>
 
 </head>
@@ -310,6 +352,43 @@ id="productPrice"></div>
 <div
 class="description"
 id="productDescription"></div>
+
+
+<!-- ================= Sizes ================= -->
+
+<div
+    id="sizeSection"
+    class="size-section"
+    style="display:none;">
+
+    <div class="size-header">
+
+        
+
+    <span class="size-title">
+        SELECT SIZE
+    </span>
+
+    <a
+        href="#"
+        id="sizeGuideLink">
+
+        Size Guide
+
+    </a>
+
+</div>
+
+    
+
+    <div
+        id="sizeButtons"
+        class="size-buttons">
+    </div>
+
+
+
+<!-- ================= End Sizes ================= -->
 
 <div class="buttons">
 

@@ -187,6 +187,22 @@ order.items.forEach(item => {
 
             <div class="infoItem">
 
+    <div class="label">
+
+        Size
+
+    </div>
+
+    <div class="value">
+
+        ${item.selectedSize || "-"}
+
+    </div>
+
+</div>
+
+            <div class="infoItem">
+
                 <div class="label">
 
                     Price

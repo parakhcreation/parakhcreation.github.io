@@ -57,15 +57,33 @@ imageInput.addEventListener("change", () => {
 
 addBtn.addEventListener("click", () => {
 
-    if(currentType !== "categories") return;
+    if (
+    currentType !== "categories" &&
+    currentType !== "sizes"
+) return;
 
     editingMode = false;
     editingId = null;
 
-    document.getElementById("categoryModalTitle").textContent =
-        "Add Category";
+   document.getElementById("categoryModalTitle").textContent =
+    currentType === "sizes"
+        ? "Add Size"
+        : "Add Category";
 
     document.getElementById("catName").value = "";
+    if (currentType === "sizes") {
+
+    document.getElementById("catPlural").parentElement.style.display = "none";
+    document.getElementById("catPrefix").parentElement.parentElement.style.display = "none";
+    document.getElementById("catImage").closest(".mb-3").style.display = "none";
+
+} else {
+
+    document.getElementById("catPlural").parentElement.style.display = "";
+    document.getElementById("catPrefix").parentElement.parentElement.style.display = "";
+    document.getElementById("catImage").closest(".mb-3").style.display = "";
+
+}
     document.getElementById("catPlural").value = "";
     document.getElementById("catPrefix").value = "";
     document.getElementById("catOrder").value = "";
@@ -104,15 +122,31 @@ async function loadTable() {
     tableHead.innerHTML = "";
     tableBody.innerHTML = "";
 
-    if(currentType !== "categories"){
-        tableBody.innerHTML =
-        `<tr>
-            <td colspan="6">
-                Coming Soon...
-            </td>
-        </tr>`;
-        return;
-    }
+   if (currentType === "categories") {
+
+    await loadCategories();
+
+    return;
+
+}
+
+if (currentType === "sizes") {
+
+    await loadSizes();
+
+    return;
+
+}
+
+tableBody.innerHTML = `
+<tr>
+    <td colspan="6">
+        Coming Soon...
+    </td>
+</tr>
+`;
+
+return;
 
     tableHead.innerHTML = `
         <tr>
@@ -226,6 +260,58 @@ Edit
 
 }
 
+
+async function loadSizes() {
+
+    tableHead.innerHTML = `
+        <tr>
+            <th>Size</th>
+            <th>Display Order</th>
+            <th>Active</th>
+            <th>Actions</th>
+        </tr>
+    `;
+
+    tableBody.innerHTML = "";
+
+    const q = query(
+        collection(db, "sizes"),
+        orderBy("displayOrder")
+    );
+
+    const snapshot = await getDocs(q);
+
+    snapshot.forEach(doc => {
+
+        const data = doc.data();
+
+        tableBody.innerHTML += `
+            <tr>
+
+                <td>${data.name}</td>
+
+                <td>${data.displayOrder}</td>
+
+                <td>
+                    ${data.active ? "✅" : "❌"}
+                </td>
+
+                <td>
+                    <button
+                        class="btn btn-warning btn-sm"
+                        disabled>
+
+                        Edit
+
+                    </button>
+                </td>
+
+            </tr>
+        `;
+
+    });
+
+}
 loadTable();        
 
 
@@ -258,14 +344,41 @@ document
         return;
     }
 
-    if (!prefix) {
-        alert("Please enter a category prefix.");
-        return;
-    }
+    if (
+    currentType === "categories" &&
+    !prefix
+) {
+    alert("Please enter a category prefix.");
+    return;
+}
 
     const id = name
         .toLowerCase()
         .replace(/\s+/g, "-");
+
+
+        if (currentType === "sizes") {
+
+    await setDoc(
+        doc(db, "sizes", id),
+        {
+            name,
+            displayOrder,
+            active
+        }
+    );
+
+    bootstrap.Modal
+        .getInstance(
+            document.getElementById("categoryModal")
+        )
+        .hide();
+
+    await loadTable();
+
+    return;
+
+}
 
         let imageUrl = "";
 

@@ -7,6 +7,8 @@ import {
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
+console.log("order.js loaded");
+
 
 function orderBadge(status) {
 
@@ -324,6 +326,14 @@ order.items.forEach(item => {
 
                 </div>
 
+                <div class="text-muted">
+
+    Size :
+
+    <strong>${item.selectedSize || "-"}</strong>
+
+</div>
+
             </div>
 
             <div class="col-md-2 text-center">
@@ -489,7 +499,14 @@ if (order.returnRequest) {
 .getElementById("updateBtn")
 .addEventListener("click", async () => {
 
+    console.log("STEP 1");
+
+try {
+
+    console.log("STEP 2");
     const newStatus = statusSelect.value;
+
+    console.log("STEP 3", newStatus);
 
     const history = [...(order.statusHistory || [])];
 
@@ -542,11 +559,72 @@ if (
 
 await updateDoc(orderRef, updateData);
 
+
+
+
+console.log("STEP 4 - Firestore updated");
+console.log("newStatus =", newStatus);
+if (newStatus === "Cancelled") {
+console.log("STEP 5 - Calling restoreInventoryOnly v2");
+    const response = await fetch(
+
+        "https://us-central1-parakh-creation-website.cloudfunctions.net/restoreInventoryOnly",
+
+        {
+
+            method: "POST",
+
+            headers: {
+
+                "Content-Type": "application/json"
+
+            },
+
+            body: JSON.stringify({
+
+                orderId: order.id
+
+            })
+
+        }
+
+    );
+
+    console.log("STEP 6", response.status);
+
+    const result = await response.json();
+
+console.log("STEP 7", result);
+
+    if (!response.ok) {
+
+        
+
+        throw new Error(
+
+            result.error ||
+
+            "Failed to restore inventory."
+
+        );
+
+    }
+
+}
+
+console.log("STEP 8");
+
     alert(
         "Order updated successfully."
     );
 
     location.reload();
+
+    } catch (e) {
+
+    console.error("ERROR:", e);
+
+}
 
 });
 if (

@@ -131,9 +131,11 @@ if (buyNowItem) {
 
     cartObject = {
 
-        [item.id]: item.quantity
+    [item.selectedSize
+        ? `${item.id}_${item.selectedSize}`
+        : item.id]: item.quantity
 
-    };
+};
 
 } else {
 
@@ -147,10 +149,16 @@ summaryProducts.innerHTML = "";
 
 let subtotal = 0;
 
-Object.entries(cartObject).forEach(([id, quantity]) => {
+Object.entries(cartObject).forEach(([key, quantity]) => {
+
+    const parts = key.split("_");
+
+    const productId = parts[0];
+
+    const selectedSize = parts[1] || "";
 
     const product =
-    products.find(p => p.id === id);
+        products.find(p => p.id === productId);
 
     if (!product) return;
 
@@ -180,6 +188,11 @@ Object.entries(cartObject).forEach(([id, quantity]) => {
             <div class="summaryPrice">
 
                 Qty : ${quantity}
+
+${selectedSize
+    ? `<br>Size : ${selectedSize}`
+    : ""
+}
 
             </div>
 

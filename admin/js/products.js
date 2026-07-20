@@ -14,7 +14,9 @@ import {
     serverTimestamp,
     getDocs,
     deleteDoc,
-    getDoc
+    getDoc,
+    query,
+    orderBy
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
 import {
@@ -26,7 +28,34 @@ import {
 
 await requireAdmin();
 let editingProductId = null;
+
 const tbody = document.getElementById("productsTable");
+
+const inventoryType =
+    document.getElementById("inventoryType");
+
+const inventoryContainer =
+    document.getElementById("inventoryContainer");
+
+const ALPHABETIC_SIZES = [
+    "S",
+    "M",
+    "L",
+    "XL",
+    "XXL",
+    "3XL"
+];
+
+const NUMERIC_SIZES = [
+    "28",
+    "30",
+    "32",
+    "34",
+    "36",
+    "38",
+    "40"
+];
+
 
 async function loadProducts() {
 
@@ -120,6 +149,358 @@ Delete
 
 }
 
+
+function renderInventory() {
+
+    if (!inventoryType || !inventoryContainer) return;
+
+    const type = inventoryType.value;
+
+    inventoryContainer.innerHTML = "";
+
+    if (type === "none") {
+
+        inventoryContainer.innerHTML = `
+
+<div class="row">
+
+    <div class="col-md-4 mb-3">
+
+        <label class="form-label">
+
+            Total Stock
+
+        </label>
+
+        <input
+            id="totalStock"
+            type="number"
+            min="0"
+            value="0"
+            class="form-control">
+
+    </div>
+
+</div>
+
+`;
+
+        return;
+    }
+
+    const sizes =
+        type === "alphabetic"
+            ? ALPHABETIC_SIZES
+            : NUMERIC_SIZES;
+
+    if (type === "alphabetic" || type === "numeric") {
+
+    sizes.forEach(size => {
+
+    inventoryContainer.innerHTML += `
+
+<div class="row align-items-center mb-2">
+
+    <div class="col-4">
+
+        <div class="form-check">
+
+            <input
+                class="form-check-input size-enable"
+                type="checkbox"
+                data-size="${size}">
+
+            <label class="form-check-label">
+
+                ${size}
+
+            </label>
+
+        </div>
+
+    </div>
+
+    <div class="col-4">
+
+        <input
+            class="form-control size-stock"
+            type="number"
+            min="0"
+            value="0"
+            placeholder="Stock"
+            disabled
+            data-size="${size}">
+
+    </div>
+
+</div>
+
+`;
+
+});
+
+    const checks =
+        inventoryContainer.querySelectorAll(".size-enable");
+
+    checks.forEach(check => {
+
+        check.addEventListener("change", () => {
+
+            const stockInput =
+                inventoryContainer.querySelector(
+                    `.size-stock[data-size="${check.dataset.size}"]`
+                );
+
+            stockInput.disabled = !check.checked;
+
+            if (!check.checked) {
+                stockInput.value = 0;
+            }
+
+        });
+
+    });
+
+    return;
+
+}
+
+    inventoryContainer.innerHTML = `
+
+<div id="customSizes">
+
+</div>
+
+<button
+    type="button"
+    class="btn btn-outline-primary"
+    id="addCustomSize">
+
+    + Add Custom Size
+
+</button>
+
+`;
+
+const customContainer =
+    document.getElementById("customSizes");
+
+function addCustomRow() {
+
+    customContainer.insertAdjacentHTML(
+        "beforeend",
+        `
+
+<div class="row mb-2">
+
+    <div class="col-md-4">
+
+        <input
+            class="form-control custom-size-name"
+            placeholder="Size">
+
+    </div>
+
+    <div class="col-md-3">
+
+        <input
+            type="number"
+            min="0"
+            value="0"
+            class="form-control custom-size-stock"
+            placeholder="Stock">
+
+    </div>
+
+    <div class="col-md-2">
+
+        <button
+            type="button"
+            class="btn btn-outline-danger removeCustomSize">
+
+            Remove
+
+        </button>
+
+    </div>
+
+</div>
+
+`
+    );
+
+}
+
+addCustomRow();
+
+document
+    .getElementById("addCustomSize")
+    .addEventListener(
+        "click",
+        addCustomRow
+    );
+
+    inventoryContainer.addEventListener("click", e => {
+
+    if (
+        e.target.classList.contains(
+            "removeCustomSize"
+        )
+    ) {
+
+        e.target
+            .closest(".row")
+            .remove();
+
+    }
+
+});
+
+
+
+}
+
+
+function getInventory() {
+
+    const type = inventoryType.value;
+
+    if (type === "none") {
+
+        return {
+            type: "none",
+            stock: Number(
+                document.getElementById("totalStock").value || 0
+            )
+        };
+
+    }
+
+    if (type === "alphabetic" || type === "numeric") {
+
+        const sizes = {};
+
+        document
+            .querySelectorAll(".size-enable")
+            .forEach(check => {
+
+                if (check.checked) {
+
+                    const stock = document.querySelector(
+                        `.size-stock[data-size="${check.dataset.size}"]`
+                    );
+
+                    sizes[check.dataset.size] =
+                        Number(stock.value || 0);
+
+                }
+
+            });
+
+        return {
+            type,
+            sizes
+        };
+
+    }
+
+    const sizes = {};
+
+    document
+        .querySelectorAll("#customSizes .row")
+        .forEach(row => {
+
+            const name =
+                row.querySelector(".custom-size-name").value.trim();
+
+            const stock =
+                Number(
+                    row.querySelector(".custom-size-stock").value || 0
+                );
+
+            if (name) {
+
+                sizes[name] = stock;
+
+            }
+
+        });
+
+    return {
+        type: "custom",
+        sizes
+    };
+
+}
+
+function setInventory(inventory) {
+
+    if (!inventory) {
+
+        renderInventory();
+        return;
+
+    }
+
+    if (inventory.type === "none") {
+
+        const stockInput =
+            document.getElementById("totalStock");
+
+        if (stockInput) {
+
+            stockInput.value = inventory.stock || 0;
+
+        }
+
+        return;
+
+    }
+
+    if (!inventory.sizes) return;
+
+    Object.entries(inventory.sizes).forEach(([size, stock]) => {
+
+        const checkbox = document.querySelector(
+            `.size-enable[data-size="${size}"]`
+        );
+
+        if (checkbox) {
+
+            checkbox.checked = true;
+
+        }
+
+        const stockInput = document.querySelector(
+            `.size-stock[data-size="${size}"]`
+        );
+
+        if (stockInput) {
+
+            stockInput.value = stock;
+
+        }
+
+    });
+
+}
+
+function getTotalStock() {
+
+    const inventory = getInventory();
+
+    if (inventory.type === "none") {
+
+        return inventory.stock;
+
+    }
+
+    return Object.values(inventory.sizes)
+        .reduce((a, b) => a + b, 0);
+
+}
+
+
 async function loadCategoryDropdown(){
 
     const select = document.getElementById("category");
@@ -184,7 +565,18 @@ loadProducts().then(() => {
 
 });
 
-loadCategoryDropdown();
+
+
+await loadCategoryDropdown();
+
+
+renderInventory();
+
+inventoryType.addEventListener(
+    "change",
+    renderInventory
+);
+
 
 document.addEventListener("click", async (e) => {
 
@@ -228,7 +620,7 @@ if (colourSelect.tomselect) {
 
 }
 document.getElementById("price").value = product.price;
-document.getElementById("stock").value = product.stock;
+
 document.getElementById("collection").value =
     product.collection || "";
 document.getElementById("occasion").value =
@@ -255,6 +647,24 @@ if (product.thumbnail) {
     removeImageBtn.classList.remove("d-none");
 
 }
+
+/* ---------------- Restore Inventory ---------------- */
+
+if (product.inventory) {
+
+    inventoryType.value = product.inventory.type || "none";
+
+} else {
+
+    inventoryType.value = "none";
+
+}
+
+renderInventory();
+
+setInventory(product.inventory);
+
+/* ----------------------------------------------- */
 
 // Open modal
 new bootstrap.Modal(
@@ -328,7 +738,8 @@ saveBtn.addEventListener("click", async () => {
     fabric: document.getElementById("fabric").value.trim(),
     colour: document.getElementById("colour").value.trim(),
     price: Number(document.getElementById("price").value),
-    stock: Number(document.getElementById("stock").value),
+    inventory: getInventory(),
+stock: getTotalStock(),
     collection: document.getElementById("collection").value.trim(),
     occasion:
     document.getElementById("occasion")

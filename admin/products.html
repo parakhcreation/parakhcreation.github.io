@@ -136,7 +136,7 @@ Loading products...
 
 <div class="modal fade" id="productModal" tabindex="-1">
 
-<div class="modal-dialog modal-lg">
+<div class="modal-dialog modal-xl modal-dialog-scrollable">
 
 <div class="modal-content">
 
@@ -268,17 +268,7 @@ required>
 
 </div>
 
-<div class="col-md-6 mb-3">
 
-<label>Stock</label>
-
-<input
-id="stock"
-type="number"
-value="0"
-class="form-control">
-
-</div>
 
 <div class="col-md-6 mb-3">
 
@@ -333,7 +323,66 @@ rows="3"></textarea>
 
 </div>
 
-<div class="col-md-6">
+
+<hr class="my-4">
+
+<div class="col-12">
+
+    <h5 class="mb-3">
+
+        Inventory
+
+    </h5>
+
+</div>
+
+<div class="col-md-6 mb-3">
+
+    <label class="form-label">
+
+        Inventory Type
+
+    </label>
+
+    <select
+        id="inventoryType"
+        class="form-select">
+
+        <option value="none">
+
+            No Size (Single Stock)
+
+        </option>
+
+        <option value="alphabetic">
+
+            Alphabetic (S, M, L...)
+
+        </option>
+
+        <option value="numeric">
+
+            Numeric (28, 30, 32...)
+
+        </option>
+
+        <option value="custom">
+
+            Custom Sizes
+
+        </option>
+
+    </select>
+
+</div>
+
+<div
+    class="col-12"
+    id="inventoryContainer">
+
+</div>
+
+<div class="col-md-6 mt-3">
 
 <div class="form-check">
 
@@ -353,7 +402,7 @@ Available
 
 </div>
 
-<div class="col-md-6">
+<div class="col-md-6 mt-3">
 
 <div class="form-check">
 

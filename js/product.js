@@ -17,6 +17,11 @@ const colour = document.getElementById("productColour");
 const availability = document.getElementById("productAvailability");
 const relatedGrid = document.getElementById("relatedProducts");
 const wishlistButton = document.getElementById("addToWishlist");
+const sizeSection = document.getElementById("sizeSection");
+
+const sizeButtons = document.getElementById("sizeButtons");
+
+let selectedSize = null;
 
 async function loadProduct() {
 
@@ -25,6 +30,8 @@ async function loadProduct() {
     currentProduct = products.find(
     p => p.id && p.id.trim() === productId.trim()
 );
+
+
 
 console.log(currentProduct);
 
@@ -57,6 +64,7 @@ if (!currentProduct) {
             ? "Available"
             : "Out of Stock";
             
+            renderSizes(currentProduct);
     wishlistButton.textContent =
 
     await Wishlist.has(currentProduct.id)
@@ -106,11 +114,113 @@ related.forEach(item => {
 
 }
 
+function renderSizes(product){
+
+    if(!product.inventory){
+
+        sizeSection.style.display="none";
+        return;
+
+    }
+
+    if(product.inventory.type==="none"){
+
+        sizeSection.style.display="none";
+        return;
+
+    }
+
+    sizeSection.style.display="block";
+
+    sizeButtons.innerHTML="";
+
+    const sizes = product.inventory.sizes || {};
+
+    const orderedSizes = Object.entries(sizes);
+
+const alphaOrder = [
+    "XS",
+    "S",
+    "M",
+    "L",
+    "XL",
+    "XXL",
+    "3XL",
+    "4XL",
+    "5XL"
+];
+
+orderedSizes.sort((a, b) => {
+
+    const ia = alphaOrder.indexOf(a[0]);
+    const ib = alphaOrder.indexOf(b[0]);
+
+    // Numeric sizes (28,30,32...)
+    if (ia === -1 && ib === -1) {
+        return Number(a[0]) - Number(b[0]);
+    }
+
+    // Alphabetic sizes
+    if (ia === -1) return 1;
+    if (ib === -1) return -1;
+
+    return ia - ib;
+
+});
+    orderedSizes.forEach(([size,stock])=>{
+
+        const button=document.createElement("button");
+
+        button.type="button";
+
+        button.className = "size-circle";
+
+        button.textContent=size;
+
+        
+
+        if(stock<=0){
+
+            button.classList.add("out-of-stock");
+
+            button.disabled=true;
+
+        }
+
+        button.onclick = () => {
+
+    document
+        .querySelectorAll(".size-circle")
+        .forEach(btn => btn.classList.remove("selected"));
+
+    button.classList.add("selected");
+
+    selectedSize = size;
+
+};
+
+        sizeButtons.appendChild(button);
+
+    });
+
+}
+
 loadProduct();
 
 document.getElementById("addToCart").onclick = async () => {
 
-    await Cart.add(currentProduct.id);
+    if (
+        currentProduct.inventoryType !== "none" &&
+        !selectedSize
+    ) {
+        alert("Please select a size.");
+        return;
+    }
+
+    await Cart.add(
+    currentProduct.id,
+    selectedSize
+);
 
     document.getElementById("drawerProductName").textContent =
         document.getElementById("productName").textContent;
@@ -131,17 +241,27 @@ document.getElementById("buyNow").onclick = () => {
 
     if (!currentProduct) return;
 
+    if (
+    currentProduct.inventoryType !== "none" &&
+    !selectedSize
+) {
+    alert("Please select a size.");
+    return;
+}
+
     sessionStorage.setItem(
 
         "buyNowItem",
 
         JSON.stringify({
 
-            id: currentProduct.id,
+    id: currentProduct.id,
 
-            quantity: 1
+    quantity: 1,
 
-        })
+    selectedSize: selectedSize
+
+})
 
     );
 

@@ -32,9 +32,41 @@ async function restoreInventory(order) {
       available: true,
 
       updatedAt:
-    admin.firestore.FieldValue.serverTimestamp(),
+        admin.firestore.FieldValue.serverTimestamp(),
 
     });
+
+    console.log("restoreInventory item:", {
+      id: item.id,
+      selectedSize: item.selectedSize,
+      quantity: item.quantity,
+    });
+
+    console.log("product inventory:", snap.data().inventory);
+
+    if (
+
+      item.selectedSize &&
+
+    snap.data().inventory &&
+
+    snap.data().inventory.sizes &&
+
+    snap.data().inventory.type !== "none"
+
+    ) {
+      batch.update(productRef, {
+
+        [`inventory.sizes.${item.selectedSize}`]:
+
+            admin.firestore.FieldValue.increment(
+
+                item.quantity || 0,
+
+            ),
+
+      });
+    }
   }
 
   batch.update(

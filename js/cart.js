@@ -32,12 +32,20 @@ console.log("Products:", products);
     }
 
     cart.forEach(item => {
-console.log("Cart item:", item);
-       const product = products.find(
-    p => p.id && p.id.trim() === item.id.trim()
-);
 
-console.log("Matched product:", product);
+    console.log("Cart item:", item);
+
+    const parts = item.id.split("_");
+
+    const productId = parts[0];
+
+    const selectedSize = parts[1] || "";
+
+    const product = products.find(
+        p => p.id && p.id.trim() === productId.trim()
+    );
+
+    console.log("Matched product:", product);
 
         if (!product) return;
 
@@ -56,23 +64,25 @@ console.log("Matched product:", product);
 
                 <h2>${product.name}</h2>
 
-                <p>${product.description}</p>
+${selectedSize ? `<p><strong>Size:</strong> ${selectedSize}</p>` : ""}
 
-                <div class="cart-price">
+<p>${product.description}</p>
+
+<div class="cart-price">
 
     ₹${product.price}
 
 </div>
 
-<p>
+
 
 <div class="quantity-controls">
 
     <button
     class="qty-btn minus"
-    data-id="${product.id}">
-        −
-    </button>
+    data-id="${item.id}">
+    −
+</button>
 
     <span class="qty">
 
@@ -82,24 +92,21 @@ console.log("Matched product:", product);
 
     <button
     class="qty-btn plus"
-    data-id="${product.id}">
-        +
-
-    </button>
+    data-id="${item.id}">
+    +
+</button>
 
 </div>
 
-</p>
+
 
             </div>
 
             <button
-                class="removeBtn"
-                data-id="${product.id}">
-
-                Remove
-
-            </button>
+    class="removeBtn"
+    data-id="${item.id}">
+    Remove
+</button>
 
         </div>
 
@@ -133,7 +140,9 @@ if(finalTotal){
 
    button.onclick = async () => {
 
-    await Cart.add(button.dataset.id);
+    const parts = button.dataset.id.split("_");
+
+await Cart.add(parts[0], parts[1] || "");
 
     loadCart();
 

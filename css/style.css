@@ -2074,3 +2074,153 @@ violet
 
 }
 
+/*==================================================
+PRODUCT SIZE SELECTOR
+==================================================*/
+
+.size-section{
+
+    margin:35px 0;
+
+}
+
+.size-title{
+
+    font-size:16px;
+
+    font-weight:700;
+
+    letter-spacing:.5px;
+
+    color:#282c3f;
+
+    text-transform:uppercase;
+
+}
+
+.size-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:12px;
+
+}
+
+#sizeGuideLink{
+
+    color:#ff3f6c;
+
+    font-weight:600;
+
+    text-decoration:none;
+
+    font-size:14px;
+
+}
+
+#sizeGuideLink:hover{
+
+    text-decoration:underline;
+
+}
+
+.size-buttons{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:14px;
+
+    margin-top:14px;
+
+}
+
+
+
+.size-buttons .size-circle{
+
+    width:52px;
+    height:52px;
+
+    min-width:52px;
+    min-height:52px;
+
+    border-radius:50%;
+
+    border:1.5px solid #d4d5d9;
+
+    background:#fff;
+
+    color:#282c3f;
+
+    font-size:15px;
+    font-weight:600;
+
+    display:flex;
+
+    justify-content:center;
+    align-items:center;
+
+    padding:0;
+    margin:0;
+
+    cursor:pointer;
+
+    box-sizing:border-box;
+
+    flex:0 0 52px;
+}
+
+.size-buttons .size-circle:hover{
+
+    border-color:#282c3f;
+
+}
+
+.size-buttons .size-circle.selected{
+
+    border:2px solid #ff3f6c;
+
+    color:#ff3f6c;
+
+    background:white;
+
+}
+
+.size-buttons .size-circle:disabled{
+
+    color:#bbb;
+
+    border-color:#eee;
+
+    background:#f8f8f8;
+
+    cursor:not-allowed;
+
+    opacity:.7;
+
+}
+
+.order-size{
+
+    margin:6px 0 10px;
+
+    font-size:14px;
+
+    color:#555;
+
+}
+
+.order-size strong{
+
+    color:#222;
+
+    font-weight:600;
+
+}
+

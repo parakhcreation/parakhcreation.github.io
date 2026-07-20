@@ -63,7 +63,7 @@ export const Cart = {
 
     },
 
-    async add(id) {
+    async add(id, size = "") {
 
         const userRef = await getUserDoc();
 
@@ -79,7 +79,9 @@ export const Cart = {
 
         }
 
-        cart[id] = (cart[id] || 0) + 1;
+        const key = size ? `${id}_${size}` : id;
+
+cart[key] = (cart[key] || 0) + 1;
 
         await setDoc(userRef, {
 

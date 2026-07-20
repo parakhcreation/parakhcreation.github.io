@@ -124,7 +124,7 @@ if (collectionCards) {
     data-category="${id}">
 
                     <img
-                        src="${category.image}"
+                        src="${category.image}"   
                         alt="${category.pluralName}">
 
                     <div class="overlay">

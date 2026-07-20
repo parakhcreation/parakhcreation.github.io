@@ -17,9 +17,11 @@ if (buyNow) {
 
     cart = {
 
-        [item.id]: item.quantity
+    [item.selectedSize
+        ? `${item.id}_${item.selectedSize}`
+        : item.id]: item.quantity
 
-    };
+};
 
 }
 
@@ -39,18 +41,25 @@ else {
 
         let subtotal = 0;
 
-        for (const [id, quantity] of Object.entries(cart)) {
+        for (const [key, quantity] of Object.entries(cart)) {
 
-            const product = products.find(
+    const parts = key.split("_");
 
-                p => p.id === id
+    const productId = parts[0];
 
-            );
+    const selectedSize = parts[1] || "";
+
+    console.log("KEY =", key);
+console.log("PARTS =", parts);
+console.log("SELECTED SIZE =", selectedSize);
+
+    const product = products.find(
+
+        p => p.id === productId
+
+    );
             
-            console.log("Looking for:", id);
-console.log("Found product:", product);
-console.log("Products:", products);
-
+            
             if (!product) continue;
 
             const total = product.price * quantity;
@@ -59,13 +68,15 @@ console.log("Products:", products);
 
             items.push({
 
-                ...product,
+    ...product,
 
-                quantity,
+    quantity,
 
-                total
+    selectedSize,
 
-            });
+    total
+
+});
 
         }
 

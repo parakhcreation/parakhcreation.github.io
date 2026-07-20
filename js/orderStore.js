@@ -64,6 +64,8 @@ export async function placeOrder(
 
     const checkout = await Checkout.prepare();
 
+    
+
     const orderNumber = await generateOrderNumber();
 
     console.log("paymentData =", paymentData);
@@ -149,20 +151,42 @@ await runTransaction(db, async (transaction) => {
         const product =
             productSnap.data();
 
-        if (product.stock < item.quantity) {
+       const updates = {};
 
-            throw new Error(
-                `Only ${product.stock} ${item.name} left in stock.`
-            );
+// Update overall stock
+if ((product.stock || 0) < item.quantity) {
 
-        }
+    throw new Error(
+        `Only ${product.stock} ${item.name} left in stock.`
+    );
 
-        transaction.update(productRef, {
+}
 
-            stock:
-                product.stock - item.quantity,
+updates.stock = product.stock - item.quantity;
 
-        });
+// Update selected size stock
+if (item.selectedSize &&
+    product.inventory &&
+    product.inventory.sizes) {
+
+    const currentSizeStock =
+        product.inventory.sizes[item.selectedSize] || 0;
+
+    if (currentSizeStock < item.quantity) {
+
+        throw new Error(
+            `Only ${currentSizeStock} left in size ${item.selectedSize}.`
+        );
+
+    }
+
+    updates[
+        `inventory.sizes.${item.selectedSize}`
+    ] = currentSizeStock - item.quantity;
+
+}
+
+transaction.update(productRef, updates);
 
     }
 

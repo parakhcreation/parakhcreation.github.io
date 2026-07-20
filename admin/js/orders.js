@@ -49,6 +49,15 @@ async function loadOrders() {
 
         const order = docSnap.data();
 
+        const customerName =
+    order.profile
+        ? `${order.profile.firstName} ${order.profile.lastName}`
+        : (
+            order.address?.name ||
+            order.customerName ||
+            "Unknown Customer"
+        );
+
         const tr =
             document.createElement("tr");
 
@@ -56,10 +65,17 @@ async function loadOrders() {
 
             <td>${order.orderNumber}</td>
 
-            <td>
-                ${order.profile.firstName}
-                ${order.profile.lastName}
-            </td>
+           <td>
+    ${
+        order.profile
+            ? `${customerName}`
+            : (
+                order.address?.name ||
+                order.customerName ||
+                "Unknown Customer"
+            )
+    }
+</td>
 
             <td>
                 ₹${order.grandTotal}

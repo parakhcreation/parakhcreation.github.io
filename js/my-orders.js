@@ -125,6 +125,17 @@ new Date() <= order.returnWindowEnds.toDate() &&
 
     </h2>
 
+    ${firstItem.selectedSize
+    ? `
+    <p class="order-size">
+
+        Size: <strong>${firstItem.selectedSize}</strong>
+
+    </p>
+    `
+    : ""
+}
+
     ${
     order.items && order.items.length > 1
     ? `<p class="more-items">+${order.items.length - 1} more item(s)</p>`
