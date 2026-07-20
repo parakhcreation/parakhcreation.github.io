@@ -2224,3 +2224,205 @@ PRODUCT SIZE SELECTOR
 
 }
 
+
+/* ==========================================================
+   RESPONSIVE FOUNDATION
+   ========================================================== */
+
+/* ---------- Large Tablets ---------- */
+
+@media (max-width:1200px){
+
+    .container{
+        padding:0 24px;
+    }
+
+}
+
+/* ---------- Tablets ---------- */
+
+@media (max-width:992px){
+
+    .container{
+        padding:0 22px;
+    }
+
+    section{
+        padding-top:80px !important;
+        padding-bottom:80px !important;
+    }
+
+}
+
+/* ---------- Mobile ---------- */
+
+@media (max-width:768px){
+
+    .container{
+        padding:0 18px;
+    }
+
+    section{
+        padding-top:60px !important;
+        padding-bottom:60px !important;
+    }
+
+
+    .nav-inner{
+
+    min-height:72px;
+
+}
+
+.nav-toggle{
+
+    display:block;
+
+    margin-left:auto;
+
+    font-size:28px;
+
+}
+
+.nav-links{
+
+    position:absolute;
+
+    left:0;
+
+    top:100%;
+
+    width:100%;
+
+    display:none;
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+    background:#fff;
+
+    padding:20px;
+
+    box-shadow:0 12px 35px rgba(0,0,0,.08);
+
+    z-index:999;
+
+}
+
+.nav-links.open{
+
+    display:flex;
+
+}
+
+.nav-links>a{
+
+    width:100%;
+
+    padding:14px 0;
+
+}
+
+.nav-icons{
+
+    width:100%;
+
+    margin-top:16px;
+
+    padding-top:18px;
+
+    border-top:1px solid #eee;
+
+    justify-content:space-between;
+
+}
+
+.search-box{
+
+    max-width:none;
+
+    flex:1;
+
+}
+
+.search-box input{
+
+    height:44px;
+
+}
+
+.hero{
+
+    padding-top:35px;
+
+}
+
+.hero-inner{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:40px;
+
+}
+
+.hero-copy{
+
+    text-align:center;
+
+}
+
+.hero-desc{
+
+    margin:auto;
+
+    margin-top:20px;
+
+}
+
+.hero-actions{
+
+    justify-content:center;
+
+}
+
+.hero-stats{
+
+    justify-content:center;
+
+    flex-wrap:wrap;
+
+    gap:24px;
+
+}
+
+.hero-grid{
+
+    gap:12px;
+
+}
+
+.hero-badge{
+
+    position:static;
+
+    margin-top:18px;
+
+    display:inline-block;
+
+}
+}
+
+
+
+/* ---------- Small Phones ---------- */
+
+@media (max-width:480px){
+
+    .container{
+        padding:0 16px;
+    }
+
+}
