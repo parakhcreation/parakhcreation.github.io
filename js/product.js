@@ -210,9 +210,10 @@ loadProduct();
 document.getElementById("addToCart").onclick = async () => {
 
     if (
-        currentProduct.inventoryType !== "none" &&
-        !selectedSize
-    ) {
+    currentProduct.inventory &&
+    currentProduct.inventory.type !== "none" &&
+    !selectedSize
+) {
         alert("Please select a size.");
         return;
     }
@@ -242,7 +243,8 @@ document.getElementById("buyNow").onclick = () => {
     if (!currentProduct) return;
 
     if (
-    currentProduct.inventoryType !== "none" &&
+    currentProduct.inventory &&
+    currentProduct.inventory.type !== "none" &&
     !selectedSize
 ) {
     alert("Please select a size.");
