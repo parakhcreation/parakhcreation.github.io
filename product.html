@@ -134,12 +134,34 @@ body{
 
 }
 
+.product-info h1{
+    font-size:42px;
+    font-weight:600;
+    margin-bottom:6px;
+    line-height:1.2;
+}
+
 .description{
+    margin-top:-5px;
+    margin-bottom:24px;
+    font-size:18px;
+    color:#666;
+    line-height:1.6;
+}
 
-    margin:35px 0;
+.product-divider{
+    border: none;
+    border-top: 1px solid #000;
+    margin-top: 1px;
+    margin-bottom: 30px;
+}
 
-    line-height:1.8;
-
+.price-tax{
+    font-size:14px;      /* Change text size */
+    color:#777;          /* Change text colour */
+    font-weight:400;     /* 400=normal, 500=medium, 600=semi-bold */
+    margin-top:-25px;      /* Move closer/farther from price */
+    margin-bottom:20px;  /* Space before Fabric section */
 }
 
 .buttons{
@@ -156,15 +178,19 @@ body{
 
     flex:1;
 
-    padding:18px;
+    height:75px;
 
     border:none;
 
     cursor:pointer;
 
-    font-size:18px;
+    font-size:17px;
 
-    border-radius:6px;
+    font-weight:600;
+
+    border-radius:4px;
+
+    transition:0.2s;
 
 }
 
@@ -245,11 +271,102 @@ body{
 
 }
 
+/* ================= PRODUCT GALLERY ================= */
+
+.product-gallery{
+
+    display:flex;
+
+    gap:18px;
+
+    align-items:flex-start;
+
+}
+
+.thumbnail-container{
+
+    width:90px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+
+}
+
+.thumbnail{
+
+    width:80px;
+
+    height:100px;
+
+    object-fit:cover;
+
+    border:2px solid transparent;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.thumbnail:hover{
+
+    border-color:#b11b47;
+
+}
+
+.thumbnail.active{
+
+    border-color:#b11b47;
+
+}
+
+.product-image{
+
+    flex:1;
+
+}
+
+.product-image img{
+
+    width:100%;
+    border-radius:10px;
+    transition:opacity .25s ease;
+}
+
 @media(max-width:900px){
 
 .product-page{
 
 grid-template-columns:1fr;
+
+}
+
+.product-gallery{
+
+    flex-direction:column-reverse;
+
+}
+
+.thumbnail-container{
+
+    flex-direction:row;
+
+    width:100%;
+
+    overflow-x:auto;
+
+}
+
+.thumbnail{
+
+    width:70px;
+
+    height:90px;
 
 }
 
@@ -263,34 +380,69 @@ grid-template-columns:repeat(2,1fr);
 
 
 .size-buttons{
+
     display:flex;
-    gap:14px;
-    flex-wrap:wrap;
+
+    gap:16px;
+
+    margin-bottom:28px;
+
+    
+
+}
+
+.size-header{
+    display:flex;
+    justify-content:space-between;
     align-items:center;
+    width:360px;
+    margin-bottom:20px;
+}
+
+.size-label{
+    font-size:25px;
+    font-weight:700;
+    letter-spacing:.5px;
+}
+
+.size-guide{
+
+    font-size:20px;
+
+    font-weight:600;
+
+    color:#ff3f6c;
+
+    text-decoration:none;
+
+}
+
+.size-guide:hover{
+
+    text-decoration:underline;
+
 }
 
 .size-circle{
-    width:52px;
-    height:52px;
-    min-width:52px;
-    min-height:52px;
 
-    display:flex;
-    justify-content:center;
-    align-items:center;
+    width:52px;
+
+    height:52px;
 
     border-radius:50%;
-    border:1.5px solid #d4d5d9;
+
+    border:2px solid #d4d5d9;
 
     background:#fff;
-    color:#282c3f;
 
-    font-size:15px;
+    font-size:17px;
+
     font-weight:600;
+
+    transition:.25s;
 
     cursor:pointer;
 
-    padding:0;
 }
 
 .size-circle:hover{
@@ -298,8 +450,364 @@ grid-template-columns:repeat(2,1fr);
 }
 
 .size-circle.selected{
+
     border:2px solid #ff3f6c;
+
     color:#ff3f6c;
+
+    font-weight:700;
+
+}
+
+.size-circle.out-of-stock{
+
+    opacity:.45;
+
+    border-color:#ddd;
+
+    color:#999;
+
+    position:relative;
+
+}
+
+.size-circle.out-of-stock::after{
+
+    content:"";
+
+    position:absolute;
+
+    left:8px;
+
+    right:8px;
+
+    top:50%;
+
+    border-top:2px solid #999;
+
+    transform:rotate(-25deg);
+
+}
+
+.size-circle.out-of-stock:hover{
+
+    border-color:#d8d8d8;
+
+    transform:none;
+
+}
+
+.size-circle:disabled{
+
+    cursor:not-allowed;
+
+}
+
+/* ================= PRODUCT ACCORDIONS ================= */
+
+.product-accordions{
+    margin-top:50px;
+    border-top:1px solid #e5e5e5;
+}
+
+.accordion-item{
+    border-bottom:1px solid #e5e5e5;
+}
+
+.accordion-header{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:22px 0;
+
+    cursor:pointer;
+
+    user-select:none;
+
+}
+
+.accordion-title{
+
+    font-size:18px;
+    font-weight:600;
+    letter-spacing:.3px;
+
+}
+
+.accordion-icon{
+
+    font-size:22px;
+
+    transition:.3s ease;
+
+}
+
+.accordion-item.active .accordion-icon{
+
+    transform:rotate(180deg);
+
+}
+
+.accordion-content{
+
+    max-height:0;
+
+    overflow:hidden;
+
+    transition:max-height .35s ease;
+
+}
+
+.accordion-item.active .accordion-content{
+
+    max-height:800px;
+
+    padding-bottom:24px;
+
+}
+
+/* Details */
+
+.accordion-content p{
+
+    color:#666;
+
+    line-height:1.8;
+
+    font-size:20px;
+
+    margin:0;
+
+}
+
+/* Specification rows */
+
+.spec-row{
+
+    display:grid;
+
+    grid-template-columns:220px 1fr;
+
+    padding:12px 0;
+
+    border-bottom:1px solid #f3f3f3;
+
+}
+
+.spec-row:last-child{
+
+    border-bottom:none;
+
+}
+
+.spec-label{
+
+    font-weight:600;
+
+    color:#333;
+
+}
+
+.spec-value{
+
+    color:#666;
+
+}
+
+/* ================= TRUST FEATURES ================= */
+
+.trust-features{
+
+    margin:35px 0;
+
+    border-top:1px solid #ececec;
+    border-bottom:1px solid #ececec;
+
+    padding:18px 0;
+
+}
+
+.trust-item{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    padding:12px 0;
+
+}
+
+.trust-icon{
+
+    font-size:22px;
+
+    width:34px;
+
+    text-align:center;
+
+}
+
+.trust-item strong{
+
+    display:block;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    color:#222;
+
+}
+
+.trust-item small{
+
+    display:block;
+
+    margin-top:3px;
+
+    color:#777;
+
+    font-size:13px;
+
+}
+
+
+/* ================= IMAGE ZOOM ================= */
+
+.image-zoom-container{
+
+    position:relative;
+
+    overflow:hidden;
+
+    cursor:zoom-in;
+
+}
+
+.zoom-lens{
+
+    position:absolute;
+
+    width:180px;
+
+    height:180px;
+
+    border:2px solid rgba(255,255,255,.9);
+
+    border-radius:50%;
+
+    display:none;
+
+    pointer-events:none;
+
+    box-shadow:0 0 20px rgba(0,0,0,.2);
+
+    background-repeat:no-repeat;
+
+    z-index:20;
+
+}
+
+.image-zoom-container img{
+
+    display:block;
+
+    width:100%;
+
+}
+
+/* ================= IMAGE VIEWER ================= */
+
+.image-viewer{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.95);
+
+    display:none;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:9999;
+
+}
+
+.image-viewer.active{
+
+    display:flex;
+
+}
+
+.viewer-image{
+
+    max-width:90vw;
+
+    max-height:90vh;
+
+    object-fit:contain;
+
+    border-radius:10px;
+
+    transition:.3s ease;
+
+}
+
+.viewer-close{
+
+    position:absolute;
+
+    top:25px;
+
+    right:35px;
+
+    color:white;
+
+    font-size:46px;
+
+    cursor:pointer;
+
+}
+
+.viewer-nav{
+
+    position:absolute;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    background:none;
+
+    border:none;
+
+    color:white;
+
+    font-size:60px;
+
+    cursor:pointer;
+
+    padding:20px;
+
+}
+
+.viewer-nav.prev{
+
+    left:20px;
+
+}
+
+.viewer-nav.next{
+
+    right:20px;
+
 }
 </style>
 
@@ -311,47 +819,56 @@ grid-template-columns:repeat(2,1fr);
 
 <div class="product-page">
 
-<div class="product-image">
+<div class="product-gallery">
 
-<img id="productImage">
+    <div
+        id="thumbnailContainer"
+        class="thumbnail-container">
+    </div>
+
+    <div class="product-image">
+
+    <div id="imageZoomContainer" class="image-zoom-container">
+
+        <img id="productImage">
+
+        <div
+            id="zoomLens"
+            class="zoom-lens">
+        </div>
+
+    </div>
 
 </div>
+
+
+</div>
+
+
 
 <div class="product-info">
 
 <h1 id="productName"></h1>
 
 <div
-class="price"
-id="productPrice"></div>
-
-<div class="info">
-
-<strong>Fabric:</strong>
-
-<span id="productFabric"></span>
-
-</div>
-
-<div class="info">
-
-<strong>Colour:</strong>
-
-<span id="productColour"></span>
-
-</div>
-
-<div class="info">
-
-<strong>Status:</strong>
-
-<span id="productAvailability"></span>
-
-</div>
-
-<div
 class="description"
 id="productDescription"></div>
+
+<hr class="product-divider">
+
+
+
+<div class="price" id="productPrice"></div>
+
+<div class="price-tax">
+    Price incl. of all taxes
+</div>
+
+
+
+
+
+
 
 
 <!-- ================= Sizes ================= -->
@@ -359,22 +876,16 @@ id="productDescription"></div>
 <div
     id="sizeSection"
     class="size-section"
-    style="display:none;">
+    style="display:block;">
 
     <div class="size-header">
 
-        
-
-    <span class="size-title">
-        SELECT SIZE
+    <span class="size-label">
+        Select Size
     </span>
 
-    <a
-        href="#"
-        id="sizeGuideLink">
-
+    <a href="#" class="size-guide">
         Size Guide
-
     </a>
 
 </div>
@@ -387,6 +898,8 @@ id="productDescription"></div>
     </div>
 
 </div> 
+
+
 
 <!-- ================= End Sizes ================= -->
 
@@ -412,9 +925,93 @@ id="productDescription"></div>
 
 </div>
 
+<div class="info">
+
+<strong>Fabric:</strong>
+
+<span id="productFabric"></span>
+
+</div>
+
+<div class="info">
+
+<strong>Colour:</strong>
+
+<span id="productColour"></span>
+
+</div>
+
+<div class="trust-features">
+
+    <div class="trust-item">
+
+        <span class="trust-icon">🚚</span>
+
+        <div>
+
+            <strong>Free Shipping</strong>
+
+            <small>On all prepaid orders</small>
+
+        </div>
+
+    </div>
+
+    <div class="trust-item">
+
+        <span class="trust-icon">↩</span>
+
+        <div>
+
+            <strong>Easy Returns</strong>
+
+            <small>7-Day hassle-free returns</small>
+
+        </div>
+
+    </div>
+
+    <div class="trust-item">
+
+        <span class="trust-icon">🔒</span>
+
+        <div>
+
+            <strong>Secure Payments</strong>
+
+            <small>100% protected checkout</small>
+
+        </div>
+
+    </div>
+
+    <div class="trust-item">
+
+        <span class="trust-icon">💵</span>
+
+        <div>
+
+            <strong>Cash on Delivery</strong>
+
+            <small>Available in most locations</small>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<div id="productAccordions" class="product-accordions"></div>
+
+
+
 </div>
 
 </div>
+
+
 
 <div class="related">
 
@@ -451,6 +1048,18 @@ id="relatedProducts">
         </div>
 
     </div>
+
+</div>
+
+<div id="imageViewer" class="image-viewer">
+
+    <span id="closeViewer" class="viewer-close">&times;</span>
+
+    <button id="prevImage" class="viewer-nav prev">&#10094;</button>
+
+    <img id="viewerImage" class="viewer-image">
+
+    <button id="nextImage" class="viewer-nav next">&#10095;</button>
 
 </div>
 

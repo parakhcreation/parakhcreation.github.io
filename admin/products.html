@@ -231,7 +231,29 @@ class="form-select">
     </button>
 
 </div>
+<div class="mt-4">
 
+    <label class="form-label">
+        Gallery Images
+    </label>
+
+    <input
+        type="file"
+        id="galleryImages"
+        class="form-control"
+        accept="image/*"
+        multiple>
+
+    <small class="text-muted">
+        Select one or more additional product images.
+    </small>
+
+    <div
+        id="galleryPreview"
+        class="d-flex flex-wrap gap-2 mt-3">
+    </div>
+
+</div>
 </div>
 
 <div class="col-md-6 mb-3">
@@ -320,6 +342,96 @@ class="form-control">
 id="description"
 class="form-control"
 rows="3"></textarea>
+
+<hr class="my-4">
+
+<h5 class="mb-3">Product Information</h5>
+
+<div class="col-12 mb-3">
+    <label>Product Details</label>
+    <textarea
+        id="productDetails"
+        class="form-control"
+        rows="5"
+        placeholder="Enter detailed description shown on the product page"></textarea>
+</div>
+
+<div class="col-md-6 mb-3">
+    <label>SKU</label>
+    <input id="sku" class="form-control">
+</div>
+
+<div class="col-md-6 mb-3">
+    <label>Work</label>
+    <input id="work" class="form-control">
+</div>
+
+<div class="col-md-6 mb-3">
+    <label>Pattern</label>
+    <input id="pattern" class="form-control">
+</div>
+
+<div class="col-md-6 mb-3">
+    <label>Border</label>
+    <input id="border" class="form-control">
+</div>
+
+<div class="col-md-6 mb-3">
+    <label>Blouse Piece</label>
+    <input id="blousePiece" class="form-control">
+</div>
+
+<div class="col-md-6 mb-3">
+    <label>Length</label>
+    <input
+        id="length"
+        class="form-control"
+        placeholder="6.5 metres">
+</div>
+
+<div class="col-md-6 mb-3">
+    <label>Width</label>
+    <input
+        id="width"
+        class="form-control"
+        placeholder="1.1 metres">
+</div>
+
+<div class="col-md-6 mb-3">
+    <label>Weight</label>
+    <input
+        id="weight"
+        class="form-control"
+        placeholder="780 g">
+</div>
+
+<div class="col-md-6 mb-3">
+    <label>Package Contents</label>
+    <input
+        id="packageContents"
+        class="form-control">
+</div>
+
+<div class="col-md-6 mb-3">
+    <label>Country of Origin</label>
+    <input
+        id="countryOfOrigin"
+        class="form-control">
+</div>
+
+<div class="col-md-6 mb-3">
+    <label>Manufacturer</label>
+    <input
+        id="manufacturer"
+        class="form-control">
+</div>
+
+<div class="col-md-6 mb-3">
+    <label>Marketed By</label>
+    <input
+        id="marketedBy"
+        class="form-control">
+</div>
 
 </div>
 

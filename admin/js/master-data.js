@@ -148,6 +148,10 @@ tableBody.innerHTML = `
 
 return;
 
+}
+
+async function loadCategories() {
+
     tableHead.innerHTML = `
         <tr>
             <th>Name</th>
@@ -239,13 +243,21 @@ Edit
         document.getElementById("catOrder").value =
             data.displayOrder;
 
-        document.getElementById("catImage").value =
-    data.image || "";
+        const preview = document.getElementById("catPreview");
 
-    const image =
-    document.getElementById("catImage")
-        .value
-        .trim();
+if (data.image) {
+
+    preview.src = data.image;
+
+    preview.style.display = "block";
+
+} else {
+
+    preview.style.display = "none";
+
+}
+
+document.getElementById("catImage").value = "";
 
         document.getElementById("catActive").checked =
             data.active;

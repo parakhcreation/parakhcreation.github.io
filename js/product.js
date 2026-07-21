@@ -9,12 +9,35 @@ const productId = params.get("id");
 let currentProduct = null;
 
 const image = document.getElementById("productImage");
+const zoomLens =
+document.getElementById("zoomLens");
+
+const zoomContainer =
+document.getElementById("imageZoomContainer");
+const thumbnailContainer =
+document.getElementById("thumbnailContainer");
 const name = document.getElementById("productName");
 const price = document.getElementById("productPrice");
 const description = document.getElementById("productDescription");
 const fabric = document.getElementById("productFabric");
 const colour = document.getElementById("productColour");
-const availability = document.getElementById("productAvailability");
+const accordions = document.getElementById("productAccordions");
+const viewer =
+document.getElementById("imageViewer");
+
+const viewerImage =
+document.getElementById("viewerImage");
+
+const closeViewer =
+document.getElementById("closeViewer");
+
+const prevImage =
+document.getElementById("prevImage");
+
+const nextImage =
+document.getElementById("nextImage");
+
+
 const relatedGrid = document.getElementById("relatedProducts");
 const wishlistButton = document.getElementById("addToWishlist");
 const sizeSection = document.getElementById("sizeSection");
@@ -42,10 +65,124 @@ if (!currentProduct) {
 
 }
 
-    image.src =
-    currentProduct.thumbnail ||
-    currentProduct.image ||
-    "";
+const gallery = [];
+
+let currentGallery = gallery;
+
+let currentIndex = 0;
+
+// Always make the thumbnail the first image
+if (currentProduct.thumbnail || currentProduct.image) {
+
+    gallery.push(
+        currentProduct.thumbnail ||
+        currentProduct.image
+    );
+
+}
+
+// Then add the gallery images
+if (currentProduct.images && currentProduct.images.length > 0) {
+
+    gallery.push(...currentProduct.images);
+
+}
+
+image.src = gallery[0];
+
+thumbnailContainer.innerHTML = "";
+
+gallery.forEach((url, index) => {
+
+    const thumb = document.createElement("img");
+
+    thumb.src = url;
+
+    thumb.className = "thumbnail";
+
+    if (index === 0) {
+        thumb.classList.add("active");
+    }
+
+    thumb.onclick = ()=>{
+
+    image.style.opacity = "0";
+
+    setTimeout(()=>{
+
+        image.src = url;
+        currentIndex = index;
+
+        image.onload = ()=>{
+
+            image.style.opacity = "1";
+
+        };
+
+    },150);
+
+    document.querySelectorAll(".thumbnail")
+        .forEach(t=>t.classList.remove("active"));
+
+    thumb.classList.add("active");
+
+};
+
+    thumbnailContainer.appendChild(thumb);
+
+});
+
+image.onclick = () => {
+
+    viewer.classList.add("active");
+
+    viewerImage.src = currentGallery[currentIndex];
+
+};
+
+closeViewer.onclick = () => {
+
+    viewer.classList.remove("active");
+
+};
+
+viewer.onclick = (e)=>{
+
+    if(e.target===viewer){
+
+        viewer.classList.remove("active");
+
+    }
+
+};
+
+prevImage.onclick = ()=>{
+
+    currentIndex--;
+
+    if(currentIndex<0){
+
+        currentIndex=currentGallery.length-1;
+
+    }
+
+    viewerImage.src=currentGallery[currentIndex];
+
+};
+
+nextImage.onclick = ()=>{
+
+    currentIndex++;
+
+    if(currentIndex>=currentGallery.length){
+
+        currentIndex=0;
+
+    }
+
+    viewerImage.src=currentGallery[currentIndex];
+
+};
     image.alt = currentProduct.name;
 
     name.textContent = currentProduct.name;
@@ -58,11 +195,144 @@ if (!currentProduct) {
 
     colour.textContent = currentProduct.colour;
 
-    availability.textContent =
+   const specifications = [
+    ["SKU", currentProduct.sku],
+    ["Fabric", currentProduct.fabric],
+    ["Colour", currentProduct.colour],
+    ["Pattern", currentProduct.pattern],
+    ["Work", currentProduct.work],
+    ["Border", currentProduct.border],
+    ["Blouse Piece", currentProduct.blousePiece],
+    ["Length", currentProduct.length],
+    ["Width", currentProduct.width],
+    ["Weight", currentProduct.weight],
+    ["Package Contents", currentProduct.packageContents],
+    ["Country of Origin", currentProduct.countryOfOrigin],
+    ["Manufacturer", currentProduct.manufacturer],
+    ["Marketed By", currentProduct.marketedBy]
+];
+
+let specificationRows = "";
+
+specifications.forEach(([label, value]) => {
+    if (value) {
+        specificationRows += `
+        <div class="spec-row">
+            <div class="spec-label">${label}</div>
+            <div class="spec-value">${value}</div>
+        </div>`;
+    }
+});
+
+accordions.innerHTML = "";
+
+if (currentProduct.productDetails) {
+
+    accordions.innerHTML += `
+    <div class="accordion-item active">
+
+        <div class="accordion-header">
+
+            <span class="accordion-title">Product Details</span>
+
+            <span class="accordion-icon">⌄</span>
+
+        </div>
+
+        <div class="accordion-content">
+
+            <p>${currentProduct.productDetails}</p>
+
+        </div>
+
+    </div>`;
+}
+
+if (specificationRows) {
+
+    accordions.innerHTML += `
+    <div class="accordion-item">
+
+        <div class="accordion-header">
+
+            <span class="accordion-title">Product Specifications</span>
+
+            <span class="accordion-icon">⌄</span>
+
+        </div>
+
+        <div class="accordion-content">
+
+            ${specificationRows}
+
+        </div>
+
+    </div>`;
+}
+
+document.querySelectorAll(".accordion-header").forEach(header => {
+
+    header.addEventListener("click", () => {
+
+        header.parentElement.classList.toggle("active");
+
+    });
+
+});
+
+    let inStock = false;
+
+// Product without sizes
+if (
+    currentProduct.inventory &&
+    currentProduct.inventory.type === "none"
+) {
+
+    inStock = Number(currentProduct.inventory.stock) > 0;
+
+}
+
+// Product with sizes
+else if (
+    currentProduct.inventory &&
+    currentProduct.inventory.sizes
+) {
+
+    inStock = Object.values(currentProduct.inventory.sizes)
+        .some(stock => Number(stock) > 0);
+
+}
+
+// Old products without inventory object
+else {
+
+    inStock =
         currentProduct.available === "TRUE" ||
-        currentProduct.available === true
-            ? "Available"
-            : "Out of Stock";
+        currentProduct.available === true;
+
+}
+
+const availability = document.getElementById("availability");
+
+if (availability) {
+    if (inStock) {
+        availability.textContent = "";
+    } else {
+        availability.textContent = "Out of Stock";
+        availability.style.color = "#dc3545";
+    }
+}
+
+
+    if (!inStock) {
+
+    document.getElementById("addToCart").disabled = true;
+
+    document.getElementById("buyNow").disabled = true;
+
+    document.getElementById("addToWishlist").disabled = true;
+
+}
             
             renderSizes(currentProduct);
     wishlistButton.textContent =

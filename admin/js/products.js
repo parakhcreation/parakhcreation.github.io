@@ -631,6 +631,45 @@ document.getElementById("keywords").value =
 document.getElementById("description").value =
     product.description || "";
 
+document.getElementById("productDetails").value =
+    product.productDetails || "";
+
+document.getElementById("sku").value =
+    product.sku || "";
+
+document.getElementById("pattern").value =
+    product.pattern || "";
+
+document.getElementById("work").value =
+    product.work || "";
+
+document.getElementById("border").value =
+    product.border || "";
+
+document.getElementById("blousePiece").value =
+    product.blousePiece || "";
+
+document.getElementById("length").value =
+    product.length || "";
+
+document.getElementById("width").value =
+    product.width || "";
+
+document.getElementById("weight").value =
+    product.weight || "";
+
+document.getElementById("packageContents").value =
+    product.packageContents || "";
+
+document.getElementById("countryOfOrigin").value =
+    product.countryOfOrigin || "";
+
+document.getElementById("manufacturer").value =
+    product.manufacturer || "";
+
+document.getElementById("marketedBy").value =
+    product.marketedBy || "";
+
 document.getElementById("available").checked =
     product.available;
 
@@ -645,6 +684,27 @@ if (product.thumbnail) {
     imagePreview.classList.remove("d-none");
 
     removeImageBtn.classList.remove("d-none");
+
+}
+
+/* ---------- Restore Gallery Images ---------- */
+
+galleryItems = [];
+
+galleryPreview.innerHTML = "";
+
+if (product.images && product.images.length > 0) {
+
+    (product.images || []).forEach(url => {
+
+    galleryItems.push({
+        type: "url",
+        url
+    });
+
+});
+
+renderGalleryPreview();
 
 }
 
@@ -732,31 +792,73 @@ saveBtn.addEventListener("click", async () => {
 );
 
     const product = {
+
     id: document.getElementById("id").value.trim(),
+
     name: document.getElementById("name").value.trim(),
+
     category: document.getElementById("category").value,
+
     fabric: document.getElementById("fabric").value.trim(),
+
     colour: document.getElementById("colour").value.trim(),
+
     price: Number(document.getElementById("price").value),
+
     inventory: getInventory(),
-stock: getTotalStock(),
+
+    stock: getTotalStock(),
+
     collection: document.getElementById("collection").value.trim(),
-    occasion:
-    document.getElementById("occasion")
+
+    occasion: document.getElementById("occasion")
         .value
         .split(",")
         .map(v => v.trim())
         .filter(Boolean),
 
-keywords:
-    document.getElementById("keywords")
+    keywords: document.getElementById("keywords")
         .value
         .split(",")
         .map(v => v.trim().toLowerCase())
         .filter(Boolean),
+
     description: document.getElementById("description").value.trim(),
+
+    productDetails: document.getElementById("productDetails").value.trim(),
+
+    sku: document.getElementById("sku").value.trim(),
+
+   // fit: document.getElementById("fit").value.trim(),
+
+    pattern: document.getElementById("pattern").value.trim(),
+
+    work: document.getElementById("work").value.trim(),
+
+    border: document.getElementById("border").value.trim(),
+
+    blousePiece: document.getElementById("blousePiece").value.trim(),
+
+   // dupatta: document.getElementById("dupatta").value.trim(),
+
+    length: document.getElementById("length").value.trim(),
+
+    width: document.getElementById("width").value.trim(),
+
+    weight: document.getElementById("weight").value.trim(),
+
+    packageContents: document.getElementById("packageContents").value.trim(),
+
+    countryOfOrigin: document.getElementById("countryOfOrigin").value.trim(),
+
+    manufacturer: document.getElementById("manufacturer").value.trim(),
+
+    marketedBy: document.getElementById("marketedBy").value.trim(),
+
     available: document.getElementById("available").checked,
+
     featured: document.getElementById("featured").checked
+
 };
 
 console.log(
@@ -785,6 +887,62 @@ if (imageFile) {
 }
 
 product.thumbnail = imageUrl;
+
+/* ---------- Upload Gallery Images ---------- */
+
+const galleryUrls = [];
+
+let galleryIndex = 1;
+
+for (const item of galleryItems) {
+
+    if (item.type === "url") {
+
+        galleryUrls.push(item.url);
+
+        continue;
+
+    }
+
+    const file = item.file;
+
+    const extension = file.name.split(".").pop();
+
+    const storageRef = ref(
+
+        storage,
+
+        `products/${product.id}/gallery/${galleryIndex}.${extension}`
+
+    );
+
+    await uploadBytes(storageRef, file);
+
+    const url = await getDownloadURL(storageRef);
+
+    galleryUrls.push(url);
+
+    galleryIndex++;
+
+}
+
+if (galleryUrls.length > 0) {
+
+    product.images = galleryUrls;
+
+} else if (editingProductId) {
+
+    const existing = await getDoc(
+        doc(db, "products", editingProductId)
+    );
+
+    if (existing.exists()) {
+
+        product.images = existing.data().images || [];
+
+    }
+
+}
 if (editingProductId) {
 
     const existing = await getDoc(doc(db, "products", editingProductId));
@@ -829,6 +987,10 @@ bootstrap.Modal
 
 // Reset the form
 document.getElementById("productForm").reset();
+
+galleryFiles = [];
+
+galleryPreview.innerHTML = "";
 
 // Generate the next product ID
 await updateProductId();
@@ -877,6 +1039,92 @@ removeImageBtn.addEventListener("click", () => {
 
 });
 
+
+/* ================= Gallery Preview ================= */
+
+const galleryImages = document.getElementById("galleryImages");
+const galleryPreview = document.getElementById("galleryPreview");
+
+let galleryItems = [];
+
+galleryImages.addEventListener("change", () => {
+
+    const newFiles = [...galleryImages.files];
+
+newFiles.forEach(file => {
+
+    galleryItems.push({
+
+        type: "file",
+
+        file
+
+    });
+
+});
+
+galleryImages.value = "";
+
+renderGalleryPreview();
+
+});
+
+function renderGalleryPreview() {
+
+    galleryPreview.innerHTML = "";
+
+    galleryItems.forEach((item, index) => {
+
+        const wrapper = document.createElement("div");
+
+        wrapper.style.position = "relative";
+        wrapper.style.width = "90px";
+        wrapper.style.height = "90px";
+
+        const img = document.createElement("img");
+
+        img.src = item.type === "file"
+            ? URL.createObjectURL(item.file)
+            : item.url;
+
+        img.style.width = "100%";
+        img.style.height = "100%";
+        img.style.objectFit = "cover";
+        img.style.borderRadius = "8px";
+        img.style.border = "1px solid #ddd";
+
+        const removeBtn = document.createElement("button");
+
+        removeBtn.innerHTML = "&times;";
+        removeBtn.type = "button";
+
+        removeBtn.style.position = "absolute";
+        removeBtn.style.top = "-8px";
+        removeBtn.style.right = "-8px";
+        removeBtn.style.width = "22px";
+        removeBtn.style.height = "22px";
+        removeBtn.style.borderRadius = "50%";
+        removeBtn.style.border = "none";
+        removeBtn.style.background = "#dc3545";
+        removeBtn.style.color = "#fff";
+        removeBtn.style.cursor = "pointer";
+
+        removeBtn.onclick = () => {
+
+            galleryItems.splice(index, 1);
+
+            renderGalleryPreview();
+
+        };
+
+        wrapper.appendChild(img);
+        wrapper.appendChild(removeBtn);
+
+        galleryPreview.appendChild(wrapper);
+
+    });
+
+}
 
 function initialiseColourDropdown() {
 
