@@ -10,10 +10,24 @@ import { COLOURS } from "./data/colours.js";
 
 
 const params = new URLSearchParams(window.location.search);
+
+const categoryQuery =
+    (params.get("category") || "").trim().toLowerCase();
 const query = (params.get("q") || "").trim();
 
-document.getElementById("searchHeading").textContent =
-    `Search Results for "${query}"`;
+if (categoryQuery) {
+
+    document.getElementById("searchHeading").textContent =
+        categoryQuery.charAt(0).toUpperCase() +
+        categoryQuery.slice(1);
+
+}
+else {
+
+    document.getElementById("searchHeading").textContent =
+        `Search Results for "${query}"`;
+
+}
 
 const snapshot = await getDocs(collection(db, "products"));
 
@@ -39,9 +53,25 @@ const fuse = new Fuse(products, {
     ]
 });
 
-let currentResults = query
-    ? fuse.search(query).map(r => r.item)
-    : products;
+let currentResults;
+
+if (categoryQuery) {
+
+    currentResults = products.filter(product =>
+        (product.category || "").toLowerCase() === categoryQuery
+    );
+
+}
+else if (query) {
+
+    currentResults = fuse.search(query).map(r => r.item);
+
+}
+else {
+
+    currentResults = products;
+
+}
 
     let browsingMode = false;
 
@@ -284,7 +314,7 @@ function updateFilters() {
 
         });
 
-    const sourceProducts = browsingMode ? products : currentResults;
+    const sourceProducts = products;
 
 const filtered = sourceProducts.filter(product => {
 
@@ -384,3 +414,32 @@ function renderProducts(products) {
 document
     .getElementById("sortSelect")
     .addEventListener("change", updateFilters);
+
+
+    const searchInput = document.getElementById("searchInput");
+
+if (searchInput) {
+
+    searchInput.addEventListener("input", () => {
+
+    const searchText = searchInput.value.trim();
+
+    let filteredProducts;
+
+    if (!searchText) {
+
+        filteredProducts = currentResults;
+
+    } else {
+
+        filteredProducts = fuse
+            .search(searchText)
+            .map(result => result.item);
+
+    }
+
+    renderProducts(sortProducts(filteredProducts));
+
+});
+
+}

@@ -104,12 +104,12 @@ if (categoryCount) {
 // Build Featured Collection Cards
 // ----------------------------
 
-const collectionCards =
-    document.getElementById("collectionCards");
+const categoryTrain =
+    document.getElementById("categoryTrain");
 
-if (collectionCards) {
+if (categoryTrain) {
 
-    collectionCards.innerHTML = "";
+    categoryTrain.innerHTML = "";
 
     Object.entries(categoryMap)
         .sort((a, b) => a[1].displayOrder - b[1].displayOrder)
@@ -117,59 +117,71 @@ if (collectionCards) {
 
             if (!category.active) return;
 
-            collectionCards.innerHTML += `
-                <a
+            categoryTrain.innerHTML += `
+<a
     href="#collection"
-    class="collection-card"
+    class="category-card"
     data-category="${id}">
 
-                    <img
-                        src="${category.image}"   
-                        alt="${category.pluralName}">
+    <div class="category-info">
 
-                    <div class="overlay">
+        <h3>${category.pluralName}</h3>
 
-                        <h3>${category.pluralName}</h3>
+        <span>Shop Now →</span>
 
-                        <p>Explore →</p>
+    </div>
 
-                    </div>
+    <div class="category-photo">
 
-                </a>
-            `;
+        <img
+            src="${category.image}"
+            alt="${category.pluralName}">
+
+    </div>
+
+</a>
+`;
+
+        });
+
+    // Duplicate cards
+
+const originalCards = [...categoryTrain.children];
+
+originalCards.forEach(card => {
+
+    categoryTrain.appendChild(card.cloneNode(true));
+
+});
+
+// Click on ANY card (original or duplicate)
+
+categoryTrain
+    .querySelectorAll(".category-card")
+    .forEach(card => {
+
+        card.addEventListener("click", e => {
+
+            e.preventDefault();
+
+            const category = card.dataset.category;
+
+            window.location.href =
+                `search.html?category=${encodeURIComponent(category)}`;
 
         });
 
-    collectionCards
-        .querySelectorAll(".collection-card")
-        .forEach(card => {
+    });
 
-            card.addEventListener("click", () => {
+startCategoryTrain();
 
-                currentFilter = card.dataset.category;
 
-                document
-                    .querySelector("#collection")
-                    .scrollIntoView({
-                        behavior: "smooth"
-                    });
 
-                document
-                    .querySelectorAll(".filter-btn")
-                    .forEach(btn => {
+        // ------------------------------------
+// Duplicate cards for infinite train
+// ------------------------------------
 
-                        btn.classList.toggle(
-                            "active",
-                            btn.dataset.filter === currentFilter
-                        );
 
-                    });
-
-                render();
-
-            });
-
-        });
 
 }
 
@@ -507,27 +519,56 @@ if (searchInput) {
 
 }
 
-const prev =
-    document.getElementById("collectionPrev");
+/* ==========================================
+   Category Train Animation
+========================================== */
 
-const next =
-    document.getElementById("collectionNext");
+function startCategoryTrain() {
 
-const track =
-    document.getElementById("collectionCards");
+    const track = document.getElementById("categoryTrain");
 
-if (prev && next && track) {
+    if (!track) return;
 
-    prev.onclick = () =>
-        track.scrollBy({
-            left: -420,
-            behavior: "smooth"
-        });
+    let position = 0;
+    const speed = 0.5; // pixels per frame
 
-    next.onclick = () =>
-        track.scrollBy({
-            left: 420,
-            behavior: "smooth"
-        });
+    let paused = false;
+
+    track.addEventListener("mouseenter", () => {
+
+        paused = true;
+
+    });
+
+    track.addEventListener("mouseleave", () => {
+
+        paused = false;
+
+    });
+
+    function animate() {
+
+        if (!paused) {
+
+            position += speed;
+
+            const halfWidth = track.scrollWidth / 2;
+
+            if (position >= halfWidth) {
+
+                position = 0;
+
+            }
+
+            track.style.transform =
+                `translateX(${-position}px)`;
+
+        }
+
+        requestAnimationFrame(animate);
+
+    }
+
+    animate();
 
 }
