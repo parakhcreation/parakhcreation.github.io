@@ -30,7 +30,15 @@ import {
 
     arrayUnion,
 
-    arrayRemove
+    arrayRemove,
+
+    query,
+
+    where,
+
+    orderBy,
+
+    limit
 
 }
 

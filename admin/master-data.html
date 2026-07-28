@@ -52,7 +52,9 @@ content="width=device-width, initial-scale=1.0">
     Sizes
 </button>
         
-
+<button class="master-tab" data-type="heroBanners">
+    Hero Banners
+</button>
     </aside>
 
     <main class="master-content">
@@ -272,6 +274,140 @@ Save Category
 
 </div>
 
+<div
+class="modal fade"
+id="heroBannerModal"
+tabindex="-1">
+
+<div class="modal-dialog modal-lg">
+
+<div class="modal-content">
+
+<div class="modal-header">
+
+<h5 class="modal-title">
+
+Hero Banner
+
+</h5>
+
+<button
+type="button"
+class="btn-close"
+data-bs-dismiss="modal">
+</button>
+
+</div>
+
+<div class="modal-body">
+
+<div class="mb-3">
+
+<label class="form-label">
+
+Banner Image
+
+</label>
+
+<input
+type="file"
+id="heroImage"
+class="form-control"
+accept="image/*">
+
+</div>
+
+<div class="mb-3 text-center">
+
+<img
+id="heroPreview"
+style="
+display:none;
+max-height:220px;
+border-radius:12px;
+">
+
+</div>
+
+<div class="mb-3">
+
+<label class="form-label">
+
+Title
+
+</label>
+
+<input
+id="heroTitle"
+class="form-control">
+
+</div>
+
+<div class="mb-3">
+
+<label class="form-label">
+
+Subtitle
+
+</label>
+
+<input
+id="heroSubtitle"
+class="form-control">
+
+</div>
+
+<div class="mb-3">
+
+<label class="form-label">
+
+Display Order
+
+</label>
+
+<input
+type="number"
+id="heroOrder"
+class="form-control">
+
+</div>
+
+<div class="form-check">
+
+<input
+class="form-check-input"
+type="checkbox"
+id="heroActive"
+checked>
+
+<label
+class="form-check-label">
+
+Active
+
+</label>
+
+</div>
+
+</div>
+
+<div class="modal-footer">
+
+<button
+class="btn btn-primary"
+id="saveHeroBannerBtn">
+
+Save
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
 
 </body>
 

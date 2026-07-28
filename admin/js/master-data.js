@@ -12,11 +12,14 @@ import {
 import {
     collection,
     getDocs,
+    getDoc,
     query,
     orderBy,
     addDoc,
     doc,
-    setDoc
+    setDoc,
+    deleteDoc,
+    serverTimestamp
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
 let editingId = null;
@@ -37,6 +40,12 @@ const imageInput =
 const preview =
     document.getElementById("catPreview");
 
+const heroImageInput =
+    document.getElementById("heroImage");
+
+const heroPreview =
+    document.getElementById("heroPreview");
+
 imageInput.addEventListener("change", () => {
 
     const file = imageInput.files[0];
@@ -55,12 +64,57 @@ imageInput.addEventListener("change", () => {
 
 });
 
+heroImageInput.addEventListener("change", () => {
+
+    const file = heroImageInput.files[0];
+
+    if (!file) {
+
+        heroPreview.style.display = "none";
+
+        heroPreview.src = "";
+
+        return;
+
+    }
+
+    heroPreview.src =
+        URL.createObjectURL(file);
+
+    heroPreview.style.display = "block";
+
+});
+
 addBtn.addEventListener("click", () => {
 
+    if (currentType === "heroBanners") {
+
+        document.getElementById("heroTitle").value = "";
+        document.getElementById("heroSubtitle").value = "";
+        document.getElementById("heroOrder").value = "";
+        document.getElementById("heroActive").checked = true;
+
+        document.getElementById("heroImage").value = "";
+
+        const preview =
+            document.getElementById("heroPreview");
+
+        preview.style.display = "none";
+        preview.src = "";
+
+        new bootstrap.Modal(
+            document.getElementById("heroBannerModal")
+        ).show();
+
+        return;
+    }
+
     if (
-    currentType !== "categories" &&
-    currentType !== "sizes"
-) return;
+        currentType !== "categories" &&
+        currentType !== "sizes"
+    ) return;
+
+    // ↓↓↓ KEEP ALL YOUR EXISTING CATEGORY/SIZE CODE BELOW THIS LINE ↓↓↓
 
     editingMode = false;
     editingId = null;
@@ -122,23 +176,31 @@ async function loadTable() {
     tableHead.innerHTML = "";
     tableBody.innerHTML = "";
 
-   if (currentType === "categories") {
+    if (currentType === "categories") {
 
-    await loadCategories();
+        await loadCategories();
 
-    return;
+        return;
 
-}
+    }
 
-if (currentType === "sizes") {
+    if (currentType === "sizes") {
 
-    await loadSizes();
+        await loadSizes();
 
-    return;
+        return;
 
-}
+    }
 
-tableBody.innerHTML = `
+    if (currentType === "heroBanners") {
+
+        await loadHeroBanners();
+
+        return;
+
+    }
+
+    tableBody.innerHTML = `
 <tr>
     <td colspan="6">
         Coming Soon...
@@ -146,8 +208,173 @@ tableBody.innerHTML = `
 </tr>
 `;
 
-return;
+    return;
 
+}
+
+async function loadHeroBanners() {
+
+    tableHead.innerHTML = `
+        <tr>
+            <th>Image</th>
+            <th>Title</th>
+            <th>Subtitle</th>
+            <th>Display Order</th>
+            <th>Active</th>
+            <th>Actions</th>
+        </tr>
+    `;
+
+    tableBody.innerHTML = "";
+
+    const q = query(
+        collection(db, "heroBanners"),
+        orderBy("displayOrder")
+    );
+
+    const snapshot = await getDocs(q);
+
+    if (snapshot.empty) {
+
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="6">
+                    No Hero Banners Yet
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+
+    snapshot.forEach(document => {
+
+        const data = document.data();
+
+        tableBody.innerHTML += `
+
+        <tr>
+
+            <td>
+
+                <img
+                    src="${data.image}"
+                    style="
+                        width:120px;
+                        height:70px;
+                        object-fit:cover;
+                        border-radius:8px;
+                    ">
+
+            </td>
+
+            <td>${data.title}</td>
+
+            <td>${data.subtitle || ""}</td>
+
+            <td>${data.displayOrder}</td>
+
+            <td>
+
+                ${data.active ? "✅" : "❌"}
+
+            </td>
+
+            <td>
+
+                <button
+                    class="btn btn-warning btn-sm hero-edit"
+                    data-id="${document.id}">
+
+                    Edit
+
+                </button>
+
+                <button
+                    class="btn btn-danger btn-sm hero-delete"
+                    data-id="${document.id}">
+
+                    Delete
+
+                </button>
+
+            </td>
+
+        </tr>
+
+        `;
+
+    });
+
+
+    document
+.querySelectorAll(".hero-edit")
+.forEach(button => {
+
+    button.onclick = async () => {
+
+        editingMode = true;
+        editingId = button.dataset.id;
+
+        const snap = await getDoc(
+            doc(db, "heroBanners", editingId)
+        );
+
+        const data = snap.data();
+
+        document.getElementById("heroTitle").value =
+            data.title;
+
+        document.getElementById("heroSubtitle").value =
+            data.subtitle || "";
+
+        document.getElementById("heroOrder").value =
+            data.displayOrder;
+
+        document.getElementById("heroActive").checked =
+            data.active;
+
+        heroPreview.src =
+            data.image;
+
+        heroPreview.style.display = "block";
+
+        heroImageInput.value = "";
+
+        new bootstrap.Modal(
+            document.getElementById("heroBannerModal")
+        ).show();
+
+    };
+
+});
+
+
+document
+.querySelectorAll(".hero-delete")
+.forEach(button => {
+
+    button.onclick = async () => {
+
+        if (
+            !confirm(
+                "Delete this Hero Banner?"
+            )
+        ) return;
+
+        await deleteDoc(
+            doc(
+                db,
+                "heroBanners",
+                button.dataset.id
+            )
+        );
+
+        await loadHeroBanners();
+
+    };
+
+});
 }
 
 async function loadCategories() {
@@ -450,3 +677,129 @@ if (file) {
 
 });
 
+
+
+document
+.getElementById("saveHeroBannerBtn")
+.addEventListener("click", async () => {
+
+    const title =
+        document.getElementById("heroTitle").value.trim();
+
+    const subtitle =
+        document.getElementById("heroSubtitle").value.trim();
+
+    const displayOrder =
+        Number(
+            document.getElementById("heroOrder").value
+        );
+
+    const active =
+        document.getElementById("heroActive").checked;
+
+    const file = heroImageInput.files[0];
+
+if (!editingMode && !file) {
+
+    alert("Please choose an image.");
+
+    return;
+
+}
+
+    
+
+   let image = "";
+
+if (editingMode) {
+
+    const snap = await getDoc(
+        doc(db, "heroBanners", editingId)
+    );
+
+    image = snap.data().image;
+
+}
+
+if (file) {
+
+    const extension =
+        file.name.split(".").pop();
+
+    const filename =
+        Date.now() + "." + extension;
+
+    const storageRef =
+        ref(
+            storage,
+            `hero-banners/${filename}`
+        );
+
+    await uploadBytes(
+        storageRef,
+        file
+    );
+
+    image =
+        await getDownloadURL(storageRef);
+
+}
+
+    const payload = {
+
+    title,
+    subtitle,
+    image,
+    displayOrder,
+    active,
+    createdAt: serverTimestamp()
+
+};
+
+if (editingMode) {
+
+    await setDoc(
+
+        doc(
+            db,
+            "heroBanners",
+            editingId
+        ),
+
+        payload,
+
+        {
+            merge: true
+        }
+
+    );
+
+} else {
+
+    await addDoc(
+
+        collection(
+            db,
+            "heroBanners"
+        ),
+
+        payload
+
+    );
+
+}
+
+editingMode = false;
+editingId = null;
+
+    bootstrap.Modal
+        .getInstance(
+            document.getElementById("heroBannerModal")
+        )
+        .hide();
+
+    alert("Hero Banner Saved!");
+
+    await loadTable();
+
+});

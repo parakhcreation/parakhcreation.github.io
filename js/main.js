@@ -8,13 +8,136 @@ const STORE_PHONES = {
 };
 
 import {
+
     collection,
-    getDocs
-} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+    getDocs,
+
+    query,
+
+    where,
+
+    orderBy,
+
+    limit
+
+}
+
+from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
 import { db } from "./firebase.js";
 
 let categoryMap = {};
+
+let heroBanners = [];
+
+let currentHero = 0;
+
+async function loadHeroBanner(){
+
+    const snapshot = await getDocs(
+        collection(db,"heroBanners")
+    );
+
+    heroBanners = [];
+
+    snapshot.forEach(doc=>{
+
+        const data = doc.data();
+
+        if(data.active){
+
+            heroBanners.push(data);
+
+        }
+
+    });
+
+    heroBanners.sort(
+        (a,b)=>a.displayOrder-b.displayOrder
+    );
+
+    if(heroBanners.length===0)
+        return;
+
+    showHeroBanner(0);
+
+    if(heroBanners.length>1){
+
+        setInterval(()=>{
+
+            currentHero++;
+
+            if(currentHero>=heroBanners.length)
+                currentHero=0;
+
+            showHeroBanner(currentHero);
+
+        },3000);
+
+    }
+
+}
+
+function showHeroBanner(index){
+
+    const hero = heroBanners[index];
+
+    const bg =
+        document.getElementById("heroBackground");
+
+    const title =
+        document.getElementById("heroTitle");
+
+    const subtitle =
+        document.getElementById("heroSubtitle");
+
+    if(bg){
+
+        bg.style.opacity=0;
+
+        setTimeout(()=>{
+
+            bg.style.backgroundImage=
+                `url('${hero.image}')`;
+
+            bg.style.opacity=1;
+
+        },250);
+
+    }
+
+    if(title){
+
+        title.style.opacity=0;
+
+        setTimeout(()=>{
+
+            title.textContent=
+                hero.title;
+
+            title.style.opacity=1;
+
+        },250);
+
+    }
+
+    if(subtitle){
+
+        subtitle.style.opacity=0;
+
+        setTimeout(()=>{
+
+            subtitle.textContent=
+                hero.subtitle || "";
+
+            subtitle.style.opacity=1;
+
+        },250);
+
+    }
+
+}
 
 async function loadCategories(){
 
@@ -444,6 +567,8 @@ async function init() {
 }
 
 await loadCategories();
+
+await loadHeroBanner();
 
 init();
 function updateCartCount() {
