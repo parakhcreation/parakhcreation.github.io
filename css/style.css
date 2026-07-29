@@ -3063,4 +3063,56 @@ margin-bottom:10px
     gap:8px;
 
 }
+
+.product-grid{
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:12px;
+
+}
+
+.card{
+
+    border-radius:10px;
+
+}
+
+
+.card-media{
+
+    aspect-ratio:0.78;
+
+}
+
+.card-body .cname{
+
+    font-size:13px;
+    line-height:1.25;
+
+}
+
+.card-body .cprice{
+
+    font-size:11px;
+
+}
+
+.card-body .ccode{
+
+    font-size:10px;
+
+}
+
+.card-tag{
+
+    display:none;
+
+}
+
+.card-body .ccode{
+
+    display:none;
+
+}
 } 

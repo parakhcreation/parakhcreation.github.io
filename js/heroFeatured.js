@@ -7,6 +7,8 @@ import {
 
 let products = [];
 
+let featuredTimer = null;
+
 async function init(){
 
     const snapshot = await getDocs(collection(db,"products"));
@@ -27,7 +29,13 @@ async function init(){
 
     showSet(products.slice(0,3));
 
-    setInterval(changeProducts,2000);
+    if(featuredTimer){
+
+    clearInterval(featuredTimer);
+
+}
+
+featuredTimer = setInterval(changeProducts,2000);
 
 }
 
@@ -117,3 +125,19 @@ function shuffle(array){
 }
 
 init();
+
+window.addEventListener("pageshow",(event)=>{
+
+    if(event.persisted){
+
+        if(featuredTimer){
+
+            clearInterval(featuredTimer);
+
+        }
+
+        featuredTimer = setInterval(changeProducts,2000);
+
+    }
+
+});

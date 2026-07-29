@@ -33,6 +33,8 @@ let heroBanners = [];
 
 let currentHero = 0;
 
+let categoryTrainAnimation = null;
+
 async function loadHeroBanner(){
 
     const snapshot = await getDocs(
@@ -690,10 +692,22 @@ function startCategoryTrain() {
 
         }
 
-        requestAnimationFrame(animate);
+        categoryTrainAnimation = requestAnimationFrame(animate);
 
     }
 
-    animate();
+    if(categoryTrainAnimation){
+
+    cancelAnimationFrame(categoryTrainAnimation);
 
 }
+
+animate();
+
+}
+
+window.addEventListener("pageshow", () => {
+
+    startCategoryTrain();
+
+});
