@@ -2694,9 +2694,9 @@ CATEGORY TRAIN
 }
 
 .nav-toggle{
-
-    display:none
-
+    display:block;
+    margin-left:auto;
+    font-size:28px;
 }
 
 .nav-links{
@@ -3392,6 +3392,9 @@ margin-bottom:10px
 .search-header{
     margin:0;
     padding:0;
+}
+.search-page-body .nav-toggle{
+    display:none;
 }
 }
 
