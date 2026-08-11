@@ -442,4 +442,78 @@ if (searchInput) {
 
 });
 
+const mobileFilterBtn = document.getElementById("mobileFilterBtn");
+const filtersPanel = document.querySelector(".filters");
+
+if (mobileFilterBtn && filtersPanel) {
+
+    mobileFilterBtn.addEventListener("click", () => {
+
+        filtersPanel.classList.toggle("mobile-open");
+
+    });
+
+}
+
+const mobileFilterOk = document.getElementById("mobileFilterOk");
+
+if (mobileFilterOk && filtersPanel) {
+
+    mobileFilterOk.addEventListener("click", () => {
+
+        filtersPanel.classList.remove("mobile-open");
+
+    });
+
+}
+
+const mobileSortBtn = document.getElementById("mobileSortBtn");
+const mobileSortMenu = document.getElementById("mobileSortMenu");
+const mobileSortClose = document.getElementById("mobileSortClose");
+const sortSelect = document.getElementById("sortSelect");
+
+if (mobileSortBtn && mobileSortMenu) {
+
+    mobileSortBtn.addEventListener("click", () => {
+
+        mobileSortMenu.classList.add("open");
+
+    });
+
+}
+
+if (mobileSortClose && mobileSortMenu) {
+
+    mobileSortClose.addEventListener("click", () => {
+
+        mobileSortMenu.classList.remove("open");
+
+    });
+
+}
+
+if (mobileSortMenu && sortSelect) {
+
+    mobileSortMenu
+        .querySelectorAll("[data-sort]")
+        .forEach(button => {
+
+            button.addEventListener("click", () => {
+
+                const value = button.dataset.sort;
+
+                sortSelect.value = value;
+
+                sortSelect.dispatchEvent(
+                    new Event("change", { bubbles:true })
+                );
+
+                mobileSortMenu.classList.remove("open");
+
+            });
+
+        });
+
+}
+
 }

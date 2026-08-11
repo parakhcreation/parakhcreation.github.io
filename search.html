@@ -25,14 +25,15 @@ Search Results | Parakh Creation
       </span>
     </a>
     <nav class="nav-links" id="navLinks">
-  <a href="#about">About</a>
-  <a href="#collection">Collection</a>
-  <a href="#lookbook">Lookbook</a>
-  <a href="#contact">Visit Us</a>
-  
 
+    <a href="#about">About</a>
+    <a href="#collection">Collection</a>
+    <a href="#lookbook">Lookbook</a>
+    <a href="#contact">Visit Us</a>
 
- <div class="nav-icons">
+</nav>
+
+<div class="nav-icons">
 
     <div class="search-box">
 
@@ -73,8 +74,6 @@ Search Results | Parakh Creation
     </a>
 
 </div>
-
-</nav>
     
     <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">&#9776;</button>
   </div>
@@ -129,13 +128,17 @@ Search Results | Parakh Creation
 
         <aside class="filters">
 
-            <h3>Filters</h3>
+    <h3>Filters</h3>
 
-            <div id="filterContainer">
+    <div id="filterContainer">
 
-            </div>
+    </div>
 
-        </aside>
+    <button id="mobileFilterOk">
+        OK
+    </button>
+
+</aside>
 
         <main>
 
@@ -152,8 +155,52 @@ Search Results | Parakh Creation
 </section>
 
 
+
 <!-- ============ PRODUCT MODAL ============ -->
 
+<div class="mobile-filter-bar">
+
+    <button id="mobileFilterBtn">
+        FILTER
+    </button>
+
+    <button id="mobileSortBtn">
+        SORT
+    </button>
+
+</div>
+
+<div class="mobile-sort-menu" id="mobileSortMenu">
+
+    <div class="mobile-sort-header">
+        <span>Sort By</span>
+
+        <button id="mobileSortClose">
+            ×
+        </button>
+    </div>
+
+    <button data-sort="relevance">
+        Relevance
+    </button>
+
+    <button data-sort="priceLow">
+        Price: Low to High
+    </button>
+
+    <button data-sort="priceHigh">
+        Price: High to Low
+    </button>
+
+    <button data-sort="name">
+        Name (A–Z)
+    </button>
+
+    <button data-sort="nameDesc">
+        Name (Z–A)
+    </button>
+
+</div>
 
 <script type="module" src="js/firebase.js"></script>
 
