@@ -3,6 +3,9 @@ import { auth, db } from "./firebase.js";
 import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
+    sendPasswordResetEmail,
+    verifyPasswordResetCode,
+    confirmPasswordReset,
     signOut,
     onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
@@ -247,5 +250,220 @@ if (accountBtn) {
         }
 
     });
+
+}
+
+// ===============================
+// FORGOT PASSWORD
+// ===============================
+
+const forgotPasswordForm = document.getElementById("forgotPasswordForm");
+
+if (forgotPasswordForm) {
+
+    forgotPasswordForm.addEventListener("submit", async (e) => {
+
+        e.preventDefault();
+
+        const email = document.getElementById("resetEmail").value.trim();
+        const message = document.getElementById("resetMessage");
+        const button = forgotPasswordForm.querySelector("button");
+
+        if (!email) {
+            message.textContent = "Please enter your email address.";
+            return;
+        }
+
+        button.disabled = true;
+        button.textContent = "Sending...";
+
+        try {
+
+            await sendPasswordResetEmail(auth, email);
+
+            message.textContent =
+                "If an account exists with this email, a password reset link has been sent. Please check your inbox.";
+
+            message.style.color = "#0d4b43";
+
+            forgotPasswordForm.reset();
+
+        } catch (error) {
+
+            console.error("Password reset error:", error);
+
+            message.textContent =
+                "Unable to send the reset email. Please check the email address and try again.";
+
+            message.style.color = "#8c1d40";
+
+        } finally {
+
+            button.disabled = false;
+            button.textContent = "Send Reset Link";
+
+        }
+
+    });
+
+}
+
+/* ===========================
+   RESET PASSWORD
+=========================== */
+
+const resetPasswordForm = document.getElementById("resetPasswordForm");
+
+if (resetPasswordForm) {
+
+    const resetMessage = document.getElementById("resetPasswordMessage");
+    const resetButton = document.getElementById("resetPasswordButton");
+
+    const urlParams = new URLSearchParams(window.location.search);
+
+    const mode = urlParams.get("mode");
+    const oobCode = urlParams.get("oobCode");
+
+    // Make sure this is a Firebase password-reset link
+    if (mode !== "resetPassword" || !oobCode) {
+
+        resetMessage.textContent =
+            "This password reset link is invalid or incomplete.";
+
+        resetMessage.style.color = "#8c1d40";
+
+        resetButton.disabled = true;
+
+    } else {
+
+        // Verify that the reset code is valid
+        verifyPasswordResetCode(auth, oobCode)
+            .then(() => {
+
+                // Reset link is valid.
+                resetButton.disabled = false;
+
+            })
+            .catch((error) => {
+
+                console.error("Password reset verification error:", error);
+
+                resetMessage.textContent =
+                    "This password reset link has expired or is no longer valid. Please request a new reset link.";
+
+                resetMessage.style.color = "#8c1d40";
+
+                resetButton.disabled = true;
+
+            });
+
+
+        resetPasswordForm.addEventListener("submit", async (e) => {
+
+            e.preventDefault();
+
+            const newPassword =
+                document.getElementById("newPassword").value;
+
+            const confirmNewPassword =
+                document.getElementById("confirmNewPassword").value;
+
+
+            // Check password length
+            if (newPassword.length < 6) {
+
+                resetMessage.textContent =
+                    "Password must be at least 6 characters long.";
+
+                resetMessage.style.color = "#8c1d40";
+
+                return;
+
+            }
+
+
+            // Check passwords match
+            if (newPassword !== confirmNewPassword) {
+
+                resetMessage.textContent =
+                    "The passwords do not match.";
+
+                resetMessage.style.color = "#8c1d40";
+
+                return;
+
+            }
+
+
+            resetButton.disabled = true;
+            resetButton.textContent = "Resetting...";
+
+
+            try {
+
+                await confirmPasswordReset(
+                    auth,
+                    oobCode,
+                    newPassword
+                );
+
+
+                resetMessage.textContent =
+                    "Your password has been successfully changed. You can now log in with your new password.";
+
+                resetMessage.style.color = "#0d4b43";
+
+
+                resetPasswordForm.reset();
+
+                resetButton.textContent = "Password Reset Successfully";
+
+
+                // Give the user a moment to read the message,
+                // then return to the login page.
+                setTimeout(() => {
+
+                    window.location.href = "login.html";
+
+                }, 2500);
+
+
+            } catch (error) {
+
+                console.error("Password reset error:", error);
+
+                resetButton.disabled = false;
+                resetButton.textContent = "Reset Password";
+
+
+                if (error.code === "auth/expired-action-code") {
+
+                    resetMessage.textContent =
+                        "This password reset link has expired. Please request a new one.";
+
+                } else if (error.code === "auth/invalid-action-code") {
+
+                    resetMessage.textContent =
+                        "This password reset link is invalid or has already been used.";
+
+                } else if (error.code === "auth/weak-password") {
+
+                    resetMessage.textContent =
+                        "Please choose a stronger password.";
+
+                } else {
+
+                    resetMessage.textContent =
+                        "Something went wrong while resetting your password. Please try again.";
+
+                }
+
+                resetMessage.style.color = "#8c1d40";
+
+            }
+
+        });
+
+    }
 
 }
