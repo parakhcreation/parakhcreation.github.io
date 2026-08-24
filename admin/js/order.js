@@ -4,7 +4,12 @@ import {
     doc,
     getDoc,
     updateDoc,
-    serverTimestamp
+    serverTimestamp,
+    collection,
+    query,
+    where,
+    getDocs,
+    deleteDoc
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
 console.log("order.js loaded");
@@ -390,7 +395,25 @@ order.items.forEach(item => {
 
 </div>
 
-`;
+    `;
+
+    // --------------------------------------------------------
+    // LOAD CUSTOMER REVIEW FOR THIS PRODUCT
+    // --------------------------------------------------------
+
+    const productCard =
+        productsTable.lastElementChild;
+
+
+    if (productCard) {
+
+        loadProductReview(
+            orderId,
+            item.id,
+            productCard
+        );
+
+    }
 
 });
 
@@ -554,6 +577,8 @@ if (
     updateData.deliveredAt = deliveredAt;
 
     updateData.returnWindowEnds = returnWindowEnds;
+
+    
 
 }
 
@@ -957,5 +982,604 @@ async function completeRefund(order) {
     );
 
     location.reload();
+
+}
+
+// ============================================================
+// CUSTOMER REVIEW FOR ORDER PRODUCT
+// ============================================================
+
+async function loadProductReview(
+    orderId,
+    productId,
+    productCard
+) {
+
+    const reviewContainer =
+        document.createElement("div");
+
+    reviewContainer.className =
+        "order-product-review";
+
+    reviewContainer.innerHTML = `
+        <div class="text-muted">
+            Loading customer review...
+        </div>
+    `;
+
+    productCard.appendChild(
+        reviewContainer
+    );
+
+
+    try {
+
+        const reviewsQuery =
+            query(
+                collection(db, "reviews"),
+
+                where(
+                    "orderId",
+                    "==",
+                    orderId
+                ),
+
+                where(
+                    "productId",
+                    "==",
+                    productId
+                )
+            );
+
+
+        const snapshot =
+            await getDocs(
+                reviewsQuery
+            );
+
+
+        if (snapshot.empty) {
+
+            reviewContainer.innerHTML = `
+
+                <div class="order-review-heading">
+
+                    Customer Review
+
+                </div>
+
+                <div class="text-muted">
+
+                    No review submitted yet.
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        // There should normally be only one
+        // review for this order + product.
+
+        const reviewDoc =
+            snapshot.docs[0];
+
+
+        const review = {
+
+            id: reviewDoc.id,
+
+            ...reviewDoc.data()
+
+        };
+
+
+        renderOrderReview(
+            reviewContainer,
+            review
+        );
+
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Failed to load product review:",
+            error
+        );
+
+        reviewContainer.innerHTML = `
+
+            <div class="order-review-heading">
+
+                Customer Review
+
+            </div>
+
+            <div class="text-danger">
+
+                Unable to load review.
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+// ============================================================
+// RENDER CUSTOMER REVIEW
+// ============================================================
+
+function renderOrderReview(
+    container,
+    review
+) {
+
+    const rating =
+        Math.max(
+            0,
+            Math.min(
+                5,
+                Number(review.rating || 0)
+            )
+        );
+
+
+    const stars =
+        "★".repeat(rating) +
+        "☆".repeat(5 - rating);
+
+
+    const status =
+        review.status || "pending";
+
+
+    let mediaHTML = "";
+
+
+    // --------------------------------------------------------
+    // PHOTOS
+    // --------------------------------------------------------
+
+    if (
+        Array.isArray(review.images) &&
+        review.images.length > 0
+    ) {
+
+        mediaHTML = `
+
+            <div class="mt-3">
+
+                <strong>
+                    Customer Photos
+                </strong>
+
+                <div class="order-review-images">
+
+                    ${
+                        review.images
+                            .map(image => `
+
+                                <a
+                                    href="${escapeReviewHTML(image)}"
+                                    target="_blank"
+                                    rel="noopener noreferrer">
+
+                                    <img
+                                        src="${escapeReviewHTML(image)}"
+                                        alt="Customer review photo">
+
+                                </a>
+
+                            `)
+                            .join("")
+                    }
+
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+
+    // --------------------------------------------------------
+    // VIDEO
+    // --------------------------------------------------------
+
+    if (review.video) {
+
+        mediaHTML += `
+
+            <div class="mt-3">
+
+                <strong>
+                    Customer Video
+                </strong>
+
+                <video
+                    class="order-review-video"
+                    controls
+                    preload="metadata">
+
+                    <source
+                        src="${escapeReviewHTML(review.video)}">
+
+                    Your browser does not support video playback.
+
+                </video>
+
+            </div>
+
+        `;
+
+    }
+
+
+    container.innerHTML = `
+
+        <div class="order-review-heading">
+
+            Customer Review
+
+            <span
+                class="review-status-badge
+                review-status-${escapeReviewHTML(status)}">
+
+                ${escapeReviewHTML(
+                    status.charAt(0).toUpperCase()
+                    + status.slice(1)
+                )}
+
+            </span>
+
+        </div>
+
+
+        <div class="order-review-stars">
+
+            ${stars}
+
+        </div>
+
+
+        ${
+            review.title
+            ? `
+
+                <div class="order-review-title">
+
+                    ${escapeReviewHTML(
+                        review.title
+                    )}
+
+                </div>
+
+            `
+            : ""
+        }
+
+
+        ${
+            review.comment
+            ? `
+
+                <div class="order-review-comment">
+
+                    ${escapeReviewHTML(
+                        review.comment
+                    )}
+
+                </div>
+
+            `
+            : ""
+        }
+
+
+        <div class="order-review-meta">
+
+            ✓ Verified Purchase
+
+        </div>
+
+
+        ${mediaHTML}
+
+
+        <div class="order-review-actions">
+
+            ${
+                status !== "approved"
+                ? `
+
+                    <button
+                        class="btn btn-success btn-sm"
+                        data-action="approve">
+
+                        Approve
+
+                    </button>
+
+                `
+                : ""
+            }
+
+
+            ${
+                status !== "rejected"
+                ? `
+
+                    <button
+                        class="btn btn-warning btn-sm"
+                        data-action="reject">
+
+                        Reject
+
+                    </button>
+
+                `
+                : ""
+            }
+
+
+            <button
+                class="btn btn-danger btn-sm"
+                data-action="delete">
+
+                Delete
+
+            </button>
+
+        </div>
+
+    `;
+
+
+    // --------------------------------------------------------
+    // APPROVE
+    // --------------------------------------------------------
+
+    const approveButton =
+        container.querySelector(
+            '[data-action="approve"]'
+        );
+
+
+    if (approveButton) {
+
+        approveButton.addEventListener(
+            "click",
+            () => {
+
+                moderateOrderReview(
+                    review.id,
+                    "approved"
+                );
+
+            }
+        );
+
+    }
+
+
+    // --------------------------------------------------------
+    // REJECT
+    // --------------------------------------------------------
+
+    const rejectButton =
+        container.querySelector(
+            '[data-action="reject"]'
+        );
+
+
+    if (rejectButton) {
+
+        rejectButton.addEventListener(
+            "click",
+            () => {
+
+                moderateOrderReview(
+                    review.id,
+                    "rejected"
+                );
+
+            }
+        );
+
+    }
+
+
+    // --------------------------------------------------------
+    // DELETE
+    // --------------------------------------------------------
+
+    const deleteButton =
+        container.querySelector(
+            '[data-action="delete"]'
+        );
+
+
+    if (deleteButton) {
+
+        deleteButton.addEventListener(
+            "click",
+            () => {
+
+                deleteOrderReview(
+                    review.id
+                );
+
+            }
+        );
+
+    }
+
+}
+
+// ============================================================
+// APPROVE / REJECT REVIEW
+// ============================================================
+
+async function moderateOrderReview(
+    reviewId,
+    newStatus
+) {
+
+    const action =
+        newStatus === "approved"
+            ? "approve"
+            : "reject";
+
+
+    const confirmed =
+        confirm(
+            `Are you sure you want to ${action} this review?`
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    try {
+
+        await updateDoc(
+
+            doc(
+                db,
+                "reviews",
+                reviewId
+            ),
+
+            {
+                status:
+                    newStatus
+            }
+
+        );
+
+
+        alert(
+            `Review ${newStatus} successfully.`
+        );
+
+
+        location.reload();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Review moderation failed:",
+            error
+        );
+
+        alert(
+            "Unable to update the review."
+        );
+
+    }
+
+}
+
+
+// ============================================================
+// DELETE REVIEW
+// ============================================================
+
+async function deleteOrderReview(
+    reviewId
+) {
+
+    const confirmed =
+        confirm(
+            "Are you sure you want to permanently delete this review?"
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    try {
+
+        await deleteDoc(
+
+            doc(
+                db,
+                "reviews",
+                reviewId
+            )
+
+        );
+
+
+        alert(
+            "Review deleted successfully."
+        );
+
+
+        location.reload();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Review deletion failed:",
+            error
+        );
+
+        alert(
+            "Unable to delete the review."
+        );
+
+    }
+
+}
+
+
+// ============================================================
+// HTML SAFETY
+// ============================================================
+
+function escapeReviewHTML(
+    value
+) {
+
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
 
 }

@@ -73,13 +73,23 @@ export async function placeOrder(
 
     const order = {
 
-        orderNumber,
+    orderNumber,
 
-        userId: auth.currentUser.uid,
+    userId: auth.currentUser.uid,
 
-        items: checkout.items,
+    items: checkout.items,
 
-        address: selectedAddress ?? checkout.address,
+    // Review eligibility data
+    // Stores the product IDs purchased in this order.
+    reviewProductIds: [
+        ...new Set(
+            (checkout.items || [])
+                .map(item => item.id)
+                .filter(Boolean)
+        )
+    ],
+
+    address: selectedAddress ?? checkout.address,
 
         profile: checkout.profile,
 

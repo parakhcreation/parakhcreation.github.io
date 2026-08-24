@@ -1,6 +1,13 @@
-import { getProducts } from "./firebase.js";
+import { getProducts, db } from "./firebase.js";
 import { Wishlist } from "./wishlistStore.js";
 import { Cart } from "./cartStore.js";
+
+import {
+    collection,
+    query,
+    where,
+    getDocs
+} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
 
 const params = new URLSearchParams(window.location.search);
@@ -362,25 +369,76 @@ if (availability) {
 
 relatedGrid.innerHTML = "";
 
-related.forEach(item => {
+for (const item of related) {
+
+    const rating =
+        await getProductRating(
+            item.id
+        );
+
+
+    let ratingHTML = "";
+
+
+    if (rating.count > 0) {
+
+        ratingHTML = `
+
+            <div class="related-rating">
+
+                <span
+                    class="related-rating-number">
+
+                    ${rating.average.toFixed(1)}
+
+                </span>
+
+                <span
+                    class="related-rating-star">
+
+                    ★
+
+                </span>
+
+                <span
+                    class="related-rating-count">
+
+                    (${rating.count})
+
+                </span>
+
+            </div>
+
+        `;
+
+    }
+
 
     relatedGrid.innerHTML += `
 
-    <div class="related-card"
-         onclick="window.location='product.html?id=${item.id}'"
-         style="cursor:pointer">
+        <div
+            class="related-card"
+            onclick="window.location='product.html?id=${item.id}'"
+            style="cursor:pointer">
 
-        <img src="${item.thumbnail || item.image || ""}">
+            <img
+                src="${item.thumbnail || item.image || ""}">
 
-        <h3>${item.name}</h3>
+            <h3>
+                ${item.name}
+            </h3>
 
-        <p>₹${item.price}</p>
+            ${ratingHTML}
 
-    </div>
+            <p>
+                ₹${item.price}
+            </p>
+
+        </div>
 
     `;
 
-});
+}
 
 }
 
@@ -542,3 +600,98 @@ document.getElementById("buyNow").onclick = () => {
 };
 
 
+// ============================================================
+// GET APPROVED PRODUCT RATING
+// ============================================================
+
+async function getProductRating(productId) {
+
+    try {
+
+        const reviewsQuery =
+            query(
+                collection(db, "reviews"),
+
+                where(
+                    "productId",
+                    "==",
+                    productId
+                ),
+
+                where(
+                    "status",
+                    "==",
+                    "approved"
+                )
+            );
+
+
+        const snapshot =
+            await getDocs(
+                reviewsQuery
+            );
+
+
+        if (snapshot.empty) {
+
+            return {
+                average: null,
+                count: 0
+            };
+
+        }
+
+
+        let total = 0;
+
+
+        snapshot.forEach(
+            reviewDoc => {
+
+                const review =
+                    reviewDoc.data();
+
+                total +=
+                    Number(
+                        review.rating || 0
+                    );
+
+            }
+        );
+
+
+        const average =
+            total /
+            snapshot.size;
+
+
+        return {
+
+            average:
+                Math.round(
+                    average * 10
+                ) / 10,
+
+            count:
+                snapshot.size
+
+        };
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Failed to load product rating:",
+            error
+        );
+
+
+        return {
+            average: null,
+            count: 0
+        };
+
+    }
+
+}

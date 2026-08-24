@@ -1,6 +1,10 @@
 import { db, auth } from "./firebase.js";
 
 import {
+    getExistingReview
+} from "./reviewStore.js";
+
+import {
     collection,
     query,
     where,
@@ -341,7 +345,175 @@ if (trackReturnBtn) {
 
 }
 
-    return card;
+
+// ============================================================
+// REVIEW PRODUCT
+// ============================================================
+
+if (order.orderStatus === "Delivered") {
+
+    const reviewContainer =
+        document.createElement("div");
+
+    reviewContainer.className =
+        "review-buttons";
+
+
+    const reviewProducts =
+        (order.items || [])
+            .map(item => item.id)
+            .filter(Boolean);
+
+
+    reviewProducts.forEach(productId => {
+
+        const item =
+            (order.items || []).find(
+                item => item.id === productId
+            );
+
+        if (!item) return;
+
+
+        const productReview =
+            document.createElement("div");
+
+        productReview.className =
+            "product-review-action";
+
+
+        const productName =
+            document.createElement("div");
+
+        productName.className =
+            "review-product-name";
+
+        productName.textContent =
+            item.name || "Product";
+
+
+        const actionRow =
+            document.createElement("div");
+
+        actionRow.className =
+            "review-action-row";
+
+
+        const reviewButton =
+            document.createElement("button");
+
+        reviewButton.className =
+            "reviewBtn";
+
+        reviewButton.textContent =
+            "⭐ Review Product";
+
+
+        reviewButton.onclick = () => {
+
+            window.location.href =
+                `review.html?orderId=${encodeURIComponent(order.id)}&productId=${encodeURIComponent(productId)}`;
+
+        };
+
+
+        actionRow.appendChild(
+            reviewButton
+        );
+
+
+        productReview.appendChild(
+            productName
+        );
+
+        productReview.appendChild(
+            actionRow
+        );
+
+        reviewContainer.appendChild(
+            productReview
+        );
+
+
+        // ----------------------------------------------------
+        // CHECK FOR EXISTING REVIEW
+        // ----------------------------------------------------
+
+        getExistingReview(
+            order.id,
+            productId
+        )
+        .then(review => {
+
+            if (!review) {
+                return;
+            }
+
+
+            // Existing review found
+            reviewButton.textContent =
+                "✓ Reviewed";
+
+            reviewButton.className =
+                "reviewedBtn";
+
+            reviewButton.disabled =
+                true;
+
+
+            // Edit button
+            const editButton =
+                document.createElement("button");
+
+            editButton.className =
+                "editReviewBtn";
+
+            editButton.textContent =
+                "Edit Review";
+
+
+            editButton.onclick = () => {
+
+                window.location.href =
+                    `review.html?orderId=${encodeURIComponent(order.id)}&productId=${encodeURIComponent(productId)}`;
+
+            };
+
+
+            actionRow.appendChild(
+                editButton
+            );
+
+        })
+        .catch(error => {
+
+            console.error(
+                "Review lookup failed:",
+                error
+            );
+
+        });
+
+    });
+
+
+    const buttonRow =
+        card.querySelector(".button-row");
+
+
+    if (buttonRow) {
+
+        buttonRow.appendChild(
+            reviewContainer
+        );
+
+    }
+
+}
+    
+return card;
+
+    
 
 }
 

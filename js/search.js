@@ -2,7 +2,9 @@ import { db } from "./firebase.js";
 
 import {
     collection,
-    getDocs
+    getDocs,
+    query,
+    where
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
 import { COLOURS } from "./data/colours.js";
@@ -13,7 +15,8 @@ const params = new URLSearchParams(window.location.search);
 
 const categoryQuery =
     (params.get("category") || "").trim().toLowerCase();
-const query = (params.get("q") || "").trim();
+const searchQuery =
+    (params.get("q") || "").trim();
 
 if (categoryQuery) {
 
@@ -25,7 +28,7 @@ if (categoryQuery) {
 else {
 
     document.getElementById("searchHeading").textContent =
-        `Search Results for "${query}"`;
+        `Search Results for "${searchQuery}"`;
 
 }
 
@@ -62,9 +65,10 @@ if (categoryQuery) {
     );
 
 }
-else if (query) {
+else if (searchQuery) {
 
-    currentResults = fuse.search(query).map(r => r.item);
+    currentResults =
+        fuse.search(searchQuery).map(r => r.item);
 
 }
 else {
@@ -80,7 +84,122 @@ else {
 const searchResults =
     document.getElementById("searchResults");
 
+// ============================================================
+// APPROVED PRODUCT RATINGS
+// ============================================================
+
+const productRatings = {};
+
+async function loadProductRatings() {
+
+    try {
+
+        const reviewsQuery =
+            query(
+                collection(db, "reviews"),
+                where(
+                    "status",
+                    "==",
+                    "approved"
+                )
+            );
+
+        const snapshot =
+            await getDocs(
+                reviewsQuery
+            );
+
+        snapshot.forEach(reviewDoc => {
+
+            const review =
+                reviewDoc.data();
+
+            const productId =
+                review.productId;
+
+            if (!productId) {
+                return;
+            }
+
+            if (!productRatings[productId]) {
+
+                productRatings[productId] = {
+                    total: 0,
+                    count: 0
+                };
+
+            }
+
+            productRatings[productId].total +=
+                Number(review.rating || 0);
+
+            productRatings[productId].count +=
+                1;
+
+        });
+
+        Object.keys(productRatings)
+            .forEach(productId => {
+
+                const data =
+                    productRatings[productId];
+
+                data.average =
+                    Math.round(
+                        (
+                            data.total /
+                            data.count
+                        ) * 10
+                    ) / 10;
+
+            });
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Failed to load product ratings:",
+            error
+        );
+
+    }
+
+}
+
 function createSearchCard(product) {
+
+    const rating =
+        productRatings[product.id];
+
+    let ratingHTML = "";
+
+    if (
+        rating &&
+        rating.count > 0
+    ) {
+
+        ratingHTML = `
+
+            <div class="card-rating">
+
+                <span class="card-rating-number">
+                    ${rating.average.toFixed(1)}
+                </span>
+
+                <span class="card-rating-star">
+                    ★
+                </span>
+
+                <span class="card-rating-count">
+                    (${rating.count})
+                </span>
+
+            </div>
+
+        `;
+
+    }
 
     return `
 
@@ -115,11 +234,13 @@ function createSearchCard(product) {
 
         <div class="cname">
 
-            ${product.name}
+    ${product.name}
 
-        </div>
+</div>
 
-        <div class="cmeta">
+${ratingHTML}
+
+<div class="cmeta">
 
             <span class="cprice">
 
@@ -142,6 +263,8 @@ function createSearchCard(product) {
 `;
 
 }
+await loadProductRatings();
+
 renderProducts(currentResults);
 
      
@@ -170,27 +293,32 @@ function buildFilters(products) {
 
     const sections = [
 
-        {
-            title: "Category",
-            key: "category"
-        },
+    {
+        title: "Category",
+        key: "category"
+    },
 
-        {
-            title: "Fabric",
-            key: "fabric"
-        },
+    {
+        title: "Fabric",
+        key: "fabric"
+    },
 
-        {
-            title: "Colour",
-            key: "colour"
-        },
+    {
+        title: "Colour",
+        key: "colour"
+    },
 
-        {
-            title: "Collection",
-            key: "collection"
-        }
+    {
+        title: "Work",
+        key: "work"
+    },
 
-    ];
+    {
+        title: "Collection",
+        key: "collection"
+    }
+
+];
 
     container.innerHTML = "";
 
@@ -278,7 +406,7 @@ ${value}
 
 function updateFilters() {
 
-    if (!browsingMode && query) {
+    if (!browsingMode && searchQuery) {
 
     browsingMode = true;
 

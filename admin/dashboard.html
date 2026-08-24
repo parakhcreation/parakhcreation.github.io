@@ -54,6 +54,17 @@ Orders
 
 </a>
 
+
+
+<button
+    type="button"
+    id="reviewsNav"
+    class="btn btn-outline-light w-100 mb-2">
+
+Reviews
+
+</button>
+
 <a href="master-data.html" class="btn btn-outline-light w-100 mb-2">
     Master Data
 </a>
@@ -82,6 +93,10 @@ Logout
 
 <div class="col-md-10 p-4">
 
+<!-- ================= DASHBOARD ================= -->
+
+<div id="dashboardSection">
+
 <h1>
 
 Dashboard
@@ -96,6 +111,36 @@ Successfully logged in.
 
 </div>
 
+
+<!-- ================= REVIEWS ================= -->
+
+<div
+    id="reviewsSection"
+    style="display:none;"
+>
+
+<h1>
+
+Customer Reviews
+
+</h1>
+
+<p class="text-muted">
+
+Manage customer reviews submitted by customers.
+
+</p>
+
+
+<div id="reviewsContainer">
+
+</div>
+
+</div>
+
+
+</div>
+
 </div>
 
 </div>
@@ -103,6 +148,10 @@ Successfully logged in.
 
 
 <script type="module" src="js/dashboard.js"></script>
+<script
+    type="module"
+    src="js/reviews.js">
+</script>
 
 </body>
 

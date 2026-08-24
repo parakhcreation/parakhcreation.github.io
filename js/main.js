@@ -1,7 +1,7 @@
 // ============================================================
 // PARAKH — main.js
 // ============================================================
-import { getProducts } from "./firebase.js";
+import { getProducts, db } from "./firebase.js";
 const STORE_PHONES = {
   creation: "919331028448",
   collection: "919883351584",
@@ -25,9 +25,17 @@ import {
 
 from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
-import { db } from "./firebase.js";
+
 
 let categoryMap = {};
+
+// ============================================================
+// PRODUCT REVIEW RATINGS
+// ============================================================
+
+const productRatings = {};
+
+let productRatingsLoaded = false;
 
 let heroBanners = [];
 
@@ -333,8 +341,164 @@ export function getFiltered() {
   return PRODUCTS.filter((p) => p.category === currentFilter);
 }
 
+// ============================================================
+// LOAD APPROVED PRODUCT RATINGS
+// ============================================================
 
+async function loadProductRatings() {
+
+    if (productRatingsLoaded) {
+        return;
+    }
+
+    try {
+
+        const reviewsQuery =
+            query(
+                collection(
+                    db,
+                    "reviews"
+                ),
+
+                where(
+                    "status",
+                    "==",
+                    "approved"
+                )
+            );
+
+
+        const snapshot =
+            await getDocs(
+                reviewsQuery
+            );
+
+
+        snapshot.forEach(
+            reviewDoc => {
+
+                const review =
+                    reviewDoc.data();
+
+                const productId =
+                    review.productId;
+
+                const rating =
+                    Number(
+                        review.rating || 0
+                    );
+
+
+                if (!productId) {
+                    return;
+                }
+
+
+                if (!productRatings[productId]) {
+
+                    productRatings[productId] = {
+
+                        total: 0,
+
+                        count: 0
+
+                    };
+
+                }
+
+
+                productRatings[productId].total +=
+                    rating;
+
+                productRatings[productId].count +=
+                    1;
+
+            }
+        );
+
+
+        // Calculate averages
+
+        Object.keys(
+            productRatings
+        ).forEach(
+            productId => {
+
+                const data =
+                    productRatings[
+                        productId
+                    ];
+
+
+                data.average =
+                    Math.round(
+                        (
+                            data.total /
+                            data.count
+                        ) * 10
+                    ) / 10;
+
+            }
+        );
+
+
+        productRatingsLoaded =
+            true;
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Failed to load product ratings:",
+            error
+        );
+
+    }
+
+}
 export function createProductCard(p) {
+
+    const rating =
+        productRatings[p.id];
+
+
+    let ratingHTML = "";
+
+
+    if (
+        rating &&
+        rating.count > 0
+    ) {
+
+        ratingHTML = `
+
+            <div class="card-rating">
+
+                <span class="card-rating-number">
+
+                    ${rating.average.toFixed(1)}
+
+                </span>
+
+                <span class="card-rating-star">
+
+                    ★
+
+                </span>
+
+                <span class="card-rating-count">
+
+                    (${rating.count})
+
+                </span>
+
+            </div>
+
+        `;
+
+    }
+
 
     return `
     <article class="card" data-id="${p.id}">
@@ -356,10 +520,12 @@ export function createProductCard(p) {
       <div class="card-body">
 
         <div class="cname">
-            ${p.name}
-        </div>
+    ${p.name}
+</div>
 
-        <div class="cmeta">
+${ratingHTML}
+
+<div class="cmeta">
 
           <span class="cprice">
             ${formatPrice(p.price)}
@@ -376,7 +542,10 @@ export function createProductCard(p) {
     </article>
     `;
 }
-export function render() {
+export async function render() {
+
+  await loadProductRatings();
+
   const filtered = getFiltered();
   const slice = filtered.slice(0, visibleCount);
   grid.innerHTML = slice

@@ -792,6 +792,53 @@ gap:70px;
   color: rgba(33,26,21,0.45);
 }
 
+/* ============================================================
+   PRODUCT CARD RATING
+   ============================================================ */
+
+.card-rating {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 4px;
+
+    margin-top: 6px;
+
+    font-size: 13px;
+
+    line-height: 1.2;
+
+}
+
+
+.card-rating-number {
+
+    font-weight: 600;
+
+    color: #333;
+
+}
+
+
+.card-rating-star {
+
+    color: #f5a623;
+
+    font-size: 14px;
+
+}
+
+
+.card-rating-count {
+
+    color: #777;
+
+    font-size: 12px;
+
+}
+
 .load-more-wrap { text-align: center; margin: 46px 0 10px; }
 
 /* ---------- Product modal ---------- */
