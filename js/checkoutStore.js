@@ -27,7 +27,31 @@ if (buyNow) {
 
 else {
 
-    cart = await Cart.getAll();
+    const allCartItems =
+        await Cart.getAll();
+
+    const selectedCartItems =
+        JSON.parse(
+            sessionStorage.getItem(
+                "selectedCartItems"
+            ) || "[]"
+        );
+
+    cart = {};
+
+    Object.entries(allCartItems).forEach(
+        ([key, quantity]) => {
+
+            if (
+                selectedCartItems.includes(key)
+            ) {
+
+                cart[key] = quantity;
+
+            }
+
+        }
+    );
 
 }
 
@@ -43,14 +67,34 @@ else {
 
         for (const [key, quantity] of Object.entries(cart)) {
 
-    const parts = key.split("_");
+    const separatorIndex =
+    key.lastIndexOf("_");
 
-    const productId = parts[0];
+let productId;
+let selectedSize;
 
-    const selectedSize = parts[1] || "";
+if (separatorIndex > -1) {
+
+    productId =
+        key.substring(
+            0,
+            separatorIndex
+        );
+
+    selectedSize =
+        key.substring(
+            separatorIndex + 1
+        );
+
+} else {
+
+    productId = key;
+    selectedSize = "";
+
+}
 
     console.log("KEY =", key);
-console.log("PARTS =", parts);
+
 console.log("SELECTED SIZE =", selectedSize);
 
     const product = products.find(

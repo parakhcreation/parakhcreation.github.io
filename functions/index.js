@@ -18,3 +18,11 @@ require("./restoreInventoryOnly");
 
 exports.restoreInventoryOnly =
 restoreInventoryOnly;
+
+
+const {
+  instagramProductFeed,
+} = require("./instagramFeed");
+
+exports.instagramProductFeed =
+    instagramProductFeed;

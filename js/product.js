@@ -319,7 +319,7 @@ else {
 
 }
 
-const availability = document.getElementById("availability");
+const availability = document.getElementById("productAvailability");
 
 if (availability) {
     if (inStock) {
@@ -495,41 +495,78 @@ orderedSizes.sort((a, b) => {
     return ia - ib;
 
 });
-    orderedSizes.forEach(([size,stock])=>{
+    orderedSizes.forEach(([size, stock]) => {
 
-        const button=document.createElement("button");
+    const available =
+        Number(stock || 0) > 0;
 
-        button.type="button";
+    const button =
+        document.createElement("button");
 
-        button.className = "size-circle";
+    button.type = "button";
+    button.className = "size-circle";
+    button.textContent = size;
 
-        button.textContent=size;
+    if (!available) {
 
-        
+        // Keep the size visible,
+        // but make it look unavailable
+        // and prevent clicking.
 
-        if(stock<=0){
+        button.classList.add("out-of-stock");
+        button.disabled = true;
 
-            button.classList.add("out-of-stock");
+        button.setAttribute(
+            "aria-label",
+            `${size}, out of stock`
+        );
 
-            button.disabled=true;
+        button.setAttribute(
+            "title",
+            "Out of stock"
+        );
 
-        }
+    } else {
+
+        button.setAttribute(
+            "aria-label",
+            `${size}, available`
+        );
 
         button.onclick = () => {
 
-    document
-        .querySelectorAll(".size-circle")
-        .forEach(btn => btn.classList.remove("selected"));
+            document
+                .querySelectorAll(".size-circle")
+                .forEach(btn => {
+                    btn.classList.remove("selected");
+                });
 
-    button.classList.add("selected");
+            button.classList.add("selected");
 
-    selectedSize = size;
+            selectedSize = size;
 
-};
+            if (sizeAvailabilityMessage) {
 
-        sizeButtons.appendChild(button);
+                sizeAvailabilityMessage.textContent = "";
 
-    });
+                sizeAvailabilityMessage.classList.remove(
+                    "visible",
+                    "shake"
+                );
+
+            }
+
+        };
+
+    }
+
+    // IMPORTANT:
+    // Add EVERY size to the page,
+    // including out-of-stock sizes.
+
+    sizeButtons.appendChild(button);
+
+});
 
 }
 

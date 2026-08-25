@@ -97,7 +97,7 @@ Logout
 
 <div id="dashboardSection">
 
-<h1>
+<h1 class="mb-4">
 
 Dashboard
 
@@ -108,6 +108,158 @@ Dashboard
 Successfully logged in.
 
 </div>
+
+
+<!-- ================= INSTAGRAM CATALOGUE ================= -->
+
+<div class="card mt-4">
+
+    <div class="card-body">
+
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+            <div>
+
+                <h4 class="mb-1">
+                    Instagram Catalogue
+                </h4>
+
+                <p class="text-muted mb-0">
+                    Products currently selected for Instagram.
+                </p>
+
+            </div>
+
+            <span
+                id="instagramFeedStatus"
+                class="badge text-bg-success">
+
+                ● Active
+
+            </span>
+
+        </div>
+
+
+        <hr>
+
+
+        <div class="row g-3 mb-4">
+
+            <div class="col-md-4">
+
+                <div class="border rounded p-3 h-100">
+
+                    <div class="text-muted">
+                        Instagram Products
+                    </div>
+
+                    <div
+                        id="instagramProductCount"
+                        class="fs-3 fw-bold">
+
+                        —
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="border rounded p-3 h-100">
+
+                    <div class="text-muted">
+                        Currently Available
+                    </div>
+
+                    <div
+                        id="instagramAvailableCount"
+                        class="fs-3 fw-bold">
+
+                        —
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="border rounded p-3 h-100">
+
+                    <div class="text-muted">
+                        Last Checked
+                    </div>
+
+                    <div
+                        id="instagramLastChecked"
+                        class="fs-6 fw-semibold">
+
+                        —
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="d-flex flex-wrap gap-2 mb-4">
+
+            <a
+                href="https://asia-south1-parakh-creation-website.cloudfunctions.net/instagramProductFeed"
+                target="_blank"
+                rel="noopener"
+                class="btn btn-primary">
+
+                Open Feed
+
+            </a>
+
+
+            <button
+                type="button"
+                id="copyInstagramFeedBtn"
+                class="btn btn-outline-secondary">
+
+                Copy Feed URL
+
+            </button>
+
+        </div>
+
+
+        <h5 class="mb-3">
+
+            Products on Instagram
+
+        </h5>
+
+
+        <div
+            id="instagramProductsContainer">
+
+            <div class="text-muted">
+
+                Loading Instagram products...
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ================= END INSTAGRAM CATALOGUE ================= -->
+
 
 </div>
 

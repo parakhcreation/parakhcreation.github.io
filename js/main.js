@@ -2,6 +2,7 @@
 // PARAKH — main.js
 // ============================================================
 import { getProducts, db } from "./firebase.js";
+import "./cartStore.js";
 const STORE_PHONES = {
   creation: "919331028448",
   collection: "919883351584",
@@ -742,19 +743,25 @@ await loadCategories();
 await loadHeroBanner();
 
 init();
-function updateCartCount() {
+async function updateCartCount() {
 
     const cart =
-        JSON.parse(localStorage.getItem("cart")) || [];
+        await Cart.getAll();
 
     const count =
         document.getElementById("cartCount");
 
-    if (count) {
+    if (!count) return;
 
-        count.textContent = cart.length;
+    const totalQuantity =
+        Object.values(cart).reduce(
+            (total, quantity) =>
+                total + Number(quantity || 0),
+            0
+        );
 
-    }
+    count.textContent =
+        totalQuantity;
 
 }
 

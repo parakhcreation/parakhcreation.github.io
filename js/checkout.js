@@ -35,6 +35,30 @@ const grandTotalElement =
 let selectedAddress = null;
 let selectedAddressId = null;
 
+const selectedCartItems =
+    JSON.parse(
+        sessionStorage.getItem("selectedCartItems") || "[]"
+    );
+
+    async function removeSelectedCartItems() {
+
+    for (
+        const cartItemId
+        of selectedCartItems
+    ) {
+
+        await Cart.remove(
+            cartItemId
+        );
+
+    }
+
+    sessionStorage.removeItem(
+        "selectedCartItems"
+    );
+
+}
+
 async function loadCheckout(){
 
     const profile = await Profile.get();
@@ -121,25 +145,46 @@ async function loadCheckout(){
 console.log("Address =", Address);
 console.log("Cart =", Cart);
 
-const buyNowItem = sessionStorage.getItem("buyNowItem");
+const buyNowItem =
+    sessionStorage.getItem("buyNowItem");
 
 let cartObject;
 
 if (buyNowItem) {
 
-    const item = JSON.parse(buyNowItem);
+    const item =
+        JSON.parse(buyNowItem);
 
     cartObject = {
 
-    [item.selectedSize
-        ? `${item.id}_${item.selectedSize}`
-        : item.id]: item.quantity
+        [item.selectedSize
+            ? `${item.id}_${item.selectedSize}`
+            : item.id
+        ]: item.quantity
 
-};
+    };
 
 } else {
 
-    cartObject = await Cart.getAll();
+    const allCartItems =
+        await Cart.getAll();
+
+    cartObject = {};
+
+    Object.entries(allCartItems).forEach(
+        ([key, quantity]) => {
+
+            if (
+                selectedCartItems.includes(key)
+            ) {
+
+                cartObject[key] =
+                    quantity;
+
+            }
+
+        }
+    );
 
 }
 
@@ -151,14 +196,36 @@ let subtotal = 0;
 
 Object.entries(cartObject).forEach(([key, quantity]) => {
 
-    const parts = key.split("_");
+    const separatorIndex =
+    key.lastIndexOf("_");
 
-    const productId = parts[0];
+let productId;
+let selectedSize;
 
-    const selectedSize = parts[1] || "";
+if (separatorIndex > -1) {
 
-    const product =
-        products.find(p => p.id === productId);
+    productId =
+        key.substring(
+            0,
+            separatorIndex
+        );
+
+    selectedSize =
+        key.substring(
+            separatorIndex + 1
+        );
+
+} else {
+
+    productId = key;
+    selectedSize = "";
+
+}
+
+const product =
+    products.find(
+        p => p.id === productId
+    );
 
     if (!product) return;
 
@@ -251,11 +318,13 @@ placeOrderBtn.addEventListener("click", async () => {
 
     if (sessionStorage.getItem("buyNowItem")) {
 
-    sessionStorage.removeItem("buyNowItem");
+    sessionStorage.removeItem(
+        "buyNowItem"
+    );
 
 } else {
 
-    await Cart.clear();
+    await removeSelectedCartItems();
 
 }
 
@@ -356,9 +425,21 @@ const options = {
     selectedAddress
 );
 
-    await Cart.clear();
+    if (
+    sessionStorage.getItem("buyNowItem")
+) {
 
-    window.location.href =
+    sessionStorage.removeItem(
+        "buyNowItem"
+    );
+
+} else {
+
+    await removeSelectedCartItems();
+
+}
+
+window.location.href =
 `order-success.html?id=${order.id}`;
 
 },

@@ -53,6 +53,8 @@ h1{
 
     display:flex;
 
+    align-items:center;
+
     gap:25px;
 
     background:white;
@@ -101,20 +103,236 @@ h1{
 
 }
 
-.removeBtn{
+.cart-product-link{
+    cursor:pointer;
+}
 
-    margin-top:25px;
+.cart-product-link:hover{
+    opacity:.92;
+}
 
-    padding:10px 18px;
+.cart-details h2.cart-product-link:hover{
+    color:#b11b47;
+}
 
-    border:none;
+/* =========================
+   CART QUANTITY CONTROLS
+   ========================= */
 
-    background:#ddd;
+.quantity-controls{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    margin-top:16px;
+
+}
+
+.qty-btn{
+
+    width:34px;
+
+    height:34px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:0;
+
+    border:1px solid #123A34;
+
+    border-radius:4px;
+
+    background:#fff;
+
+    color:#123A34;
+
+    font-size:20px;
+
+    font-weight:500;
+
+    line-height:1;
 
     cursor:pointer;
 
-    border-radius:6px;
+    transition:all .2s ease;
 
+}
+
+.qty-btn:hover{
+
+    background:#123A34;
+
+    color:#fff;
+
+}
+
+.qty-btn:active{
+
+    transform:scale(.95);
+
+}
+
+.qty{
+
+    min-width:28px;
+
+    text-align:center;
+
+    font-size:17px;
+
+    font-weight:600;
+
+    color:#222;
+
+}
+
+.removeBtn{
+
+    margin-top:0;
+
+    padding:12px 22px;
+
+    border:1px solid #123A34;
+
+    background:#fff;
+
+    color:#123A34;
+
+    cursor:pointer;
+
+    border-radius:5px;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    transition:all .25s ease;
+
+    white-space:nowrap;
+
+}
+
+.removeBtn:hover{
+
+    background:#123A34;
+
+    color:#fff;
+
+    transform:translateY(-1px);
+
+}
+
+.moveWishlistBtn{
+
+    align-self:center;
+
+    margin-top:10px;
+
+    padding:11px 18px;
+
+    border:1px solid #b11b47;
+
+    background:#fff;
+
+    color:#b11b47;
+
+    cursor:pointer;
+
+    border-radius:5px;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    transition:all .25s ease;
+
+    white-space:nowrap;
+
+}
+
+.moveWishlistBtn:hover{
+
+    background:#b11b47;
+
+    color:#fff;
+
+    transform:translateY(-1px);
+
+}
+
+.cart-section{
+    width:100%;
+}
+
+.cart-section + .cart-section{
+    margin-top:50px;
+}
+
+.cart-section-title{
+    margin:0 0 20px;
+    font-size:24px;
+    font-weight:600;
+    color:#123A34;
+}
+
+.cart-section-items{
+    display:flex;
+    flex-direction:column;
+    gap:25px;
+}
+
+.out-of-stock-section{
+    padding-top:10px;
+    border-top:1px solid #e5e0d8;
+}
+
+.out-of-stock-heading{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:20px;
+    margin-bottom:20px;
+}
+
+.out-of-stock-heading .cart-section-title{
+    color:#8f1f3f;
+}
+
+.out-of-stock-note{
+    color:#777;
+    font-size:13px;
+}
+
+.cart-item-unavailable{
+    background:#fffdfd;
+}
+
+.cart-item-unavailable .cart-price{
+    color:#888;
+}
+
+.cart-item-out-of-stock{
+    display:inline-block;
+    margin-top:4px;
+    margin-bottom:8px;
+    padding:7px 12px;
+    border-radius:4px;
+    background:#fdf0f2;
+    color:#b11b47;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:.4px;
+}
+
+.quantity-controls.unavailable{
+    opacity:.5;
 }
 
 .summary{
@@ -141,6 +359,22 @@ h1{
 
 }
 
+
+.cart-actions{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:stretch;
+
+    gap:10px;
+
+    align-self:center;
+
+    min-width:150px;
+
+}
 .total-row{
 
     display:flex;
@@ -196,6 +430,69 @@ width:100%;
 height:auto;
 
 }
+
+.cart-item-out-of-stock{
+
+    display:inline-block;
+
+    margin-top:12px;
+
+    padding:7px 12px;
+
+    border-radius:4px;
+
+    background:#fdf0f2;
+
+    color:#b11b47;
+
+    font-size:14px;
+
+    font-weight:700;
+
+    letter-spacing:.3px;
+
+}
+
+.moveWishlistBtn{
+
+    display:block;
+
+    margin-top:12px;
+
+    padding:10px 16px;
+
+    border:1px solid #b11b47;
+
+    border-radius:5px;
+
+    background:#fff;
+
+    color:#b11b47;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.2s ease;
+
+}
+
+.moveWishlistBtn:hover{
+
+    background:#b11b47;
+
+    color:#fff;
+
+}
+
+.quantity-controls.unavailable{
+
+    opacity:.5;
+
+}
+
 
 }
 

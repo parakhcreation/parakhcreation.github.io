@@ -423,6 +423,8 @@ grid-template-columns:repeat(2,1fr);
 
     width:100%;
 
+    order:2;
+
     flex-direction:row;
 
     justify-content:flex-start;
@@ -435,11 +437,17 @@ grid-template-columns:repeat(2,1fr);
 
 }
 
+.container{
+    margin-top:20px;
+}
+
 .product-image{
 
     width:100%;
     
     overflow:hidden;
+
+    
 
 }
 
@@ -448,6 +456,8 @@ grid-template-columns:repeat(2,1fr);
     width:100%;
     max-height:70vh;
     height:auto;
+
+    
 
     object-fit:contain;
     
@@ -1478,6 +1488,392 @@ grid-template-columns:repeat(2,1fr);
 
 }
 
+/* ============================================================
+   PRODUCT PAGE — PARAKH HEADER
+   Product page only
+   ============================================================ */
+
+.product-nav {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
+    width: 100%;
+
+    background: rgba(243, 233, 216, 0.88);
+
+    backdrop-filter: blur(10px);
+
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+
+/* =========================
+   HEADER LAYOUT
+   ========================= */
+
+.product-nav .nav-inner {
+
+    width: min(96vw, 1680px);
+
+    min-height: 78px;
+
+    margin: 0 auto;
+
+    padding: 10px 48px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 28px;
+
+}
+
+
+/* =========================
+   PARAKH LOGO
+   Same design as homepage
+   ========================= */
+
+.product-nav .product-brand {
+
+    display: flex;
+
+    align-items: baseline;
+
+    gap: 10px;
+
+    margin-right: 0;
+
+    flex-shrink: 0;
+
+    text-decoration: none;
+
+}
+
+
+/* Hindi — पारख */
+
+.product-nav .brand-dev {
+
+    font-family: 'Noto Serif Devanagari', serif;
+
+    font-size: 30px;
+
+    line-height: 1;
+
+    color: #A8194A;
+
+}
+
+
+/* PARAKH */
+
+.product-nav .brand-word {
+
+    display: block;
+
+    font-family: 'Marcellus', 'Cormorant Garamond', serif;
+
+    font-size: 40px;
+
+    line-height: 1;
+
+    letter-spacing: 0.06em;
+
+    color: #123A34;
+
+}
+
+
+/* CREATION & COLLECTION */
+
+.product-nav .brand-sub {
+
+    display: block;
+
+    margin-top: -2px;
+
+    font-family: 'Poppins', sans-serif;
+
+    font-size: 20px;
+
+    line-height: 1;
+
+    letter-spacing: 0.18em;
+
+    text-transform: uppercase;
+
+    color: #8F6A1F;
+
+}
+
+
+/* =========================
+   RIGHT SIDE ICONS
+   Wishlist | Account | Cart
+   ========================= */
+
+.product-nav .product-nav-icons {
+
+    margin-left: auto;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+
+    flex-shrink: 0;
+
+    padding-top: 6px;
+
+}
+
+
+/* Wishlist + Account */
+
+.product-nav .product-nav-icons .icon-btn {
+
+    position: relative;
+
+    border: none;
+
+    background: none;
+
+    padding: 0;
+
+    margin: 0;
+
+    font-size: 26px;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+    color: #123A34;
+
+    transition: 0.25s;
+
+}
+
+
+.product-nav .product-nav-icons .icon-btn:hover {
+
+    transform: translateY(-2px);
+
+    color: #B8872B;
+
+}
+
+
+/* Cart */
+
+.product-nav .product-nav-icons .cart-icon {
+
+    position: relative;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 28px;
+
+    line-height: 1;
+
+    color: #123A34;
+
+    text-decoration: none;
+
+    transition: 0.25s;
+
+}
+
+
+.product-nav .product-nav-icons .cart-icon:hover {
+
+    color: #B8872B;
+
+}
+
+
+/* =========================
+   WISHLIST / CART COUNTS
+   ========================= */
+
+.product-nav #wishlistCount,
+.product-nav #cartCount {
+
+    position: absolute;
+
+    top: -7px;
+
+    right: -9px;
+
+    width: 20px;
+
+    height: 20px;
+
+    border-radius: 50%;
+
+    background: #C91B4F;
+
+    color: #fff;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    font-size: 10px;
+
+    line-height: 1;
+
+    font-weight: 700;
+
+}
+
+
+/* ============================================================
+   MOBILE PRODUCT HEADER
+   ============================================================ */
+
+@media (max-width: 768px) {
+
+    .product-nav {
+
+        position: sticky;
+
+        top: 0;
+
+    }
+
+
+    .product-nav .nav-inner {
+
+        width: 100%;
+
+        min-height: 58px;
+
+        margin: 0;
+
+        padding: 7px 16px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        gap: 10px;
+
+    }
+
+
+    /* Mobile logo */
+
+    .product-nav .product-brand {
+
+        display: flex;
+
+        align-items: baseline;
+
+        gap: 6px;
+
+        margin-right: 0;
+
+        flex-shrink: 0;
+
+    }
+
+
+    .product-nav .brand-dev {
+
+        font-size: 10px;
+
+    }
+
+
+    .product-nav .brand-word {
+
+        font-size: 14px;
+
+    }
+
+
+    .product-nav .brand-sub {
+
+        font-size: 7px;
+
+        letter-spacing: 0.18em;
+
+        margin-top: -1px;
+
+    }
+
+
+    /* Mobile icons */
+
+    .product-nav .product-nav-icons {
+
+        margin-left: auto;
+
+        transform: translateX(-50px);
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 10px;
+
+        padding: 0;
+
+        flex-shrink: 0;
+
+    }
+
+
+    .product-nav .product-nav-icons .icon-btn {
+
+        font-size: 20px;
+
+    }
+
+
+    .product-nav .product-nav-icons .cart-icon {
+
+        font-size: 20px;
+
+    }
+
+
+    /* Mobile notification circles */
+
+    .product-nav #wishlistCount,
+    .product-nav #cartCount {
+
+        width: 16px;
+
+        height: 16px;
+
+        top: -7px;
+
+        right: -7px;
+
+        font-size: 8px;
+
+    }
+
+}
+
 
 @media (max-width: 768px) {
 
@@ -1508,6 +1904,79 @@ grid-template-columns:repeat(2,1fr);
 </head>
 
 <body>
+
+    <!-- ============ PRODUCT PAGE NAV ============ -->
+
+<header class="nav product-nav">
+
+    <div class="nav-inner">
+
+        <div class="brand product-brand">
+
+            <span class="brand-dev">
+                पारख
+            </span>
+
+            <span>
+
+                <span class="brand-word">
+                    PARAKH
+                </span>
+
+                <span class="brand-sub">
+                    Creation &amp; Collection
+                </span>
+
+            </span>
+
+        </div>
+
+
+        <div class="nav-icons product-nav-icons">
+
+            <button
+                class="icon-btn"
+                id="wishlistBtn"
+                onclick="location.href='wishlist.html'"
+                aria-label="Wishlist">
+
+                ❤
+
+                <span id="wishlistCount">
+                    0
+                </span>
+
+            </button>
+
+
+            <button
+                class="icon-btn"
+                id="accountBtn"
+                aria-label="My Account">
+
+                👤
+
+            </button>
+
+
+            <a
+                href="cart.html"
+                class="cart-icon"
+                aria-label="Cart">
+
+                🛒
+
+                <span id="cartCount">
+                    0
+                </span>
+
+            </a>
+
+        </div>
+
+    </div>
+
+</header>
 
 <div class="container">
 
@@ -1574,6 +2043,12 @@ id="productDescription"></div>
     Price incl. of all taxes
 </div>
 
+<div
+    id="productAvailability"
+    class="product-availability"
+    role="status"
+    aria-live="polite">
+</div>
 
 
 
@@ -1606,6 +2081,8 @@ id="productDescription"></div>
         id="sizeButtons"
         class="size-buttons">
     </div>
+
+    
 
 </div> 
 
@@ -1827,11 +2304,15 @@ id="relatedProducts">
 
 <script type="module" src="js/wishlistStore.js"></script>
 
+<script type="module" src="js/cartStore.js"></script>
+
+<script type="module" src="js/profileStore.js"></script>
+
+<script type="module" src="js/customerAuth.js"></script>
+
 <script type="module" src="js/product.js"></script>
-<script
-    type="module"
-    src="js/productReviews.js">
-</script>
+
+<script type="module" src="js/productReviews.js"></script>
 </body>
 
 </html>

@@ -676,6 +676,9 @@ document.getElementById("available").checked =
 document.getElementById("featured").checked =
     product.featured;
 
+document.getElementById("instagramEnabled").checked =
+    product.instagramEnabled === true;
+
 // Show existing image
 if (product.thumbnail) {
 
@@ -857,7 +860,10 @@ saveBtn.addEventListener("click", async () => {
 
     available: document.getElementById("available").checked,
 
-    featured: document.getElementById("featured").checked
+featured: document.getElementById("featured").checked,
+
+instagramEnabled:
+    document.getElementById("instagramEnabled").checked
 
 };
 
