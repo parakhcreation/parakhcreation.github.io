@@ -25,6 +25,37 @@ function waitForUser() {
     });
 }
 
+const WISHLIST_SIZE_KEY =
+    "wishlistSelectedSizes";
+
+function getWishlistSizes() {
+
+    try {
+
+        return JSON.parse(
+            localStorage.getItem(
+                WISHLIST_SIZE_KEY
+            ) || "{}"
+        );
+
+    } catch {
+
+        return {};
+
+    }
+
+}
+
+function saveWishlistSizes(data) {
+
+    localStorage.setItem(
+        WISHLIST_SIZE_KEY,
+        JSON.stringify(data)
+    );
+
+}
+
+
 function updateWishlistBadge(count) {
 
     const badge = document.getElementById("wishlistCount");
@@ -118,7 +149,7 @@ updateWishlistBadge(list.length);
 
         }
 
-        else {
+                else {
 
             await this.add(id);
 
@@ -126,7 +157,34 @@ updateWishlistBadge(list.length);
 
         }
 
+    },
+
+    async setSize(productId, size) {
+
+    const sizes =
+        getWishlistSizes();
+
+    if (size) {
+
+        sizes[productId] = size;
+
+    } else {
+
+        delete sizes[productId];
+
     }
+
+    saveWishlistSizes(sizes);
+
+},
+async getSize(productId) {
+
+    const sizes =
+        getWishlistSizes();
+
+    return sizes[productId] || "";
+
+},
 
 };
 (async function () {

@@ -579,16 +579,40 @@ document.querySelectorAll(".moveWishlistBtn").forEach(btn => {
     btn.onclick = async () => {
 
         const productId =
-            btn.dataset.productId;
+    btn.dataset.productId;
 
-        const alreadyInWishlist =
-            await Wishlist.has(productId);
+const cartItemId =
+    btn.dataset.id;
 
-        if (!alreadyInWishlist) {
+const separatorIndex =
+    cartItemId.lastIndexOf("_");
 
-            await Wishlist.toggle(productId);
+let selectedSize = "";
 
-        }
+if (separatorIndex > -1) {
+
+    selectedSize =
+        cartItemId.substring(
+            separatorIndex + 1
+        );
+
+}
+
+const alreadyInWishlist =
+    await Wishlist.has(productId);
+
+if (!alreadyInWishlist) {
+
+    await Wishlist.toggle(
+        productId
+    );
+
+}
+
+await Wishlist.setSize(
+    productId,
+    selectedSize
+);
 
        selectedCartItems.delete(
     btn.dataset.id

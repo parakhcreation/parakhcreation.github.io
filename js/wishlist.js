@@ -1,5 +1,6 @@
 import { getProducts, auth } from "./firebase.js";
 import { Wishlist } from "./wishlistStore.js";
+import { Cart } from "./cartStore.js";
 
 const grid = document.getElementById("wishlistGrid");
 
@@ -24,6 +25,15 @@ console.log("UID:", user?.uid);
 
     );
 
+    const wishlistSizes = {};
+
+for (const product of wishlistProducts) {
+
+    wishlistSizes[product.id] =
+        await Wishlist.getSize(product.id);
+
+}
+
     if (wishlistProducts.length === 0) {
 
         grid.innerHTML = `
@@ -44,42 +54,53 @@ console.log("UID:", user?.uid);
 
     grid.innerHTML = wishlistProducts.map(product => `
 
-        <div class="card">
+    <div
+        class="card"
+        onclick="window.location.href='product.html?id=${encodeURIComponent(product.id)}'"
+        style="cursor:pointer;"
+    >
 
-            <div class="card-media">
+        <div class="card-media">
 
-                <img
-    src="${product.thumbnail}"
-    alt="${product.name}"
-    onerror="this.src='https://placehold.co/300x400?text=No+Image'">
+            <img
+                src="${product.thumbnail}"
+                alt="${product.name}"
+                onerror="this.src='https://placehold.co/300x400?text=No+Image'">
 
-                     alt="${product.name}">
+        </div>
 
-            </div>
+        <div class="card-body">
 
-            <div class="card-body">
+            <h3>${product.name}</h3>
 
-                <h3>${product.name}</h3>
+${
+    wishlistSizes[product.id]
+    ? `
+        <p class="wishlist-size">
+            <strong>Size:</strong>
+            ${wishlistSizes[product.id]}
+        </p>
+    `
+    : ""
+}
 
-                <p class="price">
+<p class="price">
 
-                    ₹${product.price}
+    ₹${product.price}
 
-                </p>
+</p>
 
-               <div class="card-actions">
+            <div class="card-actions">
 
     <button
+        onclick="event.stopPropagation(); moveToCart('${product.id}')">
 
-        onclick="window.open('product.html?id=${product.id}','_blank')">
-
-        View Product
+        🛒 Move to Cart
 
     </button>
 
     <button
-
-        onclick="removeItem('${product.id}')">
+        onclick="event.stopPropagation(); removeItem('${product.id}')">
 
         ❤ Remove
 
@@ -87,15 +108,23 @@ console.log("UID:", user?.uid);
 
 </div>
 
-            </div>
-
         </div>
 
-    `).join("");
+    </div>
+
+`).join("");
 
 }
 
-window.removeItem = async function(id){
+window.moveToCart = async function(id){
+
+    const savedSize =
+        await Wishlist.getSize(id);
+
+    await Cart.add(
+        id,
+        savedSize
+    );
 
     await Wishlist.remove(id);
 
