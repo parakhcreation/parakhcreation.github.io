@@ -88,7 +88,7 @@ ${
 
     ₹${product.price}
 
-</p>
+</p>    
 
             <div class="card-actions">
 
@@ -127,6 +127,20 @@ window.moveToCart = async function(id){
     );
 
     await Wishlist.remove(id);
+
+    loadWishlist();
+
+}
+
+window.removeItem = async function(id){
+
+    await Wishlist.remove(id);
+
+    // Also remove the saved size for this wishlist item
+    await Wishlist.setSize(
+        id,
+        ""
+    );
 
     loadWishlist();
 
