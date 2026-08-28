@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1">
+
+<title>Track Replacement | Parakh</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+
+    margin: 0;
+
+    background: #f8f6f2;
+
+    color: #211a15;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+}
+
+.container {
+
+    width: 92%;
+
+    max-width: 900px;
+
+    margin: 50px auto;
+
+}
+
+.back-link {
+
+    display: inline-block;
+
+    margin-bottom: 25px;
+
+    color: #8c1d40;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+}
+
+.page-title {
+
+    font-family: Georgia, serif;
+
+    font-size: 36px;
+
+    margin-bottom: 8px;
+
+}
+
+.page-subtitle {
+
+    color: #777;
+
+    margin-bottom: 30px;
+
+}
+
+.tracking-card {
+
+    background: white;
+
+    border-radius: 14px;
+
+    padding: 30px;
+
+    box-shadow:
+        0 8px 30px
+        rgba(0,0,0,.07);
+
+}
+
+.product-header {
+
+    display: flex;
+
+    gap: 20px;
+
+    align-items: center;
+
+    padding-bottom: 25px;
+
+    border-bottom: 1px solid #eee;
+
+}
+
+.product-image {
+
+    width: 100px;
+
+    height: 125px;
+
+    object-fit: cover;
+
+    border-radius: 10px;
+
+    background: #eee;
+
+}
+
+.product-name {
+
+    font-family: Georgia, serif;
+
+    font-size: 24px;
+
+    margin-bottom: 8px;
+
+}
+
+.product-detail {
+
+    color: #666;
+
+    margin: 5px 0;
+
+    font-size: 14px;
+
+}
+
+.status-box {
+
+    margin-top: 28px;
+
+    padding: 20px;
+
+    border-radius: 12px;
+
+    background: #faf6f0;
+
+}
+
+.status-label {
+
+    color: #8c1d40;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+    text-transform: uppercase;
+
+    margin-bottom: 8px;
+
+}
+
+.status-title {
+
+    font-size: 22px;
+
+    font-weight: 600;
+
+}
+
+.status-description {
+
+    margin-top: 8px;
+
+    color: #666;
+
+    line-height: 1.6;
+
+}
+
+.details-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 15px;
+
+    margin-top: 25px;
+
+}
+
+.detail {
+
+    padding: 16px;
+
+    background: #fafafa;
+
+    border: 1px solid #eee;
+
+    border-radius: 10px;
+
+}
+
+.detail-label {
+
+    display: block;
+
+    color: #777;
+
+    font-size: 12px;
+
+    margin-bottom: 6px;
+
+}
+
+.detail-value {
+
+    font-weight: 600;
+
+    font-size: 14px;
+
+}
+
+.timeline {
+
+    margin-top: 35px;
+
+}
+
+.timeline-title {
+
+    font-size: 17px;
+
+    font-weight: 600;
+
+    margin-bottom: 20px;
+
+}
+
+.timeline-item {
+
+    display: flex;
+
+    gap: 15px;
+
+    position: relative;
+
+    padding-bottom: 22px;
+
+}
+
+.timeline-item:last-child {
+
+    padding-bottom: 0;
+
+}
+
+.timeline-dot {
+
+    width: 13px;
+
+    height: 13px;
+
+    min-width: 13px;
+
+    border-radius: 50%;
+
+    background: #ddd;
+
+    margin-top: 4px;
+
+}
+
+.timeline-item.completed
+.timeline-dot {
+
+    background: #8c1d40;
+
+}
+
+.timeline-content strong {
+
+    display: block;
+
+    margin-bottom: 4px;
+
+}
+
+.timeline-content span {
+
+    color: #777;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+
+}
+
+.timeline-item:not(:last-child)::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 6px;
+
+    top: 17px;
+
+    width: 1px;
+
+    height: calc(100% - 10px);
+
+    background: #ddd;
+
+}
+
+.timeline-item.completed:not(:last-child)::after {
+
+    background: #8c1d40;
+
+}
+
+.message {
+
+    margin-top: 25px;
+
+    padding: 18px;
+
+    border-radius: 10px;
+
+    background: #faf6f0;
+
+    color: #555;
+
+    line-height: 1.6;
+
+}
+
+.error {
+
+    background: #f8d7da;
+
+    color: #842029;
+
+}
+
+.loading {
+
+    text-align: center;
+
+    padding: 50px;
+
+    color: #777;
+
+}
+
+@media(max-width:600px) {
+
+    .container {
+
+        width: 94%;
+
+        margin: 30px auto;
+
+    }
+
+    .tracking-card {
+
+        padding: 20px;
+
+    }
+
+    .page-title {
+
+        font-size: 30px;
+
+    }
+
+    .product-header {
+
+        align-items: flex-start;
+
+    }
+
+    .product-image {
+
+        width: 80px;
+
+        height: 105px;
+
+    }
+
+    .product-name {
+
+        font-size: 20px;
+
+    }
+
+    .details-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <a
+        href="my-orders.html"
+        class="back-link">
+
+        ← Back to My Orders
+
+    </a>
+
+
+    <h1 class="page-title">
+
+        Track Replacement
+
+    </h1>
+
+
+    <p class="page-subtitle">
+
+        Follow the progress of your replacement request.
+
+    </p>
+
+
+    <div
+        id="loadingState"
+        class="loading">
+
+        Loading replacement details...
+
+    </div>
+
+
+    <div
+        id="errorState"
+        class="tracking-card error"
+        style="display:none;">
+
+    </div>
+
+
+    <div
+        id="trackingCard"
+        class="tracking-card"
+        style="display:none;">
+
+        <div class="product-header">
+
+            <img
+                id="productImage"
+                class="product-image"
+                src=""
+                alt="Product">
+
+            <div>
+
+                <div
+                    id="productName"
+                    class="product-name">
+
+                </div>
+
+                <div
+                    id="orderNumber"
+                    class="product-detail">
+
+                </div>
+
+                <div
+                    id="originalSize"
+                    class="product-detail">
+
+                </div>
+
+                <div
+                    id="replacementSize"
+                    class="product-detail">
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="status-box">
+
+            <div class="status-label">
+
+                Current Status
+
+            </div>
+
+            <div
+                id="statusTitle"
+                class="status-title">
+
+            </div>
+
+            <div
+                id="statusDescription"
+                class="status-description">
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="detailsGrid"
+            class="details-grid">
+
+        </div>
+
+        <div
+    id="expectedDateBox"
+    class="message"
+    style="display:none;">
+
+</div>
+
+
+        <div class="timeline">
+
+            <div class="timeline-title">
+
+                Replacement Progress
+
+            </div>
+
+            <div id="timeline">
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="exchangeMessage"
+            class="message"
+            style="display:none;">
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script
+    type="module"
+    src="js/track-replacement.js">
+</script>
+
+</body>
+
+</html>

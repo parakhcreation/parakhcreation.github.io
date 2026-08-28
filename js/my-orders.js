@@ -9,7 +9,7 @@ import {
     query,
     where,
     orderBy,
-    getDocs
+    onSnapshot
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
 import {
@@ -27,7 +27,7 @@ onAuthStateChanged(auth, async (user) => {
 
 });
 
-async function loadOrders(userId) {
+function loadOrders(userId) {
 
     const loading =
         document.getElementById("loadingState");
@@ -39,7 +39,6 @@ async function loadOrders(userId) {
         document.getElementById("ordersContainer");
 
     loading.style.display = "block";
-    container.innerHTML = "";
 
     const q = query(
         collection(db, "orders"),
@@ -47,32 +46,53 @@ async function loadOrders(userId) {
         orderBy("createdAt", "desc")
     );
 
-    const snapshot = await getDocs(q);
+    onSnapshot(
+        q,
+        snapshot => {
 
-    loading.style.display = "none";
+            loading.style.display = "none";
 
-    if (snapshot.empty) {
+            container.innerHTML = "";
 
-        empty.style.display = "block";
-        return;
+            if (snapshot.empty) {
 
-    }
+                empty.style.display = "block";
 
-snapshot.forEach(doc => {
+                return;
 
-    const order = {
+            }
 
-        id: doc.id,
+            empty.style.display = "none";
 
-        ...doc.data()
+            snapshot.forEach(doc => {
 
-    };
+                const order = {
 
-    container.appendChild(
-        createOrderCard(order)
+                    id: doc.id,
+
+                    ...doc.data()
+
+                };
+
+                container.appendChild(
+                    createOrderCard(order)
+                );
+
+            });
+
+        },
+
+        error => {
+
+            console.error(
+                "Failed to load orders:",
+                error
+            );
+
+            loading.style.display = "none";
+
+        }
     );
-
-});
 
 }
 
@@ -92,6 +112,38 @@ function createOrderCard(order) {
     const returnStatus =
 
 order.returnRequest?.status || null;
+
+const replacementRequest =
+    order.replacementRequest || null;
+
+const replacementStatus =
+    String(
+        replacementRequest?.status || ""
+    )
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, "_");
+
+const replacementRejected =
+    replacementStatus === "rejected";
+
+    const replacementItemIndex =
+    Number.isInteger(
+        Number(replacementRequest?.itemIndex)
+    )
+        ? Number(replacementRequest.itemIndex)
+        : Number.isInteger(
+            Number(replacementRequest?.orderItemIndex)
+        )
+            ? Number(replacementRequest.orderItemIndex)
+            : null;
+
+            const replacementAppliesToCard =
+    replacementRequest &&
+    (
+        replacementItemIndex === null ||
+        replacementItemIndex === 0
+    );
 
 const canReturn =
 
@@ -194,12 +246,31 @@ new Date() <= order.returnWindowEnds.toDate() &&
 
 ?
 
+(
+    replacementAppliesToCard &&
+    replacementRequest &&
+    !replacementRejected
+)
+
+?
+
+`
+<button
+    class="trackReplacementBtn"
+    data-id="${order.id}">
+
+    Track Replacement
+
+</button>
+`
+
+:
+
 returnStatus
 
 ?
 
 `
-
 <button
 class="trackReturnBtn"
 data-id="${order.id}">
@@ -207,7 +278,6 @@ data-id="${order.id}">
 Track Return
 
 </button>
-
 `
 
 :
@@ -217,27 +287,25 @@ canReturn
 ?
 
 `
-
 <button
 class="returnBtn">
 
 Return Product
 
 </button>
-
 `
 
 :
 
 `
-
 <span class="closedText">
 
 Return Window Closed
 
 </span>
-
 `
+
+
 
 
     : order.orderStatus === "Cancelled"
@@ -342,6 +410,25 @@ if (trackReturnBtn) {
             `track-return.html?id=${order.id}`;
 
     });
+
+}
+
+const trackReplacementBtn =
+    card.querySelector(
+        ".trackReplacementBtn"
+    );
+
+if (trackReplacementBtn) {
+
+    trackReplacementBtn.addEventListener(
+        "click",
+        () => {
+
+            window.location.href =
+                `track-replacement.html?id=${encodeURIComponent(order.id)}`;
+
+        }
+    );
 
 }
 
