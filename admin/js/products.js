@@ -31,6 +31,168 @@ let editingProductId = null;
 
 const tbody = document.getElementById("productsTable");
 
+// ================= NEW ARRIVALS SETTINGS =================
+
+const newArrivalsMinimumInput =
+    document.getElementById("newArrivalsMinimum");
+
+const saveNewArrivalsSettingsBtn =
+    document.getElementById("saveNewArrivalsSettingsBtn");
+
+    async function loadNewArrivalsSettings() {
+
+    if (!newArrivalsMinimumInput) return;
+
+    try {
+
+        const snapshot = await getDoc(
+            doc(db, "siteSettings", "newArrivals")
+        );
+
+        if (snapshot.exists()) {
+
+            const minimum =
+                Number(
+                    snapshot.data().minimumProducts
+                );
+
+            if (
+                Number.isFinite(minimum) &&
+                minimum > 0
+            ) {
+
+                newArrivalsMinimumInput.value =
+                    Math.floor(minimum);
+
+            }
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Failed to load New Arrivals settings:",
+            error
+        );
+
+    }
+
+}
+
+// ================= NEW ARRIVALS SETTINGS =================
+
+async function saveNewArrivalsSettings() {
+
+    if (
+        !newArrivalsMinimumInput ||
+        !saveNewArrivalsSettingsBtn
+    ) {
+        console.error(
+            "New Arrivals settings elements not found."
+        );
+        return;
+    }
+
+    const minimum =
+        Number(newArrivalsMinimumInput.value);
+
+    if (
+        !Number.isInteger(minimum) ||
+        minimum < 1
+    ) {
+
+        alert(
+            "Please enter a whole number greater than 0."
+        );
+
+        return;
+    }
+
+    try {
+
+        saveNewArrivalsSettingsBtn.disabled = true;
+
+        saveNewArrivalsSettingsBtn.textContent =
+            "Saving...";
+
+
+        await setDoc(
+            doc(
+                db,
+                "siteSettings",
+                "newArrivals"
+            ),
+            {
+                minimumProducts: minimum,
+                updatedAt: serverTimestamp()
+            },
+            {
+                merge: true
+            }
+        );
+
+
+        alert("Settings saved.");
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Failed to save New Arrivals settings:",
+            error
+        );
+
+        alert(
+            "Failed to save New Arrivals settings."
+        );
+
+    }
+
+    finally {
+
+        saveNewArrivalsSettingsBtn.disabled = false;
+
+        saveNewArrivalsSettingsBtn.textContent =
+            "Save Settings";
+
+    }
+
+}
+
+
+function initializeNewArrivalsSettings() {
+
+    if (!saveNewArrivalsSettingsBtn) {
+
+        console.error(
+            "Save New Arrivals Settings button not found."
+        );
+
+        return;
+    }
+
+    saveNewArrivalsSettingsBtn.addEventListener(
+        "click",
+        saveNewArrivalsSettings
+    );
+
+}
+
+
+if (document.readyState === "loading") {
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        initializeNewArrivalsSettings
+    );
+
+} else {
+
+    initializeNewArrivalsSettings();
+
+}
+
 const inventoryType =
     document.getElementById("inventoryType");
 
@@ -568,6 +730,8 @@ loadProducts().then(() => {
 
 
 await loadCategoryDropdown();
+
+await loadNewArrivalsSettings();
 
 
 renderInventory();

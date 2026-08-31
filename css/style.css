@@ -3446,3 +3446,14 @@ margin-bottom:10px
 }
 
 
+
+
+#new-arrivals {
+    margin-top: -150px;
+}
+
+@media (max-width: 768px) {
+    #new-arrivals {
+        margin-top: -80px;
+    }
+}

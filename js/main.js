@@ -9,21 +9,15 @@ const STORE_PHONES = {
 };
 
 import {
-
     collection,
-
     getDocs,
-
+    doc,
+    getDoc,
     query,
-
     where,
-
     orderBy,
-
     limit
-
 }
-
 from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
 
@@ -725,6 +719,328 @@ navLinks.querySelectorAll("a").forEach((a) => {
   });
 });
 
+
+// ============================================================
+// NEW ARRIVALS
+// ============================================================
+
+const DEFAULT_NEW_ARRIVALS_MINIMUM = 20;
+
+const NEW_ARRIVALS_DAYS = 7;
+
+
+// Convert different possible date formats into a JavaScript Date
+function toDate(value) {
+
+    if (!value) {
+        return null;
+    }
+
+
+    // Firestore Timestamp
+    if (
+        typeof value.toDate === "function"
+    ) {
+
+        return value.toDate();
+
+    }
+
+
+    // JavaScript Date
+    if (
+        value instanceof Date
+    ) {
+
+        return value;
+
+    }
+
+
+    // Number timestamp
+    if (
+        typeof value === "number"
+    ) {
+
+        const date =
+            new Date(value);
+
+        return Number.isNaN(
+            date.getTime()
+        )
+            ? null
+            : date;
+
+    }
+
+
+    // String date
+    if (
+        typeof value === "string"
+    ) {
+
+        const date =
+            new Date(value);
+
+        return Number.isNaN(
+            date.getTime()
+        )
+            ? null
+            : date;
+
+    }
+
+
+    return null;
+
+}
+
+
+// Load the minimum number from Admin Settings
+async function getNewArrivalsMinimum() {
+
+    try {
+
+        const settingsSnap =
+            await getDoc(
+                doc(
+                    db,
+                    "siteSettings",
+                    "newArrivals"
+                )
+            );
+
+
+        if (
+            !settingsSnap.exists()
+        ) {
+
+            return DEFAULT_NEW_ARRIVALS_MINIMUM;
+
+        }
+
+
+        const minimum =
+            Number(
+                settingsSnap.data()
+                    .minimumProducts
+            );
+
+
+        if (
+            Number.isFinite(minimum) &&
+            minimum > 0
+        ) {
+
+            return Math.floor(minimum);
+
+        }
+
+
+        return DEFAULT_NEW_ARRIVALS_MINIMUM;
+
+    }
+
+    catch (error) {
+
+        console.warn(
+            "Could not load New Arrivals settings. Using default:",
+            error
+        );
+
+
+        return DEFAULT_NEW_ARRIVALS_MINIMUM;
+
+    }
+
+}
+
+
+// Render New Arrivals
+async function renderNewArrivals(products) {
+
+    const newArrivalsGrid =
+        document.getElementById(
+            "newArrivalsGrid"
+        );
+
+
+    // If the homepage does not contain
+    // the New Arrivals section, do nothing.
+
+    if (
+        !newArrivalsGrid
+    ) {
+
+        return;
+
+    }
+
+
+    const minimumProducts =
+        await getNewArrivalsMinimum();
+
+
+    const cutoff =
+        Date.now() -
+        (
+            NEW_ARRIVALS_DAYS *
+            24 *
+            60 *
+            60 *
+            1000
+        );
+
+
+    // --------------------------------------------------------
+    // Sort newest → oldest
+    // --------------------------------------------------------
+
+    const sortedProducts =
+        [...products].sort(
+            (a, b) => {
+
+                const aTime =
+                    toDate(
+                        a.createdAt
+                    )?.getTime() || 0;
+
+
+                const bTime =
+                    toDate(
+                        b.createdAt
+                    )?.getTime() || 0;
+
+
+                return bTime - aTime;
+
+            }
+        );
+
+
+    // --------------------------------------------------------
+    // Find products added in the last 7 days
+    // --------------------------------------------------------
+
+    const recentProducts =
+        sortedProducts.filter(
+            product => {
+
+                const created =
+                    toDate(
+                        product.createdAt
+                    );
+
+
+                return (
+                    created &&
+                    created.getTime() >= cutoff
+                );
+
+            }
+        );
+
+
+    // Start with all genuine new arrivals
+    let arrivals =
+        [...recentProducts];
+
+
+    // --------------------------------------------------------
+    // If fewer than the minimum,
+    // fill with newest older products.
+    // --------------------------------------------------------
+
+    if (
+        arrivals.length <
+        minimumProducts
+    ) {
+
+        const recentIds =
+            new Set(
+                arrivals.map(
+                    product => product.id
+                )
+            );
+
+
+        const fallbackProducts =
+            sortedProducts.filter(
+                product =>
+                    !recentIds.has(
+                        product.id
+                    )
+            );
+
+
+        arrivals.push(
+            ...fallbackProducts.slice(
+                0,
+                minimumProducts -
+                arrivals.length
+            )
+        );
+
+    }
+
+
+    // --------------------------------------------------------
+    // Use the EXISTING product card
+    // --------------------------------------------------------
+
+    newArrivalsGrid.innerHTML =
+        arrivals
+            .map(
+                createProductCard
+            )
+            .join("");
+
+
+    // --------------------------------------------------------
+    // Give New Arrival cards the same
+    // product-page behaviour as Collection
+    // --------------------------------------------------------
+
+    newArrivalsGrid
+        .querySelectorAll(".card")
+        .forEach(
+            card => {
+
+                card.addEventListener(
+                    "click",
+                    () => {
+
+                        localStorage.setItem(
+                            "lastShoppingPage",
+                            window.location.href
+                        );
+
+
+                        localStorage.setItem(
+                            "lastScrollPosition",
+                            window.scrollY
+                        );
+
+
+                        window.open(
+                            `product.html?id=${card.dataset.id}`,
+                            "_blank"
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+
+    console.log(
+        `New Arrivals: ${recentProducts.length} recent products; displaying ${arrivals.length}. Minimum: ${minimumProducts}.`
+    );
+
+}
+
+
 async function init() {
   try {
     PRODUCTS = await getProducts();
@@ -732,6 +1048,8 @@ async function init() {
     console.log("Products loaded from Firestore:", PRODUCTS);
 
     render();
+
+await renderNewArrivals(PRODUCTS);
 
   } catch (error) {
     console.error("Error loading products:", error);
